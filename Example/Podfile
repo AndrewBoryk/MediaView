@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'MediaView_Example' do
+  pod 'MediaView', :path => '../'
+
+  target 'MediaView_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
