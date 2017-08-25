@@ -12,7 +12,7 @@
 		431DA1881F4FBBF800320D9D /* MediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DA1871F4FBBF800320D9D /* MediaView.swift */; };
 		431DA18A1F4FBC1800320D9D /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DA1891F4FBC1800320D9D /* UIDevice+Extensions.swift */; };
 		431DA18D1F4FBCF700320D9D /* UIScreen+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DA18C1F4FBCF700320D9D /* UIScreen+Extensions.swift */; };
-		431DA18F1F4FC9EF00320D9D /* TapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DA18E1F4FC9EF00320D9D /* TapGesture.swift */; };
+		431DA18F1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DA18E1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift */; };
 		431DA1911F4FCB9200320D9D /* UILabel+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DA1901F4FCB9200320D9D /* UILabel+Extensions.swift */; };
 		439ADA891F06BB6F000108A8 /* MediaQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439ADA881F06BB6F000108A8 /* MediaQueue.swift */; };
 		439ADA8B1F06C6FD000108A8 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439ADA8A1F06C6FD000108A8 /* UIColor+Extensions.swift */; };
@@ -52,7 +52,7 @@
 		431DA1871F4FBBF800320D9D /* MediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaView.swift; sourceTree = "<group>"; };
 		431DA1891F4FBC1800320D9D /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 		431DA18C1F4FBCF700320D9D /* UIScreen+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+Extensions.swift"; sourceTree = "<group>"; };
-		431DA18E1F4FC9EF00320D9D /* TapGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapGesture.swift; sourceTree = "<group>"; };
+		431DA18E1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIGestureRecognizer+Extensions.swift"; sourceTree = "<group>"; };
 		431DA1901F4FCB9200320D9D /* UILabel+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extensions.swift"; sourceTree = "<group>"; };
 		439ADA881F06BB6F000108A8 /* MediaQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaQueue.swift; sourceTree = "<group>"; };
 		439ADA8A1F06C6FD000108A8 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
@@ -166,6 +166,7 @@
 				431DA1891F4FBC1800320D9D /* UIDevice+Extensions.swift */,
 				431DA18C1F4FBCF700320D9D /* UIScreen+Extensions.swift */,
 				431DA1901F4FCB9200320D9D /* UILabel+Extensions.swift */,
+				431DA18E1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -185,7 +186,6 @@
 			children = (
 				43DA711D1F0270F60045D6EA /* Player.swift */,
 				43DA711F1F0271040045D6EA /* Label.swift */,
-				431DA18E1F4FC9EF00320D9D /* TapGesture.swift */,
 			);
 			path = Subclasses;
 			sourceTree = "<group>";
@@ -424,7 +424,7 @@
 				AA2E47CEB340137F7421ACE539D6A40A /* MediaView-dummy.m in Sources */,
 				431DA1911F4FCB9200320D9D /* UILabel+Extensions.swift in Sources */,
 				431DA18D1F4FBCF700320D9D /* UIScreen+Extensions.swift in Sources */,
-				431DA18F1F4FC9EF00320D9D /* TapGesture.swift in Sources */,
+				431DA18F1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift in Sources */,
 				431DA1881F4FBBF800320D9D /* MediaView.swift in Sources */,
 				43DA71281F02713E0045D6EA /* CacheManager.swift in Sources */,
 				43DA71201F0271040045D6EA /* Label.swift in Sources */,
