@@ -1,0 +1,6 @@
+framework module MediaView {
+  umbrella header "MediaView-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,16 @@
+PODS:
+  - MediaView (0.1.0)
+
+DEPENDENCIES:
+  - MediaView (from `../`)
+
+EXTERNAL SOURCES:
+  MediaView:
+    :path: ../
+
+SPEC CHECKSUMS:
+  MediaView: ba2bdea77fb06b88e971c47469edcea2d8275023
+
+PODFILE CHECKSUM: 9c9fd6180ad35fc36d40eb9776ef4b91b1cde951
+
+COCOAPODS: 1.2.1

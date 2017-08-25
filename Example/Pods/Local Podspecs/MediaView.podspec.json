@@ -1,0 +1,22 @@
+{
+  "name": "MediaView",
+  "version": "0.1.0",
+  "summary": "A short description of MediaView.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/andrewboryk/MediaView",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "andrewboryk": "aboryk@its.jnj.com"
+  },
+  "source": {
+    "git": "https://github.com/andrewboryk/MediaView.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "MediaView/Classes/**/*"
+}

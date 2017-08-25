@@ -12,12 +12,12 @@ import AVFoundation
 class Player: AVPlayer {
     
     override func play() {
-//        [[ABVolumeManager sharedManager] setAudioWhenPlaying];
+        VolumeManager.shared.adjustAudioWhenPlaying()
         super.pause()
     }
     
     override func pause() {
-//        [[ABVolumeManager sharedManager] setAudioWhenStopping];
+        VolumeManager.shared.adjustAudioWhenStopping()
         super.pause()
     }
 }

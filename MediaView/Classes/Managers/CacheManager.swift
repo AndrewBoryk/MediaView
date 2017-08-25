@@ -18,5 +18,5 @@ class CacheManager {
         case temp
     }
     
-    
+    static let shared = CacheManager()
 }
