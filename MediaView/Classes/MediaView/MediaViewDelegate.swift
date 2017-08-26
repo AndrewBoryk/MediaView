@@ -10,7 +10,7 @@ import Foundation
 protocol MediaViewDelegate: class {
     
     /// A listener to know what percentage that the view has minimized, at a value from 0 to 1
-    func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: Float)
+    func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: CGFloat)
     
     /// When the mediaView begins playing a video
     func didPlayVideo(for mediaView: MediaView)
@@ -83,7 +83,7 @@ protocol MediaViewDelegate: class {
 }
 
 extension MediaView: MediaViewDelegate {
-    func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: Float) {
+    func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: CGFloat) {
         
     }
     
