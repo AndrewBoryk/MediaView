@@ -10,18 +10,14 @@ import Foundation
 
 protocol TrackViewDelegate: class {
     
-    func seekTo(time: CGFloat, track: TrackView)
+    func seekTo(time: TimeInterval, track: TrackView)
 }
 
 class TrackView: UIView, UIGestureRecognizerDelegate {
     
     weak var delegate: TrackViewDelegate?
     
-    private var barHeight: CGFloat = 2.0
-    private var canSeek = false
-    private var hideTimer = Timer()
-    lazy var trackRect = CGRect(x: 0, y: frame.height - barHeight, width: 0, height: barHeight)
-    
+    /// Font used in the track's time labels
     var trackFont = UIFont.systemFont(ofSize: 12) {
         didSet {
             currentTimeLabel.font = trackFont
@@ -29,7 +25,8 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
-    var buffer: CGFloat = 0.0 {
+    /// Amount of time that has been loaded for the media
+    var buffer: TimeInterval = 0.0 {
         didSet {
             guard buffer >= 0 else {
                 return
@@ -39,7 +36,8 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
-    var progress: CGFloat = 0.0 {
+    /// Amount of time which has elapsed for the media
+    var progress: TimeInterval = 0.0 {
         didSet {
             guard progress >= 0 else {
                 return
@@ -49,7 +47,8 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
-    var duration: CGFloat = 15.0 {
+    /// Total duration for the media
+    var duration: TimeInterval = 15.0 {
         didSet {
             guard duration >= 0 else {
                 return
@@ -59,13 +58,19 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
+    /// Determines whether the right track label should show total time or time remaining
     var showTimeRemaining = false {
         didSet {
             updateTotalTimeLabel()
         }
     }
     
-    lazy var barBackgroundView: UIView = {
+    private var barHeight: CGFloat = 2.0
+    private var canSeek = false
+    private var hideTimer = Timer()
+    private lazy var trackRect = CGRect(x: 0, y: frame.height - barHeight, width: 0, height: barHeight)
+    
+    private lazy var barBackgroundView: UIView = {
         let barBackgroundView = UIView(frame: CGRect(x: 0, y: frame.height - barHeight, width: frame.width, height: barHeight))
         barBackgroundView.backgroundColor = UIColor.white.withAlphaComponent(0.1)
         barBackgroundView.layer.masksToBounds = false
@@ -77,23 +82,23 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
         return barBackgroundView
     }()
     
-    lazy var bufferView: UIView = {
+    private lazy var bufferView: UIView = {
         let bufferView = UIView(frame: CGRect(x: 0, y: frame.height - barHeight, width: 0, height: barHeight))
         bufferView.backgroundColor = UIColor.white.withAlphaComponent(0.1)
         
         return bufferView
     }()
     
-    lazy var progressView: UIView = {
+    private lazy var progressView: UIView = {
         let progressView = UIView(frame: CGRect(x: 0, y: frame.height - barHeight, width: 0, height: barHeight))
         progressView.backgroundColor = UIColor.cyan
         
         return progressView
     }()
     
-    lazy var currentTimeLabel: Label = Label(y: self.frame.height - self.barHeight - 14)
+    private lazy var currentTimeLabel: Label = Label(y: self.frame.height - self.barHeight - 14)
     
-    lazy var totalTimeLabel: Label = {
+    private lazy var totalTimeLabel: Label = {
         let label = Label(y: self.frame.height - self.barHeight - 14)
         label.textAlignment = .right
         return label
@@ -102,6 +107,7 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     private lazy var tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapRecognizer(_:)), delegate: self)
     private lazy var scrubRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanRecognizer(_:)), delegate: self)
     
+    // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -124,6 +130,7 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
         addGestureRecognizer(scrubRecognizer)
     }
     
+    // MARK: - Gestures
     @objc private func handleTapRecognizer(_ gesture: UIGestureRecognizer) {
         touchRegistered(gesture: gesture)
     }
@@ -146,21 +153,33 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
-    func setProgress(_ progress: CGFloat, duration: CGFloat) {
+    private func touchRegistered(gesture: UIGestureRecognizer) {
+        if barBackgroundView.frame.height >= 6.0 {
+            seek(to: gesture.location(in: self).y)
+        } else {
+            setTrackHidden(false)
+        }
+        
+        hideTimer.invalidate()
+    }
+    
+    // MARK: - Public
+    func setProgress(_ progress: TimeInterval, duration: TimeInterval) {
         self.progress = progress
         self.duration = duration
     }
     
-    func setBuffer(_ buffer: CGFloat, duration: CGFloat) {
+    func setBuffer(_ buffer: TimeInterval, duration: TimeInterval) {
         self.buffer = buffer
         self.duration = duration
     }
     
+    // MARK: - Private
     private func updateTotalTimeLabel() {
         if !showTimeRemaining || duration < progress {
-            totalTimeLabel.text = duration.getTimeString()
+            totalTimeLabel.text = duration.timeString
         } else {
-            totalTimeLabel.text = (duration - progress).getTimeString()
+            totalTimeLabel.text = (duration - progress).timeString
         }
     }
     
@@ -178,7 +197,7 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
         
         if buffer > 0 && (duration - 0.5) > 0 {
             let elapsedTime = buffer / (duration - 0.5)
-            let width = elapsedTime * frame.width
+            let width = elapsedTime.float * frame.width
             bufferFrame.size.width = width
             animationDuration = 0.1
         }
@@ -194,7 +213,7 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
         
         if progress > 0 && (duration - 0.5) > 0 {
             let elapsedTime = progress / (duration - 0.5)
-            let width = elapsedTime * frame.width
+            let width = elapsedTime.float * frame.width
             progressFrame.size.width = width
             animationDuration = 0.1
         }
@@ -203,8 +222,27 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
             self.progressView.frame = progressFrame
         })
         
-        currentTimeLabel.text = progress.getTimeString()
+        currentTimeLabel.text = progress.timeString
         updateTotalTimeLabel()
+    }
+    
+    private func seek(to point: CGFloat) {
+        if canSeek, point < bufferView.frame.width {
+            let ratio = point / bufferView.frame.width
+            let seekTime = ratio.time * duration
+            
+            delegate?.seekTo(time: seekTime, track: self)
+        }
+    }
+    
+    private func scheduleTimer() {
+        if #available(iOS 10, *) {
+            hideTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false, block: { _ in
+                self.setTrackHidden(false)
+            })
+        } else {
+            hideTimer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(setTrackHidden(_:)), userInfo: nil, repeats: false)
+        }
     }
     
     @objc private func setTrackHidden(_ isHidden: Bool = true) {
@@ -223,35 +261,6 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
                     self.canSeek = self.barHeight == 6
                 })
             }
-        }
-    }
-    
-    func seek(to point: CGFloat) {
-        if canSeek, point < bufferView.frame.width {
-            let ratio = point / bufferView.frame.width
-            let seekTime = ratio * duration
-            
-            delegate?.seekTo(time: seekTime, track: self)
-        }
-    }
-    
-    func touchRegistered(gesture: UIGestureRecognizer) {
-        if barBackgroundView.frame.height >= 6.0 {
-            seek(to: gesture.location(in: self).y)
-        } else {
-            setTrackHidden(false)
-        }
-        
-        hideTimer.invalidate()
-    }
-    
-    func scheduleTimer() {
-        if #available(iOS 10, *) {
-            hideTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false, block: { _ in
-                self.setTrackHidden(false)
-            })
-        } else {
-            hideTimer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(setTrackHidden(_:)), userInfo: nil, repeats: false)
         }
     }
 }

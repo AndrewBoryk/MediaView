@@ -35,14 +35,8 @@ extension CGFloat {
     /// Height of the tab bar
     static let tabBarBuffer = Buffer.tabBar.rawValue
     
-    public func getTimeString() -> String {
-        let minutes = Int(self / 60)
-        let seconds = Int(self) % 60
-        
-        if minutes == 0 {
-            return "0:\(String(format: "%02d", seconds))"
-        } else {
-            return "\(minutes):\(String(format: "%02d", seconds))"
-        }
+    /// CGFloat as a TimeInterval
+    public var time: TimeInterval {
+        return TimeInterval(self)
     }
 }
