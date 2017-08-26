@@ -21,4 +21,14 @@ extension UIScreen {
     static var height: CGFloat {
         return UIScreen.rect.height
     }
+    
+    /// Width of the mainWindow, adjusted for orientation
+    static var superviewWidth: CGFloat {
+        return width > height ? width : height
+    }
+    
+    /// Height of the mainWindow, adjusted for orientation
+    static var superviewHeight: CGFloat {
+        return width < height ? width : height
+    }
 }

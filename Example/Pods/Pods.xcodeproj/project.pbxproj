@@ -15,6 +15,10 @@
 		431DA18F1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DA18E1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift */; };
 		431DA1911F4FCB9200320D9D /* UILabel+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DA1901F4FCB9200320D9D /* UILabel+Extensions.swift */; };
 		43350BE61F5121BF00F1032A /* TimeInterval+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43350BE51F5121BF00F1032A /* TimeInterval+Extensions.swift */; };
+		43350BE81F512BD700F1032A /* MediaViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43350BE71F512BD700F1032A /* MediaViewDelegate.swift */; };
+		43350BEA1F512C9A00F1032A /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43350BE91F512C9A00F1032A /* Media.swift */; };
+		43350BEE1F512EF600F1032A /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43350BED1F512EF600F1032A /* CGRect+Extensions.swift */; };
+		43350BF01F51362F00F1032A /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43350BEF1F51362F00F1032A /* UIView+Extensions.swift */; };
 		439ADA891F06BB6F000108A8 /* MediaQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439ADA881F06BB6F000108A8 /* MediaQueue.swift */; };
 		439ADA8B1F06C6FD000108A8 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439ADA8A1F06C6FD000108A8 /* UIColor+Extensions.swift */; };
 		43DA711E1F0270F60045D6EA /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DA711D1F0270F60045D6EA /* Player.swift */; };
@@ -56,6 +60,10 @@
 		431DA18E1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIGestureRecognizer+Extensions.swift"; sourceTree = "<group>"; };
 		431DA1901F4FCB9200320D9D /* UILabel+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extensions.swift"; sourceTree = "<group>"; };
 		43350BE51F5121BF00F1032A /* TimeInterval+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Extensions.swift"; sourceTree = "<group>"; };
+		43350BE71F512BD700F1032A /* MediaViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaViewDelegate.swift; sourceTree = "<group>"; };
+		43350BE91F512C9A00F1032A /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
+		43350BED1F512EF600F1032A /* CGRect+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
+		43350BEF1F51362F00F1032A /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		439ADA881F06BB6F000108A8 /* MediaQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaQueue.swift; sourceTree = "<group>"; };
 		439ADA8A1F06C6FD000108A8 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		43DA711D1F0270F60045D6EA /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
@@ -170,6 +178,8 @@
 				431DA18C1F4FBCF700320D9D /* UIScreen+Extensions.swift */,
 				431DA1901F4FCB9200320D9D /* UILabel+Extensions.swift */,
 				431DA18E1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift */,
+				43350BED1F512EF600F1032A /* CGRect+Extensions.swift */,
+				43350BEF1F51362F00F1032A /* UIView+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -184,13 +194,31 @@
 			path = Managers;
 			sourceTree = "<group>";
 		};
-		431DA1931F4FD10600320D9D /* Subclasses */ = {
+		431DA1931F4FD10600320D9D /* Custom */ = {
 			isa = PBXGroup;
 			children = (
 				43DA711D1F0270F60045D6EA /* Player.swift */,
 				43DA711F1F0271040045D6EA /* Label.swift */,
 			);
-			path = Subclasses;
+			path = Custom;
+			sourceTree = "<group>";
+		};
+		43350BEB1F512E0200F1032A /* MediaView */ = {
+			isa = PBXGroup;
+			children = (
+				43350BE91F512C9A00F1032A /* Media.swift */,
+				431DA1871F4FBBF800320D9D /* MediaView.swift */,
+				43350BE71F512BD700F1032A /* MediaViewDelegate.swift */,
+			);
+			path = MediaView;
+			sourceTree = "<group>";
+		};
+		43350BEC1F512E0A00F1032A /* TrackView */ = {
+			isa = PBXGroup;
+			children = (
+				43DA71251F0271330045D6EA /* TrackView.swift */,
+			);
+			path = TrackView;
 			sourceTree = "<group>";
 		};
 		5168EB2F5967B6E850CEEE4776EDFED2 /* Targets Support Files */ = {
@@ -248,10 +276,10 @@
 		A736DB0020BAEF43E9F4DDCB1E66A678 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				431DA1871F4FBBF800320D9D /* MediaView.swift */,
-				43DA71251F0271330045D6EA /* TrackView.swift */,
+				43350BEB1F512E0200F1032A /* MediaView */,
+				43350BEC1F512E0A00F1032A /* TrackView */,
 				431DA1921F4FD0F700320D9D /* Managers */,
-				431DA1931F4FD10600320D9D /* Subclasses */,
+				431DA1931F4FD10600320D9D /* Custom */,
 				431DA18B1F4FBC2300320D9D /* Extensions */,
 			);
 			path = Classes;
@@ -419,6 +447,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43350BF01F51362F00F1032A /* UIView+Extensions.swift in Sources */,
+				43350BEA1F512C9A00F1032A /* Media.swift in Sources */,
 				43DA712E1F03E1BE0045D6EA /* CGFloat+Extensions.swift in Sources */,
 				43DA711E1F0270F60045D6EA /* Player.swift in Sources */,
 				439ADA8B1F06C6FD000108A8 /* UIColor+Extensions.swift in Sources */,
@@ -427,6 +457,7 @@
 				AA2E47CEB340137F7421ACE539D6A40A /* MediaView-dummy.m in Sources */,
 				431DA1911F4FCB9200320D9D /* UILabel+Extensions.swift in Sources */,
 				431DA18D1F4FBCF700320D9D /* UIScreen+Extensions.swift in Sources */,
+				43350BEE1F512EF600F1032A /* CGRect+Extensions.swift in Sources */,
 				431DA18F1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift in Sources */,
 				431DA1881F4FBBF800320D9D /* MediaView.swift in Sources */,
 				43DA71281F02713E0045D6EA /* CacheManager.swift in Sources */,
@@ -435,6 +466,7 @@
 				43DA712C1F03E13C0045D6EA /* Notification+Extensions.swift in Sources */,
 				43DA712A1F0271570045D6EA /* UIImage+Extensions.swift in Sources */,
 				43DA71241F0271280045D6EA /* VolumeManager.swift in Sources */,
+				43350BE81F512BD700F1032A /* MediaViewDelegate.swift in Sources */,
 				431DA18A1F4FBC1800320D9D /* UIDevice+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

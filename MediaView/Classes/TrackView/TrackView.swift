@@ -17,6 +17,16 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     
     weak var delegate: TrackViewDelegate?
     
+    lazy var tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapRecognizer(_:)), delegate: self)
+    lazy var scrubRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanRecognizer(_:)), delegate: self)
+    
+    /// Color for the progress bar
+    var themeColor: UIColor = .cyan {
+        didSet {
+            progressView.backgroundColor = themeColor
+        }
+    }
+    
     /// Font used in the track's time labels
     var trackFont = UIFont.systemFont(ofSize: 12) {
         didSet {
@@ -91,7 +101,7 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     
     private lazy var progressView: UIView = {
         let progressView = UIView(frame: CGRect(x: 0, y: frame.height - barHeight, width: 0, height: barHeight))
-        progressView.backgroundColor = UIColor.cyan
+        progressView.backgroundColor = themeColor
         
         return progressView
     }()
@@ -103,9 +113,6 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
         label.textAlignment = .right
         return label
     }()
-    
-    private lazy var tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapRecognizer(_:)), delegate: self)
-    private lazy var scrubRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanRecognizer(_:)), delegate: self)
     
     // MARK: - Initializers
     override init(frame: CGRect) {
@@ -172,6 +179,12 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     func setBuffer(_ buffer: TimeInterval, duration: TimeInterval) {
         self.buffer = buffer
         self.duration = duration
+    }
+    
+    func updateSubviews() {
+        updateBarBackground()
+        updateProgressView()
+        updateBufferView()
     }
     
     // MARK: - Private

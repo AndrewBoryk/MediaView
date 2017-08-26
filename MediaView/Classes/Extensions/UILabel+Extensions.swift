@@ -12,7 +12,7 @@ extension UILabel {
     func addShadow() {
         self.layer.masksToBounds = false
         self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowOffset = CGSize(width: 0, height: 0)
+        self.layer.shadowOffset = .zero
         self.layer.shadowOpacity = 0.8
         self.layer.shadowRadius = 1.0
     }

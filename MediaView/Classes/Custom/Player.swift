@@ -20,4 +20,8 @@ class Player: AVPlayer {
         VolumeManager.shared.adjustAudioWhenStopping()
         super.pause()
     }
+    
+    var isPlaying: Bool {
+        return rate != 0 && error == nil
+    }
 }

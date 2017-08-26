@@ -26,6 +26,14 @@ class Label: UILabel {
     
     private let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapRecognizer))
     
+    var isEmpty: Bool {
+        guard let text = text?.replacingOccurrences(of: " ", with: "") else {
+            return true
+        }
+        
+        return text.isEmpty
+    }
+    
     init(y: CGFloat) {
         super.init(frame: CGRect(x: 0, y: y, width: 120, height: 14))
         
@@ -38,7 +46,7 @@ class Label: UILabel {
         
     }
     
-    init(width: CGFloat, text: String, delegate: LabelDelegate?, kind: Kind = .track, isInteractionEnabled: Bool = true, font: UIFont = UIFont.systemFont(ofSize: 12)) {
+    init(width: CGFloat, text: String = "", delegate: LabelDelegate?, kind: Kind = .track, isInteractionEnabled: Bool = true, font: UIFont = UIFont.systemFont(ofSize: 12)) {
         super.init(frame: CGRect(origin: .zero, size: CGSize(width: width, height: 16)))
         
         self.kind = kind
