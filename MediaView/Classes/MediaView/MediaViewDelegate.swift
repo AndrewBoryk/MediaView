@@ -83,6 +83,7 @@ protocol MediaViewDelegate: class {
 }
 
 extension MediaView: MediaViewDelegate {
+    
     func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: CGFloat) {
         
     }

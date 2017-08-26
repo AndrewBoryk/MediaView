@@ -477,7 +477,37 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     /// Selector to play the video from the playRecognizer
     @objc private func handleTapFromRecognizer() {
-        
+        if isMinimized {
+            isUserInteractionEnabled = false
+            
+            delegate?.willEndMinimizing(for: self, atMinimizedState: false)
+            
+            UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear, animations: {
+                self.setFullScreenView()
+            }, completion: { _ in
+                self.track.isUserInteractionEnabled = self.isMinimized
+                self.isUserInteractionEnabled = true
+                self.delegate?.didEndMinimizing(for: self, atMinimizedState: false)
+            })
+        } else {
+            if shouldDisplayFullscreen && !isFullScreen {
+                // FIXME: MediaQueue presentMediaView self.copy
+            } else {
+                if let player = player {
+                    if player.isPlaying {
+                        
+                    } else if !isLoadingVideo {
+                        
+                    } else {
+                        
+                    }
+                } else if !isLoadingVideo {
+                    // FIXME: Load video with play: true
+                } else {
+                    stopVideoAnimate()
+                }
+            }
+        }
     }
     
     /// Loads the video, saves to disk, and decides whether to play the video
@@ -545,13 +575,13 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
                 let velocity = gesture.velocity(in: self)
                 let shouldDismiss = (offsetPercentage > 0.25 && offsetPercentage < 0.35 && velocity.y > 300) || offsetPercentage >= 0.35
                 
+                delegate?.willEndDismissing(for: self, withDismissal: shouldDismiss)
+                
                 if shouldDismiss {
-                    delegate?.willEndDismissing(for: self, withDismissal: true)
-                    
-                    
+                    // FIXME: dismissMediaViewAnimated
+                    // inside ->
+                    self.delegate?.didEndDismissing(for: self, withDismissal: true)
                 } else {
-                    delegate?.willEndDismissing(for: self, withDismissal: false)
-                    
                     UIView.animate(withDuration: 0.25, animations: {
                         self.frame = UIScreen.rect
                         self.layoutSubviews()
@@ -565,7 +595,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
                 isUserInteractionEnabled = false
                 
                 if alpha < 0.6 {
-                    
+                    // FIXME: dismissMediaViewAnimated
                 } else {
                     let shouldMinimize = offsetPercentage >= 0.4
                     delegate?.willEndMinimizing(for: self, atMinimizedState: shouldMinimize)
@@ -731,7 +761,11 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }
     
     @objc private func closeAction() {
-        
+        if isFullScreen {
+            // FIXME: dismissMediaViewAnimated
+        } else {
+            closeButton.alpha = 0
+        }
     }
     
     @objc private func orientationChanged(_ notification: Notification) {

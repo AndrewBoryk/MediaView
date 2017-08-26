@@ -12,6 +12,10 @@ extension CGRect {
     init(origin: CGFloat, size: CGFloat) {
         self.init(x: origin, y: origin, width: size, height: size)
     }
+    
+    func log() {
+        print("x: \(origin.x) y: \(origin.y) width: \(width) height: \(height)")
+    }
 }
 
 extension CGSize {
