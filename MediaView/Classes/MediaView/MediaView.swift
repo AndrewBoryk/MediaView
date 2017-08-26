@@ -10,6 +10,21 @@ import AVFoundation
 
 class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelegate {
     
+    enum SwipeMode {
+        case none
+        case dismiss
+        case minimize
+        
+        var movesWhenSwipe: Bool {
+            switch self {
+            case .dismiss, .minimize:
+                return true
+            default:
+                return false
+            }
+        }
+    }
+    
     /// Delegate for the mediaView
     weak var delegate: MediaViewDelegate?
     
@@ -20,7 +35,9 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     typealias VideoDataCompletionBlock = (_ video: String, _ error: Error?) -> Void
     
     /// Determines if video is minimized
-    private(set) public var isMinimized = false
+    public var isMinimized: Bool {
+        return offset == maxViewOffsetY && swipeMode == .minimize
+    }
     
     /// Keeps track of how much the video has been minimized
     private(set) public var offsetPercentage: CGFloat = 0.0
@@ -91,11 +108,8 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     /// Determines whether or not the mediaView is being used in a reusable view
     var imageViewNotReused = false
     
-    /// Determines whether the mediaView can be minimized into the bottom right corner, and then dismissed by swiping right on the minimized version
-    var isMinimizable = false
-    
-    /// Determines whether the mediaView can be dismissed by swiping down on the view, this setting would override isMinimizable
-    var isDismissable = false
+    /// Determines what action will be taken when user swipes on fullscreen mediaView
+    var swipeMode: SwipeMode = .none
     
     /// Determines whether the video occupies the full screen when displayed
     var shouldDisplayFullscreen = false
@@ -231,9 +245,18 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         return minViewWidth * minimizedAspectRatio
     }
     
-    /// The maximum amount of y offset for the mediaView
-    private var maxViewOffset: CGFloat {
+    /// The maximum amount of y offset for the mediaView when minimizing
+    private var maxViewOffsetY: CGFloat {
         return UIScreen.superviewWidth - minViewHeight + bottomBuffer + 12
+    }
+    
+    /// The maximum amount of x offset for the mediaView when minimizing
+    private var maxViewOffsetX: CGFloat {
+        return UIScreen.superviewWidth - minViewWidth - 12
+    }
+    
+    private var minimizedFrame: CGRect {
+        return CGRect(x: maxViewOffsetX, y: maxViewOffsetY, width: minViewWidth, height: minViewHeight)
     }
     
     /// Height constraint of the top overlay
@@ -321,6 +344,14 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }()
     
     // MARK: - Variable Properties
+    /// Position of the swipe vertically
+    private var swipePosition: CGPoint = .zero {
+        didSet {
+            xSwipePosition = swipePosition.x
+            ySwipePosition = swipePosition.y
+        }
+    }
+    
     /// Position of the swipe vertically
     private var ySwipePosition: CGFloat = 0.0
     
@@ -455,8 +486,141 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         playerLayer?.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height);
     }
     
-    @objc private func handleSwipe() {
+    @objc private func handleSwipe(_ gesture: UIPanGestureRecognizer) {
+        guard isFullScreen else {
+            return
+        }
         
+        switch gesture.state {
+        case .began:
+            stopVideoAnimate()
+            
+            track.isUserInteractionEnabled = false
+            tapRecognizer.isEnabled = false
+            closeButton.isUserInteractionEnabled = false
+            
+            track.hideTrackAndInvalidate()
+            
+            swipePosition = gesture.location(in: self)
+            offset = frame.origin.y
+        case .changed:
+            switch swipeMode {
+            case .dismiss:
+                handleDismissal(using: gesture)
+            case .minimize:
+                if isMinimized {
+                    if frame.origin.x > maxViewOffsetX {
+                        handleMinimizedDismissal(using: gesture)
+                    } else {
+                        if gesture.velocity(in: self).isDownToTheRight {
+                            handleMinimizedDismissal(using: gesture)
+                        } else {
+                            handleMinimization(using: gesture)
+                        }
+                    }
+                } else {
+                    handleMinimization(using: gesture)
+                }
+            default:
+                break
+            }
+        case .cancelled, .failed, .ended:
+            switch swipeMode {
+            case .dismiss:
+                isUserInteractionEnabled = false
+                
+                let velocity = gesture.velocity(in: self)
+                let shouldDismiss = (offsetPercentage > 0.25 && offsetPercentage < 0.35 && velocity.y > 300) || offsetPercentage >= 0.35
+                
+                if shouldDismiss {
+                    delegate?.willEndDismissing(for: self, withDismissal: true)
+                    
+                    
+                } else {
+                    delegate?.willEndDismissing(for: self, withDismissal: false)
+                    
+                    UIView.animate(withDuration: 0.25, animations: {
+                        self.frame = UIScreen.rect
+                        self.layoutSubviews()
+                    }, completion: { _ in
+                        self.setViewAfterSwipe()
+                        
+                        self.delegate?.didEndDismissing(for: self, withDismissal: false)
+                    })
+                }
+            case .minimize:
+                isUserInteractionEnabled = false
+                
+                if alpha < 0.6 {
+                    
+                } else {
+                    let shouldMinimize = offsetPercentage >= 0.4
+                    delegate?.willEndMinimizing(for: self, atMinimizedState: shouldMinimize)
+                    
+                    UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear, animations: {
+                        if shouldMinimize {
+                            self.setMinimizedView()
+                        } else {
+                            self.frame = UIScreen.rect
+                            self.layer.cornerRadius = 0
+                            
+                            if self.hasMedia && (!self.isPlayingVideo || self.isLoadingVideo) {
+                                self.playIndicatorView.alpha = 1
+                            }
+                            
+                            self.handleCloseButtonDisplay()
+                            self.handleTopOverlayDisplay()
+                            self.borderAlpha = 1
+                        }
+                        
+                        self.alpha = 1
+                        self.layoutSubviews()
+                    }, completion: { _ in
+                        self.setViewAfterSwipe()
+                        
+                        self.delegate?.didEndMinimizing(for: self, atMinimizedState: shouldMinimize)
+                        
+                        if self.isLoadingVideo {
+                            self.loadVideoAnimate()
+                        }
+                    })
+                }
+            default:
+                break
+            }
+        default:
+            break
+        }
+    }
+    
+    private func handleDismissal(using gesture: UIPanGestureRecognizer) {
+        
+    }
+    
+    private func handleMinimization(using gesture: UIPanGestureRecognizer) {
+        
+    }
+    
+    private func handleMinimizedDismissal(using gesture: UIPanGestureRecognizer) {
+        
+    }
+    
+    private func setMinimizedView() {
+        frame = minimizedFrame
+        playIndicatorView.alpha = 0
+        closeButton.alpha = 0
+        topOverlay.alpha = 0
+        titleLabel.alpha = 0
+        detailsLabel.alpha = 0
+        borderAlpha = 1.0
+    }
+    
+    private func setViewAfterSwipe() {
+        tapRecognizer.isEnabled = true
+        closeButton.isUserInteractionEnabled = true
+        track.isUserInteractionEnabled = true
+        offset = self.frame.origin.y
+        isUserInteractionEnabled = true
     }
     
     @objc private func handleLongPress() {
@@ -518,8 +682,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     @objc private func adjustSubviews() {
         if isFullScreen {
-            swipeRecognizer.isEnabled = UIDevice.isPortrait && (isMinimizable || isDismissable)
-            isMinimized = false
+            swipeRecognizer.isEnabled = UIDevice.isPortrait && swipeMode.movesWhenSwipe
             layer.cornerRadius = 0.0
             borderAlpha = 0.0
             frame = CGRect(x: 0, y: 0, width: UIScreen.superviewWidth, height: UIScreen.superviewHeight)
@@ -544,7 +707,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }
     
     func handleCloseButtonDisplay() {
-        closeButton.alpha = (isFullScreen && !shouldHideCloseButton && !isMinimizable && UIDevice.isLandscape) ? 1 : 0
+        closeButton.alpha = (isFullScreen && !shouldHideCloseButton && swipeMode != .minimize && UIDevice.isLandscape) ? 1 : 0
     }
     
     func handleTopOverlayDisplay() {

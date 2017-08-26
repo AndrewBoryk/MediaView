@@ -34,4 +34,8 @@ extension CGPoint {
     init(_ point: CGFloat) {
         self.init(point, point)
     }
+    
+    var isDownToTheRight: Bool {
+        return x > 0 && y >= 0 && fabsf(Float(y)) < Float(x)
+    }
 }

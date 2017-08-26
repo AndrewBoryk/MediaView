@@ -187,6 +187,11 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
         updateBufferView()
     }
     
+    func hideTrackAndInvalidate() {
+        hideTimer.invalidate()
+        setTrackHidden()
+    }
+    
     // MARK: - Private
     private func updateTotalTimeLabel() {
         if !showTimeRemaining || duration < progress {
