@@ -243,11 +243,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     /// Determines whether the view is already playing video
     private var isPlayingVideo: Bool {
-        guard !didFailToPlayMedia, let player = player else {
-            return false
-        }
-        
-        return player.isPlaying
+        return player?.isPlaying ?? false
     }
     
     /// Determines whether the user can press and hold the image thumbnail for GIF
@@ -390,15 +386,6 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     /// Number of seconds in the buffer
     private var bufferTime: CGFloat = 0.0
-    
-    /// Determines if the play has failed to play media
-    private var didFailToPlayMedia: Bool {
-        guard let currentItem = player?.currentItem else {
-            return false
-        }
-        
-        return currentItem.status != .readyToPlay
-    }
     
     /// Alpha level of the mediaViews border when it is not fullscreen
     private var borderAlpha: CGFloat = 0 {
@@ -882,7 +869,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }
     
     private func hidePlayIndicator(animated: Bool = false) {
-        if didFailToPlayMedia {
+        if let player = player, player.didFailToPlay {
             playIndicatorView.alpha = 1
         } else {
             UIView.animate(withDuration: animated ? 0.15 : 0 , animations: {
@@ -928,7 +915,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     func didPlay(player: Player) {
         handleTopOverlayDisplay()
         
-        if !didFailToPlayMedia {
+        if !player.didFailToPlay {
             delegate?.didPlayVideo(for: self)
         }
     }

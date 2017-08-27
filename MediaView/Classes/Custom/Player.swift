@@ -32,7 +32,16 @@ class Player: AVPlayer {
         delegate?.didPause(player: self)
     }
     
+    /// Determines if the play has failed to play media
+    var didFailToPlay: Bool {
+        guard let currentItem = currentItem else {
+            return false
+        }
+        
+        return currentItem.status != .readyToPlay
+    }
+    
     var isPlaying: Bool {
-        return rate != 0 && error == nil
+        return rate != 0 && error == nil && !didFailToPlay
     }
 }
