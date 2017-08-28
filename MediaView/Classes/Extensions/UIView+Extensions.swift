@@ -9,28 +9,13 @@ import Foundation
 
 extension UIView {
     
-    func addConstraints(_ constraints: [NSLayoutAttribute], toView view: UIView) {
+    func addConstraints(_ constraints: [NSLayoutAttribute], toView view: UIView, constant: CGFloat = 0) {
         for constraint in constraints {
             switch constraint {
             case .height, .width:
-                break
+                addConstraint(NSLayoutConstraint(item: view, attribute: constraint, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: constant))
             default:
-                if #available(iOS 9.0, *) {
-                    switch constraint {
-                    case .leading:
-                        view.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-                    case .top:
-                        view.topAnchor.constraint(equalTo: topAnchor).isActive = true
-                    case .trailing:
-                        view.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-                    case .bottom:
-                        view.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-                    default:
-                        break
-                    }
-                } else {
-                    addConstraint(NSLayoutConstraint(item: self, attribute: constraint, relatedBy: .equal, toItem: view, attribute: constraint, multiplier: 1, constant: 0))
-                }
+                addConstraint(NSLayoutConstraint(item: self, attribute: constraint, relatedBy: .equal, toItem: view, attribute: constraint, multiplier: 1, constant: constant))
             }
         }
     }

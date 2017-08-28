@@ -191,7 +191,6 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     /// Custom image can be set for the play button (music)
     var customMusicButton: UIImage? {
         didSet {
-            // FIXME: Add playIndicator to UIImage
             playIndicatorView.image = playIndicatorImage
         }
     }
@@ -343,7 +342,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }()
     
     /// Space between the detailsLabel and the superview
-    private lazy var detailsTopOffset: NSLayoutConstraint = {
+    private lazy var detailsTopOffsetConstraint: NSLayoutConstraint = {
         let offset = titleTopOffset + 18
         return NSLayoutConstraint(item: titleLabel, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: offset)
     }()
@@ -641,7 +640,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
                 
                 if shouldDismiss {
                     // FIXME: dismissMediaViewAnimated
-                    // inside ->
+                    // Inside ->
                     self.delegate?.didEndDismissing(for: self, withDismissal: true)
                 } else {
                     UIView.animate(withDuration: 0.25, animations: {
@@ -872,9 +871,9 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }
     
     func updateDetailsLabelOffsets() {
-        if !detailsLabel.isEmpty, detailsLabel.constraints.contains(detailsTopOffset) {
+        if !detailsLabel.isEmpty, detailsLabel.constraints.contains(detailsTopOffsetConstraint) {
             layoutIfNeeded()
-            detailsTopOffset.constant = titleTopOffset + 18.0
+            detailsTopOffsetConstraint.constant = titleTopOffset + 18.0
             layoutIfNeeded()
         }
     }
@@ -958,7 +957,41 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         return videoAspectFit || contentMode == .scaleAspectFit ? .resizeAspect : .resizeAspectFill
     }
     
-    // FIXME: Set title and details
+    public func setTitle(_ title: String, details: String? = nil) {
+        titleLabel.removeFromSuperview()
+        detailsLabel.removeFromSuperview()
+        
+        if titleLabel.constraints.contains(titleTopOffsetConstraint) {
+            titleLabel.removeConstraint(titleTopOffsetConstraint)
+        }
+        
+        if detailsLabel.constraints.contains(detailsTopOffsetConstraint) {
+            detailsLabel.removeConstraint(detailsTopOffsetConstraint)
+        }
+        
+        titleLabel.text = title
+        detailsLabel.text = details
+        
+        guard !titleLabel.isEmpty else {
+            return
+        }
+        
+        if !subviews.contains(titleLabel) {
+            addConstraints([.trailing, .leading], toView: titleLabel, constant: 50)
+            addConstraint(titleTopOffsetConstraint)
+            updateTitleLabelOffsets()
+            titleLabel.addConstraints([.height], toView: titleLabel, constant: 18)
+        }
+        
+        guard !detailsLabel.isEmpty, !subviews.contains(detailsLabel) else {
+            return
+        }
+        
+        addConstraints([.trailing, .leading], toView: detailsLabel, constant: 50)
+        addConstraint(detailsTopOffsetConstraint)
+        updateDetailsLabelOffsets()
+        detailsLabel.addConstraints([.height], toView: detailsLabel, constant: 18)
+    }
     
     // MARK: - Static
     // FIXME: Clear MediaView Directory
