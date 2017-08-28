@@ -84,99 +84,51 @@ protocol MediaViewDelegate: class {
 
 extension MediaView: MediaViewDelegate {
     
-    func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: CGFloat) {
-        
-    }
+    func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: CGFloat) { }
     
-    func didPlayMedia(for mediaView: MediaView) {
-        
-    }
+    func didPlayMedia(for mediaView: MediaView) { }
     
-    func didFailToPlayMedia(for mediaView: MediaView) {
-        
-    }
+    func didFailToPlayMedia(for mediaView: MediaView) { }
     
-    func didPauseMedia(for mediaView: MediaView) {
-        
-    }
+    func didPauseMedia(for mediaView: MediaView) { }
     
-    func didFinishPlayableMedia(for mediaView: MediaView, withLoop didLoop: Bool) {
-        
-    }
+    func didFinishPlayableMedia(for mediaView: MediaView, withLoop didLoop: Bool) { }
     
-    func willPresent(mediaView: MediaView) {
-        
-    }
+    func willPresent(mediaView: MediaView) { }
     
-    func didPresent(mediaView: MediaView) {
-        
-    }
+    func didPresent(mediaView: MediaView) { }
     
-    func willDismiss(mediaView: MediaView) {
-        
-    }
+    func willDismiss(mediaView: MediaView) { }
     
-    func didDismiss(mediaView: MediaView) {
-        
-    }
+    func didDismiss(mediaView: MediaView) { }
     
-    func willChangeMinimization(for mediaView: MediaView) {
-        
-    }
+    func willChangeMinimization(for mediaView: MediaView) { }
     
-    func didChangeMinimization(for mediaView: MediaView) {
-        
-    }
+    func didChangeMinimization(for mediaView: MediaView) { }
     
-    func willEndMinimizing(for mediaView: MediaView, atMinimizedState isMinimized: Bool) {
-        
-    }
+    func willEndMinimizing(for mediaView: MediaView, atMinimizedState isMinimized: Bool) { }
     
-    func didEndMinimizing(for mediaView: MediaView, atMinimizedState isMinimized: Bool) {
-        
-    }
+    func didEndMinimizing(for mediaView: MediaView, atMinimizedState isMinimized: Bool) { }
     
-    func mediaView(_ mediaView: MediaView, didSetImage image: UIImage) {
-        
-    }
+    func mediaView(_ mediaView: MediaView, didSetImage image: UIImage) { }
     
-    func willChangeDismissing(for mediaView: MediaView) {
-        
-    }
+    func willChangeDismissing(for mediaView: MediaView) { }
     
-    func didChangeDismissing(for mediaView: MediaView) {
-        
-    }
+    func didChangeDismissing(for mediaView: MediaView) { }
     
-    func willEndDismissing(for mediaView: MediaView, withDismissal didDismiss: Bool) {
-        
-    }
+    func willEndDismissing(for mediaView: MediaView, withDismissal didDismiss: Bool) { }
     
-    func didEndDismissing(for mediaView: MediaView, withDismissal didDismiss: Bool) {
-        
-    }
+    func didEndDismissing(for mediaView: MediaView, withDismissal didDismiss: Bool) { }
     
-    func mediaView(_ mediaView: MediaView, didDownloadImage image: UIImage) {
-        
-    }
+    func mediaView(_ mediaView: MediaView, didDownloadImage image: UIImage) { }
     
-    func mediaView(_ mediaView: MediaView, didDownloadVideo video: URL) {
-        
-    }
+    func mediaView(_ mediaView: MediaView, didDownloadVideo video: URL) { }
     
-    func mediaView(_ mediaView: MediaView, didDownloadAudio audio: URL) {
-        
-    }
+    func mediaView(_ mediaView: MediaView, didDownloadAudio audio: URL) { }
     
-    func mediaView(_ mediaView: MediaView, didDownloadGif gif: UIImage) {
-        
-    }
+    func mediaView(_ mediaView: MediaView, didDownloadGif gif: UIImage) { }
     
-    func handleTitleSelection(in mediaView: MediaView) {
-        
-    }
+    func handleTitleSelection(in mediaView: MediaView) { }
     
-    func handleDetailsSelection(in mediaView: MediaView) {
-        
-    }
+    func handleDetailsSelection(in mediaView: MediaView) { }
 }

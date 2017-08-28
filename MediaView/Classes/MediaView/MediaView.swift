@@ -28,12 +28,6 @@ class MediaView: UIImageView {
     /// Delegate for the mediaView
     weak var delegate: MediaViewDelegate?
     
-    /// Image completed loading onto ABMediaView
-    typealias ImageCompletionBlock = (_ image: UIImage?, _ error: Error?) -> Void
-    
-    /// Video completed loading onto ABMediaView
-    typealias VideoDataCompletionBlock = (_ video: String?, _ error: Error?) -> Void
-    
     /// Determines if video is minimized
     public var isMinimized: Bool {
         return offset == maxViewOffsetY && swipeMode == .minimize
@@ -914,11 +908,7 @@ class MediaView: UIImageView {
         backgroundColor = .black
         
         if let originRect = originRect, originRectConverted != nil {
-            if let originalSuperview = originalSuperview {
-                originRectConverted = originalSuperview.convert(originRect, to: UIWindow.main)
-            } else {
-                originRectConverted = convert(originRect, to: UIWindow.main)
-            }
+            originRectConverted = (originalSuperview ?? self).convert(originRect, to: UIWindow.main)
         }
         
         closeButton.alpha = 0
