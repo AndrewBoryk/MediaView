@@ -92,10 +92,10 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }()
     
     /// Label at the top of the mediaView, displayed within the topOverlay. Designated for a title, but other text can be inserted
-    private lazy var titleLabel = Label(width: topOverlay.frame.width, delegate: self)
+    private lazy var titleLabel = Label(width: topOverlay.frame.width, delegate: self, kind: .title)
     
     /// Label at the top of the mediaView, displayed within the topOverlay. Designated for details
-    private lazy var detailsLabel = Label(width: topOverlay.frame.width, delegate: self)
+    private lazy var detailsLabel = Label(width: topOverlay.frame.width, delegate: self, kind: .description)
     
     // MARK: - Customizable Properties
     /// If all media is sourced from the same location, then the ABCacheManager will search the Directory for files with the same name when getting cached objects, since they all have the same remote location
@@ -138,7 +138,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     /// Determines what action will be taken when user swipes on fullscreen mediaView (default: .none)
     var swipeMode: SwipeMode = .none {
         didSet {
-            swipeRecognizer.isEnabled = UIDevice.isPortrait && swipeMode.movesWhenSwipe
+            swipeRecognizer.isEnabled = UIScreen.isPortrait && swipeMode.movesWhenSwipe
         }
     }
     
@@ -268,17 +268,17 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }
     
     /// Determines whether the view has a video
-    private var hasVideo: Bool {
+    var hasVideo: Bool {
         return media.hasVideo
     }
     
     /// Determines whether the view has a audio
-    private var hasAudio: Bool {
+    var hasAudio: Bool {
         return media.hasAudio
     }
     
     /// Determines whether the view has media (video or audio)
-    private var hasMedia: Bool {
+    var hasMedia: Bool {
         return media.hasMedia
     }
     
@@ -316,13 +316,13 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         return UIScreen.superviewWidth - minViewWidth - 12
     }
     
-    private var minimizedFrame: CGRect {
+    var minimizedFrame: CGRect {
         return CGRect(x: maxViewOffsetX, y: maxViewOffsetY, width: minViewWidth, height: minViewHeight)
     }
     
     /// Height constraint of the top overlay
     private lazy var topOverlayHeight: NSLayoutConstraint = {
-        let height = 50 + (UIDevice.isLandscape ? 0 : topBuffer)
+        let height = 50 + (UIScreen.isLandscape ? 0 : topBuffer)
         let constraint = NSLayoutConstraint(item: track, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: height)
         
         return constraint
@@ -330,7 +330,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     /// Space between the titleLabel and the superview
     private lazy var titleTopOffset: CGFloat = {
-        return 8.0 + topBuffer - (UIDevice.isLandscape ? topBuffer : 0)
+        return 8.0 + topBuffer - (UIScreen.isLandscape ? topBuffer : 0)
     }()
     
     /// Constraint for the space between the titleLabel and the superview
@@ -437,12 +437,12 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
             track.updateSubviews()
         }
         
-        let dividend = UIDevice.isPortrait ? frame.width : frame.height
+        let dividend = UIScreen.isPortrait ? frame.width : frame.height
         let playSize = 30 + (30 * (dividend / UIScreen.superviewWidth))
         
         playIndicatorView.frame.size = CGSize(playSize)
         playIndicatorView.center = CGPoint(x: frame.width / 2, y: frame.height / 2)
-        closeButton.frame.origin = CGPoint(x: 0, y: 0 + (UIDevice.isPortrait ? 0 : topBuffer))
+        closeButton.frame.origin = CGPoint(x: 0, y: 0 + (UIScreen.isPortrait ? 0 : topBuffer))
         closeButton.frame.size = CGSize(50)
     }
     
@@ -511,7 +511,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }
     
     /// Selector to play the video from the playRecognizer
-    @objc private func handleTapFromRecognizer() {
+    @objc func handleTapFromRecognizer() {
         if isMinimized {
             isUserInteractionEnabled = false
             
@@ -747,7 +747,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
             let offsetAlpha = 1 - offsetPercentage
             setPlayIndicatorView(alpha: offsetAlpha)
             
-            closeButton.alpha = shouldHideCloseButton && swipeMode == .minimize && UIDevice.isPortrait ? 0 : 1
+            closeButton.alpha = shouldHideCloseButton && swipeMode == .minimize && UIScreen.isPortrait ? 0 : 1
             let overlayAlpha = isPlayingVideo || titleLabel.isEmpty ? 0 : offsetAlpha
             setTopOverlayAlpha(overlayAlpha)
         }
@@ -877,7 +877,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     @objc private func adjustSubviews() {
         if isFullScreen {
-            swipeRecognizer.isEnabled = UIDevice.isPortrait && swipeMode.movesWhenSwipe
+            swipeRecognizer.isEnabled = UIScreen.isPortrait && swipeMode.movesWhenSwipe
             layer.cornerRadius = 0.0
             borderAlpha = 0.0
             frame = CGRect(x: 0, y: 0, width: UIScreen.superviewWidth, height: UIScreen.superviewHeight)
@@ -892,8 +892,30 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         }
     }
     
+    internal func prepForPresentation() {
+        delegate?.willPresent(mediaView: self)
+        isFullScreen = true
+        handleCloseButtonDisplay()
+        
+        backgroundColor = .black
+        
+        if let originRect = originRect, originRectConverted != nil {
+            if let originalSuperview = originalSuperview {
+                originRectConverted = originalSuperview.convert(originRect, to: UIWindow.main)
+            } else {
+                originRectConverted = convert(originRect, to: UIWindow.main)
+            }
+        }
+        
+        closeButton.alpha = 0
+        setTopOverlayAlpha(0)
+        
+        frame = originRectConverted ?? UIWindow.main.frame
+        alpha = originRectConverted == nil ? 0 : 1
+    }
+    
     func handleCloseButtonDisplay() {
-        closeButton.alpha = (isFullScreen && !shouldHideCloseButton && swipeMode != .minimize && UIDevice.isLandscape) ? 1 : 0
+        closeButton.alpha = (isFullScreen && !shouldHideCloseButton && swipeMode != .minimize && UIScreen.isLandscape) ? 1 : 0
     }
     
     func handleTopOverlayDisplay() {
@@ -914,7 +936,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     private func updateTopOverlayHeight() {
         self.layoutIfNeeded()
-        topOverlayHeight.constant = 50 + (UIDevice.isLandscape ? 0 : topBuffer)
+        topOverlayHeight.constant = 50 + (UIScreen.isLandscape ? 0 : topBuffer)
         self.layoutIfNeeded()
     }
     
@@ -932,6 +954,8 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         return videoAspectFit || contentMode == .scaleAspectFit ? .resizeAspect : .resizeAspectFill
     }
     
+    // FIXME: Set title and details
+    
     // MARK: - Static
     // FIXME: Clear MediaView Directory
     
@@ -943,6 +967,36 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     static var audioTypeWhenStop: VolumeManager.AudioType {
         get { return VolumeManager.shared.audioTypeWhenStop }
         set { VolumeManager.shared.audioTypeWhenStop = newValue }
+    }
+    
+    // MARK: Reset
+    public func resetMedia() {
+        media = Media()
+        
+        player = nil
+        playerLayer?.removeFromSuperlayer()
+        playerLayer = nil
+        image = nil
+        
+        bufferTime = 0
+        playIndicatorView.alpha = 0
+        closeButton.alpha = 0
+        setTopOverlayAlpha(0)
+        
+        stopVideoAnimate()
+    }
+    
+    public func reset() {
+        delegate = nil
+        shouldAutoPlayAfterPresentation = false
+        shouldHideCloseButton = false
+        shouldHidePlayButton = false
+        shouldDisplayFullscreen = false
+        allowLooping = false
+        shouldShowTrack = false
+        shouldDisplayRemainingTime = false
+        
+        resetMedia()
     }
     
     // MARK: - Initializers
@@ -998,5 +1052,4 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         
         delegate?.didPauseVideo(for: self)
     }
-    
 }
