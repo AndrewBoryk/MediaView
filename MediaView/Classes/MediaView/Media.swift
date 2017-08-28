@@ -47,7 +47,7 @@ class Media {
     }
     
     /// Whether the media has video or audio
-    var hasMedia: Bool {
+    var hasPlayableMedia: Bool {
         return hasVideo || hasAudio
     }
 }

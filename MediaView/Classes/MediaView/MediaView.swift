@@ -68,12 +68,15 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     // MARK: - Interface properties
     
     /// Track which shows the progress of the video being played
-    private lazy var track: TrackView = {
+    internal lazy var track: TrackView = {
         let track = TrackView(frame: CGRect(x: 0, y: 0, width: frame.width, height: 60.0))
         track.translatesAutoresizingMaskIntoConstraints = false
         track.themeColor = themeColor
         track.delegate = self
         track.isHidden = !shouldShowTrack
+        
+        tapRecognizer.require(toFail: track.scrubRecognizer)
+        tapRecognizer.require(toFail: track.tapRecognizer)
         
         swipeRecognizer.require(toFail: track.scrubRecognizer)
         swipeRecognizer.require(toFail: track.tapRecognizer)
@@ -102,7 +105,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     var isAllMediaFromSameLocation = false
     
     /// Download video and audio before playing (default: false)
-    var shouldPreloadVideoAndAudio = false
+    var shouldPreloadPlayableMedia = false
     
     /// Automate caching for media (default: false)
     var shouldCacheMedia = false
@@ -162,7 +165,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     /// Toggle functionality to not have a play button visible (default: false)
     var shouldHidePlayButton = false {
         didSet {
-            guard let player = player, !(shouldHidePlayButton && playIndicatorView.alpha != 0) else {
+            guard hasPlayableMedia, let player = player, !(shouldHidePlayButton && playIndicatorView.alpha != 0) else {
                 playIndicatorView.alpha = 0
                 return
             }
@@ -278,8 +281,8 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }
     
     /// Determines whether the view has media (video or audio)
-    var hasMedia: Bool {
-        return media.hasMedia
+    var hasPlayableMedia: Bool {
+        return media.hasPlayableMedia
     }
     
     /// Determines whether the view is already playing video
@@ -291,7 +294,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     var pressShowsGIF = false
     
     /// Determines whether user is long pressing thumbnail
-    private var isLongPressing = false
+    internal var isLongPressing = false
     
     /// File being played is from directory
     var isFileFromDirectory = false
@@ -433,7 +436,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         super.layoutSubviews()
         updatePlayerFrame()
         
-        if hasMedia {
+        if hasPlayableMedia {
             track.updateSubviews()
         }
         
@@ -578,7 +581,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     /// Animate the video indicator
     @objc private func animateVideo() {
-        if hasMedia && !isLoadingVideo {
+        if hasPlayableMedia && !isLoadingVideo {
             let updatedAlpha: CGFloat = playIndicatorView.alpha == 1 ? 0.4 : 1
             
             UIView.animate(withDuration: 0.75, animations: {
@@ -802,9 +805,10 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         handleTopOverlayDisplay()
     }
     
-    private func setPlayIndicatorView(alpha: CGFloat = 1) {
-        if hasMedia && (!isPlayingVideo || isLoadingVideo) {
+    internal func setPlayIndicatorView(alpha: CGFloat = 1) {
+        if hasPlayableMedia && (!isPlayingVideo || isLoadingVideo) {
             if !(shouldHidePlayButton && alpha != 0) {
+                playIndicatorView.image = playIndicatorImage
                 playIndicatorView.alpha = alpha
             }
         }
@@ -852,7 +856,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         updateDetailsLabelOffsets()
         updateTopOverlayHeight()
         
-        if hasMedia {
+        if hasPlayableMedia {
             track.updateSubviews()
         }
         
@@ -887,7 +891,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }
     
     @objc private func pauseVideoEnteringBackground() {
-        if hasMedia, let player = player, player.isPlaying {
+        if hasPlayableMedia, let player = player, player.isPlaying {
             player.pause()
         }
     }
