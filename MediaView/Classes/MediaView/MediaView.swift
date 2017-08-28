@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelegate, PlayerDelegate, PlayIndicatorDelegate {
+class MediaView: UIImageView {
     
     enum SwipeMode {
         case none
@@ -109,6 +109,11 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     /// Automate caching for media (default: false)
     var shouldCacheMedia = false
+    
+    /// AVLayerVideoGravity for the playerLayer
+    private var videoGravity: AVLayerVideoGravity {
+        return videoAspectFit || contentMode == .scaleAspectFit ? .resizeAspect : .resizeAspectFill
+    }
     
     /// Theme color which will show on the play button and progress track for videos (default: UIColor.cyan)
     var themeColor = UIColor.cyan {
@@ -331,7 +336,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }()
     
     /// Play button imageView which shows in the center of the video or audio, notifies the user that a video or audio can be played
-    private lazy var playIndicatorView = PlayIndicatorView(delegate: self)
+    internal lazy var playIndicatorView = PlayIndicatorView(delegate: self)
     
     /// Closes the mediaView when in fullscreen mode
     private var closeButton: UIButton = {
@@ -345,7 +350,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }()
     
     /// ABPlayer which will handle video playback
-    private var player: Player?
+    internal var player: Player?
     
     /// AVPlayerLayer which will display video
     private var playerLayer: AVPlayerLayer?
@@ -895,10 +900,6 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         }
     }
     
-    private var videoGravity: AVLayerVideoGravity {
-        return videoAspectFit || contentMode == .scaleAspectFit ? .resizeAspect : .resizeAspectFill
-    }
-    
     public func setTitle(_ title: String, details: String? = nil) {
         titleLabel.removeFromSuperview()
         detailsLabel.removeFromSuperview()
@@ -935,17 +936,19 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         detailsLabel.addConstraints([.height], toView: detailsLabel, constant: 18)
     }
     
-    // MARK: - Static
-    // FIXME: Clear MediaView Directory
-    
-    static var audioTypeWhenPlay: VolumeManager.AudioType {
-        get { return VolumeManager.shared.audioTypeWhenPlay }
-        set { VolumeManager.shared.audioTypeWhenPlay = newValue }
+    // MARK: - Initializers
+    private init(mediaView: MediaView) {
+        super.init(frame: .zero)
+        commonInitializer()
     }
     
-    static var audioTypeWhenStop: VolumeManager.AudioType {
-        get { return VolumeManager.shared.audioTypeWhenStop }
-        set { VolumeManager.shared.audioTypeWhenStop = newValue }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInitializer()
+    }
+    
+    override class var layerClass: AnyClass {
+        return AVPlayerLayer.self
     }
     
     // MARK: Reset
@@ -978,80 +981,16 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         resetMedia()
     }
     
-    // MARK: - Initializers
-    private init(mediaView: MediaView) {
-        super.init(frame: .zero)
-        commonInitializer()
+    // MARK: - Static
+    // FIXME: Clear MediaView Directory
+    
+    static var audioTypeWhenPlay: VolumeManager.AudioType {
+        get { return VolumeManager.shared.audioTypeWhenPlay }
+        set { VolumeManager.shared.audioTypeWhenPlay = newValue }
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonInitializer()
-    }
-    
-    override class var layerClass: AnyClass {
-        return AVPlayerLayer.self
-    }
-    
-    // MARK: - LabelDelegate
-    func didTouchUpInside(label: Label) {
-        switch label.tag {
-        case 1000:
-            delegate?.handleTitleSelection(in: self)
-        case 2000:
-            delegate?.handleDetailsSelection(in: self)
-        default:
-            break
-        }
-    }
-    
-    // MARK: - TrackViewDelegate
-    func seekTo(time: TimeInterval, track: TrackView) {
-        guard let player = player, let timeScale = player.currentItem?.asset.duration.timescale else {
-            return
-        }
-        
-        let timeCM = CMTimeMakeWithSeconds(time, timeScale)
-        player.seek(to: timeCM, toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero)
-    }
-    
-    // MARK: - PlayIndicatorDelegate
-    func shouldShowPlayIndicator() -> Bool {
-        return hasPlayableMedia && !isLoadingVideo
-    }
-    
-    func image(for playIndicatorView: PlayIndicatorView) -> UIImage? {
-        if shouldHidePlayButton {
-            return nil
-        } else if let player = player, player.didFailToPlay {
-            return customFailButton ?? UIImage.failIndicator(themeColor: themeColor, isFullScreen: isFullScreen, pressShowsGIF: pressShowsGIF)
-        } else if let playButton = customPlayButton, media.hasVideo {
-            return playButton
-        } else if let musicButton = customMusicButton, media.hasAudio {
-            return musicButton
-        } else {
-            return UIImage.playIndicator(themeColor: themeColor)
-        }
-    }
-    
-    func player(for playIndicatorView: PlayIndicatorView) -> Player? {
-        return player
-    }
-    
-    // MARK: - PlayerDelegate
-    func didPlay(player: Player) {
-        handleTopOverlayDisplay()
-        
-        if !player.didFailToPlay {
-            delegate?.didPlayVideo(for: self)
-        }
-    }
-    
-    func didPause(player: Player) {
-        playIndicatorView.endAnimation()
-        setPlayIndicatorView(alpha: 1)
-        handleTopOverlayDisplay()
-        
-        delegate?.didPauseVideo(for: self)
+    static var audioTypeWhenStop: VolumeManager.AudioType {
+        get { return VolumeManager.shared.audioTypeWhenStop }
+        set { VolumeManager.shared.audioTypeWhenStop = newValue }
     }
 }
