@@ -42,16 +42,16 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     /// Keeps track of how much the video has been minimized
     private(set) public var offsetPercentage: CGFloat = 0.0 {
         didSet {
-            if offsetPercentage < 0 {
-                offsetPercentage = 0
-            } else if offsetPercentage > 1 {
-                offsetPercentage = 1
-            }
+            offsetPercentage.clamp(lower: 0, upper: 1)
         }
     }
     
     /// Determines whether the content's original size is full screen. If you are looking to make it so that when a mediaView is selected from another view, that it opens up in full screen, then set the property 'shouldDisplayFullScreen'
-    private(set) public var isFullScreen = false
+    private(set) public var isFullScreen = false {
+        didSet {
+            swipeRecognizer.isEnabled = swipeMode.movesWhenSwipe && isFullScreen
+        }
+    }
     
     /// Determines if the video is already loading
     public var isLoadingVideo: Bool {
@@ -68,12 +68,12 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     // MARK: - Interface properties
     
     /// Track which shows the progress of the video being played
-    lazy var track: TrackView = {
+    private lazy var track: TrackView = {
         let track = TrackView(frame: CGRect(x: 0, y: 0, width: frame.width, height: 60.0))
         track.translatesAutoresizingMaskIntoConstraints = false
         track.themeColor = themeColor
         track.delegate = self
-        track.isHidden = false
+        track.isHidden = !shouldShowTrack
         
         swipeRecognizer.require(toFail: track.scrubRecognizer)
         swipeRecognizer.require(toFail: track.tapRecognizer)
@@ -82,7 +82,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }()
     
     /// Gradient dark overlay on top of the mediaView which UI can be placed on top of
-    var topOverlay: UIImageView = {
+    private var topOverlay: UIImageView = {
         let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: UIScreen.superviewHeight, height: 80))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage.topOverlay(frame: imageView.bounds)
@@ -101,71 +101,123 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     /// If all media is sourced from the same location, then the ABCacheManager will search the Directory for files with the same name when getting cached objects, since they all have the same remote location
     var isAllMediaFromSameLocation = false
     
-    /// Download video and audio before playing
+    /// Download video and audio before playing (default: false)
     var shouldPreloadVideoAndAudio = false
     
-    /// Automate caching for media
+    /// Automate caching for media (default: false)
     var shouldCacheMedia = false
     
-    /// Theme color which will show on the play button and progress track for videos
-    var themeColor = UIColor.cyan
+    /// Theme color which will show on the play button and progress track for videos (default: UIColor.cyan)
+    var themeColor = UIColor.cyan {
+        didSet {
+            track.themeColor = themeColor
+            playIndicatorView.image = playIndicatorImage
+        }
+    }
     
-    /// Determines whether the video playerLayer should be set to aspect fit mode
-    var videoAspectFit = false
+    /// Determines whether the video playerLayer should be set to aspect fit mode (default: false)
+    var videoAspectFit = false {
+        didSet {
+            playerLayer?.videoGravity = videoGravity
+        }
+    }
     
-    /// Determines whether the progress track should be shown for video
-    var shouldShowTrack = false
+    /// Determines whether the progress track should be shown for video (default: false)
+    var shouldShowTrack = false {
+        didSet {
+            track.isHidden = !shouldShowTrack
+        }
+    }
     
-    /// Determines if the video should be looped when it reaches completion
+    /// Determines if the video should be looped when it reaches completion (default: false)
     var allowLooping = false
     
-    /// Determines whether or not the mediaView is being used in a reusable view
+    /// Determines whether or not the mediaView is being used in a reusable view (default: false)
     var imageViewNotReused = false
     
-    /// Determines what action will be taken when user swipes on fullscreen mediaView
+    /// Determines what action will be taken when user swipes on fullscreen mediaView (default: .none)
     var swipeMode: SwipeMode = .none {
         didSet {
             swipeRecognizer.isEnabled = UIDevice.isPortrait && swipeMode.movesWhenSwipe
         }
     }
     
-    /// Determines whether the video occupies the full screen when displayed
+    /// Determines whether the video occupies the full screen when displayed (default: false)
     var shouldDisplayFullscreen = false
     
-    /// Toggle functionality for remaining time to show on right track label rather than showing total time
-    var shouldDisplayRemainingTime = false
+    /// Toggle functionality for remaining time to show on right track label rather than showing total time (default: false)
+    var shouldDisplayRemainingTime = false {
+        didSet {
+            track.showTimeRemaining = shouldDisplayRemainingTime
+        }
+    }
     
-    /// Toggle functionality for hiding the close button from the fullscreen view. If minimizing is disabled, this functionality is not allowed.
+    /// Toggle functionality for hiding the close button from the fullscreen view. If minimizing is disabled, this functionality is not allowed. (default: false)
     var shouldHideCloseButton = false {
         didSet {
             handleCloseButtonDisplay()
         }
     }
     
-    /// Toggle functionality to not have a play button visible
-    var shouldHidePlayButton = false
+    /// Toggle functionality to not have a play button visible (default: false)
+    var shouldHidePlayButton = false {
+        didSet {
+            guard let player = player, !(shouldHidePlayButton && playIndicatorView.alpha != 0) else {
+                playIndicatorView.alpha = 0
+                return
+            }
+            
+            if isLoadingVideo {
+                loadVideoAnimate()
+            } else {
+                playIndicatorView.alpha = (!player.isPlaying || player.didFailToPlay) ? 1 : 0
+            }
+        }
+    }
     
-    /// Toggle functionality to have the mediaView autoplay the video associated with it after presentation
+    /// Toggle functionality to have the mediaView autoplay the video associated with it after presentation (default: true)
     var shouldAutoPlayAfterPresentation = true
     
     /// Custom image can be set for the play button (video)
     var customPlayButton: UIImage? {
         didSet {
-            // FIXME: Add playIndicator to UIImage
-            playIndicatorView.image = nil
+            playIndicatorView.image = playIndicatorImage
         }
     }
     
     /// Custom image can be set for the play button (music)
-    var customMusicButton: UIImage?
+    var customMusicButton: UIImage? {
+        didSet {
+            // FIXME: Add playIndicator to UIImage
+            playIndicatorView.image = playIndicatorImage
+        }
+    }
     
     /// Custom image can be set for when media fails to play
-    var customFailButton: UIImage?
+    var customFailButton: UIImage? {
+        didSet {
+            playIndicatorView.image = playIndicatorImage
+        }
+    }
+    
+    private var playIndicatorImage: UIImage? {
+        if shouldHidePlayButton {
+            return nil
+        } else if let player = player, player.didFailToPlay {
+            return customFailButton ?? UIImage.failIndicator(themeColor: themeColor, isFullScreen: isFullScreen, pressShowsGIF: pressShowsGIF)
+        } else if let playButton = customPlayButton, media.hasVideo {
+            return playButton
+        } else if let musicButton = customMusicButton, media.hasAudio {
+            return musicButton
+        } else {
+            return UIImage.playIndicator(themeColor: themeColor)
+        }
+    }
     
     /// Timer for animating the playIndicatorView, to show that the video is loading
-    private var animateTimer: Timer?
+    private var animateTimer = Timer()
     
-    /// Setting this value to true will allow you to have the fullscreen popup originate from the frame of the original view, without having to set the originRect yourself
+    /// Setting this value to true will allow you to have the fullscreen popup originate from the frame of the original view, without having to set the originRect yourself (default: false)
     var shouldPresentFromOriginRect = false
     
     /// Rect that specifies where the mediaView's frame will originate from when presenting, and needs to be converted into its position in the mainWindow
@@ -174,7 +226,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     /// Rect that specifies where the mediaView's frame will originate from when presenting, and is already converted into its position in the mainWindow
     var originRectConverted: CGRect?
     
-    /// Change font for track labels
+    /// Change font for track labels (default: System font of size 14)
     var trackFont: UIFont = .systemFont(ofSize: 14) {
         didSet {
             track.trackFont = trackFont
@@ -184,40 +236,29 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     /// By default, there is a buffer of 12px on the bottom of the view, and more space can be added by adjusting this bottom buffer. This is useful in order to have the mediaView show above UITabBars, UIToolbars, and other views that need reserved space on the bottom of the screen.
     var bottomBuffer: CGFloat = 0.0 {
         didSet {
-            if bottomBuffer < 0 {
-                bottomBuffer = 0
-            } else if bottomBuffer > 120 {
-                bottomBuffer = 120
-            }
+            bottomBuffer.clamp(lower: 0, upper: 120)
         }
     }
     
     /// Ratio that the minimized view will be shruken to, can be set to a custom value or one of the available ABMediaViewRatioPresets. (Height/Width)
     var minimizedAspectRatio: CGFloat = .landscapeRatio {
         didSet {
-            if minimizedAspectRatio <= 0 {
-                minimizedAspectRatio = .landscapeRatio
-            }
+            minimizedAspectRatio.clamp(lower: .landscapeRatio, upper: .portraitRatio)
         }
     }
     
     /// Ratio of the screen's width that the mediaView's minimized view will stretch across.
     var minimizedWidthRatio: CGFloat = 0.5 {
         didSet {
-            if minimizedWidthRatio < 0.25 {
-                minimizedWidthRatio = 0.25
-            }
+            let maxWidthRatio = (UIScreen.superviewWidth - 24.0) / UIScreen.superviewWidth
+            minimizedWidthRatio.clamp(lower: 0.25, upper: maxWidthRatio)
         }
     }
     
     /// Ability to offset the subviews at the top of the screen to avoid hiding other views (ie. UIStatusBar)
     var topBuffer: CGFloat = 0.0 {
         didSet {
-            if topBuffer < 0 {
-                topBuffer = 0
-            } else if topBuffer > 64 {
-                topBuffer = 64
-            }
+            topBuffer.clamp(lower: 0, upper: 64)
             
             updateTopOverlayHeight()
             updateTitleLabelOffsets()
@@ -228,22 +269,22 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     /// Determines whether the view has a video
     private var hasVideo: Bool {
-        return media.videoURL != nil
+        return media.hasVideo
     }
     
     /// Determines whether the view has a audio
     private var hasAudio: Bool {
-        return media.audioURL != nil
+        return media.hasAudio
     }
     
     /// Determines whether the view has media (video or audio)
     private var hasMedia: Bool {
-        return hasVideo || hasAudio
+        return media.hasMedia
     }
     
     /// Determines whether the view is already playing video
     private var isPlayingVideo: Bool {
-        return player?.isPlaying ?? false
+        return player?.isPlaying ?? false || isLoadingVideo
     }
     
     /// Determines whether the user can press and hold the image thumbnail for GIF
@@ -306,8 +347,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     /// Play button imageView which shows in the center of the video or audio, notifies the user that a video or audio can be played
     private lazy var playIndicatorView: UIImageView = {
-        // FIXME: Add playIndicator to UIImage
-        let imageView = UIImageView(image: nil)
+        let imageView = UIImageView(image: playIndicatorImage)
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.center = center
@@ -366,18 +406,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     // MARK: - Variable Properties
     /// Position of the swipe vertically
-    private var swipePosition: CGPoint = .zero {
-        didSet {
-            xSwipePosition = swipePosition.x
-            ySwipePosition = swipePosition.y
-        }
-    }
-    
-    /// Position of the swipe vertically
-    private var ySwipePosition: CGFloat = 0.0
-    
-    /// Position of the swipe horizontally
-    private var xSwipePosition: CGFloat = 0.0
+    private var swipePosition: CGPoint = .zero
     
     /// Variable tracking offset of video
     private var offset: CGFloat {
@@ -526,17 +555,38 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     
     /// Show that the video is loading with animation
     private func loadVideoAnimate() {
+        stopVideoAnimate()
         
+        if let player = player, player.didFailToPlay {
+            playIndicatorView.alpha = 1
+            playIndicatorView.image = playIndicatorImage
+        } else {
+            animateVideo()
+            animateTimer = Timer.scheduledTimer(timeInterval: 0.751, target: self, selector: #selector(animateVideo), userInfo: nil, repeats: true)
+        }
     }
     
     /// Stop video loading animation
     private func stopVideoAnimate() {
-        
+        animateTimer.invalidate()
     }
     
     /// Update the frame of the playerLayer
     private func updatePlayerFrame() {
         playerLayer?.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height);
+    }
+    
+    /// Animate the video indicator
+    @objc private func animateVideo() {
+        if hasMedia && !isLoadingVideo {
+            let updatedAlpha: CGFloat = playIndicatorView.alpha == 1 ? 0.4 : 1
+            
+            UIView.animate(withDuration: 0.75, animations: {
+                self.playIndicatorView.alpha = updatedAlpha
+            })
+        } else {
+            playIndicatorView.alpha = (player?.didFailToPlay ?? false) ? 1 : 0
+        }
     }
     
     @objc private func handleSwipe(_ gesture: UIPanGestureRecognizer) {
@@ -640,7 +690,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         delegate?.willChangeDismissing(for: self)
         
         let location = gesture.location(in: self)
-        let difference = location.y - ySwipePosition
+        let difference = location.y - swipePosition.y
         let temporaryOffset = offset + difference
         offsetPercentage = temporaryOffset / UIScreen.superviewHeight
         
@@ -674,7 +724,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         delegate?.willChangeMinimization(for: self)
         
         let location = gesture.location(in: self)
-        let difference = location.y - ySwipePosition
+        let difference = location.y - swipePosition.y
         let temporaryOffset = offset + difference
         offsetPercentage = temporaryOffset / maxViewOffsetY
         
@@ -713,7 +763,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         }
         
         let location = gesture.location(in: self)
-        let difference = location.x - xSwipePosition
+        let difference = location.x - swipePosition.x
         let temporaryOffset = frame.origin.x + difference
         let offsetRatio = (temporaryOffset - maxViewOffsetX) / (minViewWidth - 12)
         
@@ -878,7 +928,24 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         }
     }
     
-    /// Mark: - Initializers
+    private var videoGravity: AVLayerVideoGravity {
+        return videoAspectFit || contentMode == .scaleAspectFit ? .resizeAspect : .resizeAspectFill
+    }
+    
+    // MARK: - Static
+    // FIXME: Clear MediaView Directory
+    
+    static var audioTypeWhenPlay: VolumeManager.AudioType {
+        get { return VolumeManager.shared.audioTypeWhenPlay }
+        set { VolumeManager.shared.audioTypeWhenPlay = newValue }
+    }
+    
+    static var audioTypeWhenStop: VolumeManager.AudioType {
+        get { return VolumeManager.shared.audioTypeWhenStop }
+        set { VolumeManager.shared.audioTypeWhenStop = newValue }
+    }
+    
+    // MARK: - Initializers
     private init(mediaView: MediaView) {
         super.init(frame: .zero)
         commonInitializer()
@@ -887,6 +954,10 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInitializer()
+    }
+    
+    override class var layerClass: AnyClass {
+        return AVPlayerLayer.self
     }
     
     // MARK: - LabelDelegate

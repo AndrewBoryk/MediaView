@@ -39,4 +39,12 @@ extension CGFloat {
     public var time: TimeInterval {
         return TimeInterval(self)
     }
+    
+    public mutating func clamp(lower: CGFloat? = nil, upper: CGFloat? = nil) {
+        if let lower = lower, self < lower {
+            self = lower
+        } else if let upper = upper, self > upper {
+            self = upper
+        }
+    }
 }

@@ -35,4 +35,19 @@ class Media {
     
     /// Gif cached after loading
     var gifCache: UIImage?
+    
+    /// Whether the media has a video
+    var hasVideo: Bool {
+        return videoURL != nil
+    }
+    
+    /// Whether the media has audio
+    var hasAudio: Bool {
+        return audioURL != nil
+    }
+    
+    /// Whether the media has video or audio
+    var hasMedia: Bool {
+        return hasVideo || hasAudio
+    }
 }
