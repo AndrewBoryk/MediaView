@@ -18,7 +18,48 @@ class CacheManager {
         case temp
     }
     
+    enum Cache {
+        case image
+        case video
+        case audio
+        case gif
+        
+        var cache: NSCache<NSString, AnyObject> {
+            switch self {
+            case .image:
+                return CacheManager.shared.imageCache
+            case .video:
+                return CacheManager.shared.videoCache
+            case .audio:
+                return CacheManager.shared.audioCache
+            case .gif:
+                return CacheManager.shared.gifCache
+            }
+        }
+        
+        func getObject(for key: NSString) -> Any? {
+            switch self {
+            case .image, .gif:
+                return self.cache.object(forKey: key) as? UIImage
+            case .audio, .video:
+                guard let value = self.cache.object(forKey: key) as? NSString else {
+                    return nil
+                }
+                
+                return "\(value)"
+            }
+        }
+    }
+    
     static let shared = CacheManager()
+    
+    private let imageCache = NSCache<NSString, AnyObject>()
+    
+    private let videoCache = NSCache<NSString, AnyObject>()
+    
+    private let audioCache = NSCache<NSString, AnyObject>()
+    
+    private let gifCache = NSCache<NSString, AnyObject>()
     
     /// Whether media like videos and audio should be preloaded before manual play or autoplay begins
     var shouldPreloadPlayableMedia = false
