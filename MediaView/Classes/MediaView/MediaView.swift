@@ -524,7 +524,7 @@ class MediaView: UIImageView {
                         player.play()
                     }
                 } else if !isLoadingVideo {
-                    // FIXME: Load video with play: true
+                    loadPlayableMedia(shouldPlay: true)
                 } else {
                     playIndicatorView.endAnimation()
                 }
@@ -555,6 +555,8 @@ class MediaView: UIImageView {
             playIndicatorView.beginAnimation()
         }
         
+        player?.removeObservers()
+        
         let item = AVPlayerItem(asset: mediaAsset)
         player = Player(playerItem: item)
         playerLayer = AVPlayerLayer(player: player)
@@ -565,6 +567,7 @@ class MediaView: UIImageView {
         }
         
         player.actionAtItemEnd = .none
+        player.addObservers()
         
         NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd(_:)), name: .AVPlayerItemDidPlayToEndTime, object: player)
         NotificationCenter.default.addObserver(self, selector: #selector(playIndicatorView.beginAnimation), name: .AVPlayerItemPlaybackStalled, object: player)
@@ -577,8 +580,6 @@ class MediaView: UIImageView {
         if shouldPlay {
             player.play()
         }
-    
-        player.addObservers()
     }
     
     @objc private func playerItemDidReachEnd(_ notification: Notification) {
@@ -650,9 +651,9 @@ class MediaView: UIImageView {
                 delegate?.willEndDismissing(for: self, withDismissal: shouldDismiss)
                 
                 if shouldDismiss {
-                    // FIXME: dismissMediaViewAnimated
-                    // Inside ->
-                    self.delegate?.didEndDismissing(for: self, withDismissal: true)
+                    MediaQueue.shared.dismissCurrent() {
+                        self.delegate?.didEndDismissing(for: self, withDismissal: true)
+                    }
                 } else {
                     UIView.animate(withDuration: 0.25, animations: {
                         self.frame = UIScreen.rect
@@ -667,7 +668,7 @@ class MediaView: UIImageView {
                 isUserInteractionEnabled = false
                 
                 if alpha < 0.6 {
-                    // FIXME: dismissMediaViewAnimated
+                    MediaQueue.shared.dismissCurrent()
                 } else {
                     let shouldMinimize = offsetPercentage >= 0.4
                     delegate?.willEndMinimizing(for: self, atMinimizedState: shouldMinimize)
@@ -837,7 +838,7 @@ class MediaView: UIImageView {
     
     @objc private func closeAction() {
         if isFullScreen {
-            // FIXME: dismissMediaViewAnimated
+            MediaQueue.shared.dismissCurrent()
         } else {
             closeButton.alpha = 0
         }
@@ -1018,6 +1019,7 @@ class MediaView: UIImageView {
     public func resetMedia() {
         media = Media()
         
+        player?.removeObservers()
         player = nil
         playerLayer?.removeFromSuperlayer()
         playerLayer = nil

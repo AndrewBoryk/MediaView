@@ -8,13 +8,17 @@
 
 import Foundation
 import AVFoundation
+import CoreMedia
 
 protocol PlayerDelegate: class {
     func didPlay(player: Player)
     func didPause(player: Player)
     func didFail(player: Player)
     func didBecomeReadyToPlay(player: Player)
-    func didProgress(to time: CMTime, item: AVPlayerItem)
+    func didProgress(to time: TimeInterval, item: AVPlayerItem)
+    func didBuffer(to time: TimeInterval, item: AVPlayerItem)
+    func bufferDidBecomeNotEmpty(for player: Player)
+    func bufferDidBecomeEmpty(for player: Player)
 }
 
 class Player: AVPlayer {
@@ -68,23 +72,38 @@ class Player: AVPlayer {
         })
         
         observers.append(currentItem.observe(\.loadedTimeRanges, options: .new) { (sender, _) in
+            var bufferTime: TimeInterval = 0
             
+            for time in currentItem.loadedTimeRanges {
+                let buffer = TimeInterval(CMTimeGetSeconds(time.timeRangeValue.duration))
+                
+                if buffer > bufferTime {
+                    bufferTime = buffer
+                }
+            }
+            
+            let duration = TimeInterval(CMTimeGetSeconds(currentItem.duration))
+            self.delegate?.didBuffer(to: bufferTime, item: currentItem)
+            
+            if bufferTime == duration {
+                // FIXME: Cache streamed media
+            }
         })
         
         observers.append(currentItem.observe(\.isPlaybackBufferEmpty, options: .new) { (sender, _) in
-            
+            self.delegate?.bufferDidBecomeEmpty(for: self)
         })
         
         observers.append(currentItem.observe(\.isPlaybackLikelyToKeepUp, options: .new) { (sender, _) in
-            
+            self.delegate?.bufferDidBecomeNotEmpty(for: self)
         })
         
         observers.append(currentItem.observe(\.isPlaybackBufferFull, options: .new) { (sender, _) in
-            
+            self.delegate?.bufferDidBecomeNotEmpty(for: self)
         })
         
         addPeriodicTimeObserver(forInterval: CMTime(seconds: 10, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: DispatchQueue.main) { time in
-            self.delegate?.didProgress(to: time, item: currentItem)
+            self.delegate?.didProgress(to: TimeInterval(CMTimeGetSeconds(time)), item: currentItem)
         }
     }
     

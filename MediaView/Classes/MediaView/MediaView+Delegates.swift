@@ -81,14 +81,32 @@ extension MediaView: UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelega
         setPlayIndicatorView(alpha: 0)
     }
     
-    func didProgress(to time: CMTime, item: AVPlayerItem) {
-        let seconds = CMTimeGetSeconds(time)
+    func didProgress(to time: TimeInterval, item: AVPlayerItem) {
+        resetImageIfVideo()
         
-        if seconds != 0 && playIndicatorView.animateTimer.isValid {
+        if time != 0 && playIndicatorView.animateTimer.isValid {
             playIndicatorView.endAnimation()
             hidePlayIndicator()
         }
         
-        track.setProgress(TimeInterval(seconds), duration: TimeInterval(CMTimeGetSeconds(item.duration)))
+        track.setProgress(time, duration: TimeInterval(CMTimeGetSeconds(item.duration)))
+    }
+    
+    func didBuffer(to time: TimeInterval, item: AVPlayerItem) {
+        track.setBuffer(time, duration: TimeInterval(CMTimeGetSeconds(item.duration)))
+    }
+    
+    func bufferDidBecomeEmpty(for player: Player) {
+        // TODO: Find something useful to be done here
+    }
+    
+    func bufferDidBecomeNotEmpty(for player: Player) {
+        resetImageIfVideo()
+    }
+    
+    private func resetImageIfVideo() {
+        if hasVideo {
+            image = nil
+        }
     }
 }
