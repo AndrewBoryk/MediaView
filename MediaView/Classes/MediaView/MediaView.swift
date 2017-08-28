@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelegate, PlayerDelegate {
+class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelegate, PlayerDelegate, PlayIndicatorDelegate {
     
     enum SwipeMode {
         case none
@@ -114,7 +114,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     var themeColor = UIColor.cyan {
         didSet {
             track.themeColor = themeColor
-            playIndicatorView.image = playIndicatorImage
+            playIndicatorView.updateImage()
         }
     }
     
@@ -171,7 +171,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
             }
             
             if isLoadingVideo {
-                loadVideoAnimate()
+                playIndicatorView.beginAnimation()
             } else {
                 playIndicatorView.alpha = (!player.isPlaying || player.didFailToPlay) ? 1 : 0
             }
@@ -184,40 +184,23 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     /// Custom image can be set for the play button (video)
     var customPlayButton: UIImage? {
         didSet {
-            playIndicatorView.image = playIndicatorImage
+            playIndicatorView.updateImage()
         }
     }
     
     /// Custom image can be set for the play button (music)
     var customMusicButton: UIImage? {
         didSet {
-            playIndicatorView.image = playIndicatorImage
+            playIndicatorView.updateImage()
         }
     }
     
     /// Custom image can be set for when media fails to play
     var customFailButton: UIImage? {
         didSet {
-            playIndicatorView.image = playIndicatorImage
+            playIndicatorView.updateImage()
         }
     }
-    
-    private var playIndicatorImage: UIImage? {
-        if shouldHidePlayButton {
-            return nil
-        } else if let player = player, player.didFailToPlay {
-            return customFailButton ?? UIImage.failIndicator(themeColor: themeColor, isFullScreen: isFullScreen, pressShowsGIF: pressShowsGIF)
-        } else if let playButton = customPlayButton, media.hasVideo {
-            return playButton
-        } else if let musicButton = customMusicButton, media.hasAudio {
-            return musicButton
-        } else {
-            return UIImage.playIndicator(themeColor: themeColor)
-        }
-    }
-    
-    /// Timer for animating the playIndicatorView, to show that the video is loading
-    private var animateTimer = Timer()
     
     /// Setting this value to true will allow you to have the fullscreen popup originate from the frame of the original view, without having to set the originRect yourself (default: false)
     var shouldPresentFromOriginRect = false
@@ -348,16 +331,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }()
     
     /// Play button imageView which shows in the center of the video or audio, notifies the user that a video or audio can be played
-    private lazy var playIndicatorView: UIImageView = {
-        let imageView = UIImageView(image: playIndicatorImage)
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.center = center
-        imageView.sizeToFit()
-        imageView.alpha = 0
-        
-        return imageView
-    }()
+    private lazy var playIndicatorView = PlayIndicatorView(delegate: self)
     
     /// Closes the mediaView when in fullscreen mode
     private var closeButton: UIButton = {
@@ -534,17 +508,17 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
                     if player.isPlaying {
                         player.pause()
                     } else if !isLoadingVideo {
-                        stopVideoAnimate()
+                        playIndicatorView.endAnimation()
                         hidePlayIndicator()
                         player.play()
                     } else {
-                        loadVideoAnimate()
+                        playIndicatorView.beginAnimation()
                         player.play()
                     }
                 } else if !isLoadingVideo {
                     // FIXME: Load video with play: true
                 } else {
-                    stopVideoAnimate()
+                    playIndicatorView.endAnimation()
                 }
             }
         }
@@ -555,40 +529,9 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         
     }
     
-    /// Show that the video is loading with animation
-    private func loadVideoAnimate() {
-        stopVideoAnimate()
-        
-        if let player = player, player.didFailToPlay {
-            playIndicatorView.alpha = 1
-            playIndicatorView.image = playIndicatorImage
-        } else {
-            animateVideo()
-            animateTimer = Timer.scheduledTimer(timeInterval: 0.751, target: self, selector: #selector(animateVideo), userInfo: nil, repeats: true)
-        }
-    }
-    
-    /// Stop video loading animation
-    private func stopVideoAnimate() {
-        animateTimer.invalidate()
-    }
-    
     /// Update the frame of the playerLayer
     private func updatePlayerFrame() {
         playerLayer?.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height);
-    }
-    
-    /// Animate the video indicator
-    @objc private func animateVideo() {
-        if hasPlayableMedia && !isLoadingVideo {
-            let updatedAlpha: CGFloat = playIndicatorView.alpha == 1 ? 0.4 : 1
-            
-            UIView.animate(withDuration: 0.75, animations: {
-                self.playIndicatorView.alpha = updatedAlpha
-            })
-        } else {
-            playIndicatorView.alpha = (player?.didFailToPlay ?? false) ? 1 : 0
-        }
     }
     
     @objc private func handleSwipe(_ gesture: UIPanGestureRecognizer) {
@@ -598,7 +541,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         
         switch gesture.state {
         case .began:
-            stopVideoAnimate()
+            playIndicatorView.endAnimation()
             
             track.isUserInteractionEnabled = false
             tapRecognizer.isEnabled = false
@@ -672,7 +615,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
                         self.delegate?.didEndMinimizing(for: self, atMinimizedState: shouldMinimize)
                         
                         if self.isLoadingVideo {
-                            self.loadVideoAnimate()
+                            self.playIndicatorView.beginAnimation()
                         }
                     })
                 }
@@ -807,7 +750,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     internal func setPlayIndicatorView(alpha: CGFloat = 1) {
         if hasPlayableMedia && (!isPlayingVideo || isLoadingVideo) {
             if !(shouldHidePlayButton && alpha != 0) {
-                playIndicatorView.image = playIndicatorImage
+                playIndicatorView.updateImage()
                 playIndicatorView.alpha = alpha
             }
         }
@@ -845,8 +788,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
             handleTopOverlayDisplay()
             
             if isLoadingVideo {
-                stopVideoAnimate()
-                loadVideoAnimate()
+                playIndicatorView.beginAnimation()
             }
         }
         
@@ -1020,7 +962,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         closeButton.alpha = 0
         setTopOverlayAlpha(0)
         
-        stopVideoAnimate()
+        playIndicatorView.endAnimation()
     }
     
     public func reset() {
@@ -1073,6 +1015,29 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
         player.seek(to: timeCM, toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero)
     }
     
+    // MARK: - PlayIndicatorDelegate
+    func shouldShowPlayIndicator() -> Bool {
+        return hasPlayableMedia && !isLoadingVideo
+    }
+    
+    func image(for playIndicatorView: PlayIndicatorView) -> UIImage? {
+        if shouldHidePlayButton {
+            return nil
+        } else if let player = player, player.didFailToPlay {
+            return customFailButton ?? UIImage.failIndicator(themeColor: themeColor, isFullScreen: isFullScreen, pressShowsGIF: pressShowsGIF)
+        } else if let playButton = customPlayButton, media.hasVideo {
+            return playButton
+        } else if let musicButton = customMusicButton, media.hasAudio {
+            return musicButton
+        } else {
+            return UIImage.playIndicator(themeColor: themeColor)
+        }
+    }
+    
+    func player(for playIndicatorView: PlayIndicatorView) -> Player? {
+        return player
+    }
+    
     // MARK: - PlayerDelegate
     func didPlay(player: Player) {
         handleTopOverlayDisplay()
@@ -1083,7 +1048,7 @@ class MediaView: UIImageView, UIGestureRecognizerDelegate, LabelDelegate, TrackV
     }
     
     func didPause(player: Player) {
-        stopVideoAnimate()
+        playIndicatorView.endAnimation()
         setPlayIndicatorView(alpha: 1)
         handleTopOverlayDisplay()
         

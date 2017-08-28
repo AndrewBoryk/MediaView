@@ -72,7 +72,7 @@ class MediaQueue {
         }) { _ in
             mediaView.delegate?.didPresent(mediaView: mediaView)
             
-            if mediaView.hasMedia, mediaView.shouldAutoPlayAfterPresentation {
+            if mediaView.hasPlayableMedia, mediaView.shouldAutoPlayAfterPresentation {
                 mediaView.handleTapFromRecognizer()
             }
         }
