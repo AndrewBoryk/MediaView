@@ -60,15 +60,35 @@ extension MediaView: UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelega
         handleTopOverlayDisplay()
         
         if !player.didFailToPlay {
-            delegate?.didPlayVideo(for: self)
+            delegate?.didPlayMedia(for: self)
         }
     }
     
     func didPause(player: Player) {
         playIndicatorView.endAnimation()
-        setPlayIndicatorView(alpha: 1)
+        setPlayIndicatorView()
         handleTopOverlayDisplay()
         
-        delegate?.didPauseVideo(for: self)
+        delegate?.didPauseMedia(for: self)
+    }
+    
+    func didFail(player: Player) {
+        player.pause()
+        delegate?.didFailToPlayMedia(for: self)
+    }
+    
+    func didBecomeReadyToPlay(player: Player) {
+        setPlayIndicatorView(alpha: 0)
+    }
+    
+    func didProgress(to time: CMTime, item: AVPlayerItem) {
+        let seconds = CMTimeGetSeconds(time)
+        
+        if seconds != 0 && playIndicatorView.animateTimer.isValid {
+            playIndicatorView.endAnimation()
+            hidePlayIndicator()
+        }
+        
+        track.setProgress(TimeInterval(seconds), duration: TimeInterval(CMTimeGetSeconds(item.duration)))
     }
 }

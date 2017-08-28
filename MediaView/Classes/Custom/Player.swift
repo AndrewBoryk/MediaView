@@ -12,11 +12,16 @@ import AVFoundation
 protocol PlayerDelegate: class {
     func didPlay(player: Player)
     func didPause(player: Player)
+    func didFail(player: Player)
+    func didBecomeReadyToPlay(player: Player)
+    func didProgress(to time: CMTime, item: AVPlayerItem)
 }
 
 class Player: AVPlayer {
     
     weak var delegate: PlayerDelegate?
+    
+    private var observers = [NSKeyValueObservation?]()
     
     override func play() {
         VolumeManager.shared.adjustAudioWhenPlaying()
@@ -43,5 +48,47 @@ class Player: AVPlayer {
     
     var isPlaying: Bool {
         return rate != 0 && error == nil && !didFailToPlay
+    }
+    
+    func addObservers() {
+        removeObservers()
+        
+        guard let currentItem = currentItem else {
+            return
+        }
+        
+        observers.append(currentItem.observe(\.status, options: .new) { (sender, _) in
+            switch sender.status {
+            case .failed, .unknown:
+                self.delegate?.didFail(player: self)
+                self.removeObservers()
+            case .readyToPlay:
+                self.delegate?.didBecomeReadyToPlay(player: self)
+            }
+        })
+        
+        observers.append(currentItem.observe(\.loadedTimeRanges, options: .new) { (sender, _) in
+            
+        })
+        
+        observers.append(currentItem.observe(\.isPlaybackBufferEmpty, options: .new) { (sender, _) in
+            
+        })
+        
+        observers.append(currentItem.observe(\.isPlaybackLikelyToKeepUp, options: .new) { (sender, _) in
+            
+        })
+        
+        observers.append(currentItem.observe(\.isPlaybackBufferFull, options: .new) { (sender, _) in
+            
+        })
+        
+        addPeriodicTimeObserver(forInterval: CMTime(seconds: 10, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: DispatchQueue.main) { time in
+            self.delegate?.didProgress(to: time, item: currentItem)
+        }
+    }
+    
+    func removeObservers() {
+        observers = []
     }
 }

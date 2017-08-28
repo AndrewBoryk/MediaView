@@ -29,10 +29,10 @@ class MediaView: UIImageView {
     weak var delegate: MediaViewDelegate?
     
     /// Image completed loading onto ABMediaView
-    typealias ImageCompletionBlock = (_ image: UIImage, _ error: Error?) -> Void
+    typealias ImageCompletionBlock = (_ image: UIImage?, _ error: Error?) -> Void
     
     /// Video completed loading onto ABMediaView
-    typealias VideoDataCompletionBlock = (_ video: String, _ error: Error?) -> Void
+    typealias VideoDataCompletionBlock = (_ video: String?, _ error: Error?) -> Void
     
     /// Determines if video is minimized
     public var isMinimized: Bool {
@@ -52,6 +52,9 @@ class MediaView: UIImageView {
             swipeRecognizer.isEnabled = swipeMode.movesWhenSwipe && isFullScreen
         }
     }
+    
+    /// Determines whether fullScreen mediaViews should dismiss after playing their media (video/audio)
+    public var shouldDismissAfterFinishedPlaying = false
     
     /// Determines if the video is already loading
     public var isLoadingVideo: Bool {
@@ -529,9 +532,69 @@ class MediaView: UIImageView {
         }
     }
     
-    /// Loads the video, saves to disk, and decides whether to play the video
-    func loadVideo(withPlay play: Bool, withCompletion completion: VideoDataCompletionBlock) {
+    /// Loads the playable media (video or audio), saves to disk, and decides whether to play the media
+    func loadPlayableMedia(shouldPlay: Bool = false, completion: VideoDataCompletionBlock? = nil) {
+        guard media.videoURL != nil || media.audioURL != nil else {
+            completion?(nil, nil)
+            return
+        }
         
+        var asset: AVURLAsset?
+        if let videoUrl = media.videoURL, let url = isFileFromDirectory ? URL(fileURLWithPath: videoUrl) : URL(string: videoUrl) {
+            asset = AVURLAsset(url: url)
+        } else if let audioUrl = media.audioURL, let url = isFileFromDirectory ? URL(fileURLWithPath: audioUrl) : URL(string: audioUrl) {
+            asset = AVURLAsset(url: url)
+        }
+        
+        guard let mediaAsset = asset else {
+            completion?(nil, nil)
+            return
+        }
+        
+        if shouldPlay {
+            playIndicatorView.beginAnimation()
+        }
+        
+        let item = AVPlayerItem(asset: mediaAsset)
+        player = Player(playerItem: item)
+        playerLayer = AVPlayerLayer(player: player)
+        
+        guard let player = player, let playerLayer = playerLayer else  {
+            completion?(nil, nil)
+            return
+        }
+        
+        player.actionAtItemEnd = .none
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd(_:)), name: .AVPlayerItemDidPlayToEndTime, object: player)
+        NotificationCenter.default.addObserver(self, selector: #selector(playIndicatorView.beginAnimation), name: .AVPlayerItemPlaybackStalled, object: player)
+        
+        playerLayer.videoGravity = videoGravity
+        playerLayer.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
+        
+        (layer as? AVPlayerLayer)?.player = player
+        
+        if shouldPlay {
+            player.play()
+        }
+    
+        player.addObservers()
+    }
+    
+    @objc private func playerItemDidReachEnd(_ notification: Notification) {
+        if isFullScreen && shouldDismissAfterFinishedPlaying {
+            delegate?.didFinishPlayableMedia(for: self, withLoop: false)
+        } else {
+            delegate?.didFinishPlayableMedia(for: self, withLoop: allowLooping)
+            
+            if let player = player, let item = player.currentItem {
+                if !allowLooping {
+                    player.pause()
+                }
+                
+                item.seek(to: kCMTimeZero)
+            }
+        }
     }
     
     /// Update the frame of the playerLayer
@@ -890,7 +953,7 @@ class MediaView: UIImageView {
         self.layoutIfNeeded()
     }
     
-    private func hidePlayIndicator(animated: Bool = false) {
+    internal func hidePlayIndicator(animated: Bool = false) {
         if let player = player, player.didFailToPlay {
             playIndicatorView.alpha = 1
         } else {

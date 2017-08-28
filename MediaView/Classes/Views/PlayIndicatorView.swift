@@ -19,7 +19,7 @@ class PlayIndicatorView: UIImageView {
     weak var delegate: PlayIndicatorDelegate?
     
     /// Timer for animating the playIndicatorView, to show that the video is loading
-    private var animateTimer = Timer()
+    private(set) internal var animateTimer = Timer()
     
     init(delegate: PlayIndicatorDelegate?) {
         super.init(image: delegate?.image(for: self))
@@ -36,7 +36,7 @@ class PlayIndicatorView: UIImageView {
     }
     
     /// Show that the video is loading with animation
-    func beginAnimation() {
+    @objc func beginAnimation() {
         endAnimation()
         
         if let player = delegate?.player(for: self), player.didFailToPlay {

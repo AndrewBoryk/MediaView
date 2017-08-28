@@ -13,16 +13,16 @@ protocol MediaViewDelegate: class {
     func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: CGFloat)
     
     /// When the mediaView begins playing a video
-    func didPlayVideo(for mediaView: MediaView)
+    func didPlayMedia(for mediaView: MediaView)
     
     /// When the mediaView fails to play a video
-    func didFailToPlayVideo(for mediaView: MediaView)
+    func didFailToPlayMedia(for mediaView: MediaView)
     
     /// When the mediaView pauses a video
-    func didPauseVideo(for mediaView: MediaView)
+    func didPauseMedia(for mediaView: MediaView)
     
     /// When the mediaView finishes playing a video, and whether it looped
-    func didFinishVideo(for mediaView: MediaView, withLoop didLoop: Bool)
+    func didFinishPlayableMedia(for mediaView: MediaView, withLoop didLoop: Bool)
     
     /// Called when the mediaView has begun the presentation process
     func willPresent(mediaView: MediaView)
@@ -88,19 +88,19 @@ extension MediaView: MediaViewDelegate {
         
     }
     
-    func didPlayVideo(for mediaView: MediaView) {
+    func didPlayMedia(for mediaView: MediaView) {
         
     }
     
-    func didFailToPlayVideo(for mediaView: MediaView) {
+    func didFailToPlayMedia(for mediaView: MediaView) {
         
     }
     
-    func didPauseVideo(for mediaView: MediaView) {
+    func didPauseMedia(for mediaView: MediaView) {
         
     }
     
-    func didFinishVideo(for mediaView: MediaView, withLoop didLoop: Bool) {
+    func didFinishPlayableMedia(for mediaView: MediaView, withLoop didLoop: Bool) {
         
     }
     
