@@ -1037,7 +1037,9 @@ class MediaView: UIImageView {
     }
     
     // MARK: - Static
-    // FIXME: Clear MediaView Directory
+    static func clear(directory: CacheManager.DirectoryItem) {
+        CacheManager.clear(directory: directory)
+    }
     
     static var audioTypeWhenPlay: VolumeManager.AudioType {
         get { return VolumeManager.shared.audioTypeWhenPlay }

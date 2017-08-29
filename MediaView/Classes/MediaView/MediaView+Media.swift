@@ -24,8 +24,7 @@ extension MediaView {
             image = nil
         }
         
-        // FIXME: Add fetch image from cache
-        if let cache = image {
+        if let cache = CacheManager.Cache.image.getObject(for: url) as? UIImage {
             media.imageCache = cache
         }
         
@@ -36,7 +35,9 @@ extension MediaView {
             
             completion?(cache)
         } else {
-            // FIXME: Download image and cache is needed
+            CacheManager.shared.loadImage(urlString: url, completion: { (image, error) in
+                self.image = image
+            })
         }
     }
     

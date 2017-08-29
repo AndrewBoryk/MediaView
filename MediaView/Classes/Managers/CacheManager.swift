@@ -144,11 +144,9 @@ class CacheManager {
     /// Download the video
     func preloadVideo(url: String, isFromDirectory: Bool = false) {
         if isFromDirectory {
-            // FIXME: Load video from fileWithPath
-            // Inside -> Cache video
+            loadVideo(url: URL(fileURLWithPath: url))
         } else {
-            // FIXME: Load video from internet
-            // Inside -> Cache video
+            loadVideo(urlString: url)
         }
     }
     
@@ -157,11 +155,9 @@ class CacheManager {
         if url.contains("ipod-library://") {
             // FIXME: Load audio from music library
         } else if isFromDirectory {
-            // FIXME: Load audio from fileWithPath
-            // Inside -> Cache audio
+            loadAudio(url: URL(fileURLWithPath: url))
         } else {
-            // FIXME: Load audio from internet
-            // Inside -> Cache audio
+            loadAudio(urlString: url)
         }
     }
     
