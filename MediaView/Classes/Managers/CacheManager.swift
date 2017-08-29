@@ -8,6 +8,12 @@
 
 import Foundation
 
+/// Image completed loading onto ABMediaView
+typealias ImageCompletionBlock = (_ image: UIImage?, _ error: Error?) -> Void
+
+/// Media completed loading onto ABMediaView
+typealias MediaDataCompletionBlock = (_ video: String?, _ error: Error?) -> Void
+
 class CacheManager {
     
     /// Different types of directory items
@@ -37,32 +43,95 @@ class CacheManager {
             }
         }
         
-        func getObject(for key: NSString) -> Any? {
+        var queue: NSCache<NSString, AnyObject> {
+            switch self {
+            case .image:
+                return CacheManager.shared.imageQueue
+            case .video:
+                return CacheManager.shared.videoQueue
+            case .audio:
+                return CacheManager.shared.audioQueue
+            case .gif:
+                return CacheManager.shared.gifQueue
+            }
+        }
+        
+        func getObject(for key: String) -> Any? {
             switch self {
             case .image, .gif:
-                return self.cache.object(forKey: key) as? UIImage
+                return self.cache.object(forKey: key.NS) as? UIImage
             case .audio, .video:
-                guard let value = self.cache.object(forKey: key) as? NSString else {
+                guard let value = self.cache.object(forKey: key.NS) as? String else {
                     return nil
                 }
                 
-                return "\(value)"
+                return value
             }
+        }
+        
+        func set(object: Any, forKey key: String) {
+            switch self {
+            case .image, .gif:
+                if let value = object as? UIImage {
+                    self.cache.setObject(value, forKey: key.NS)
+                }
+            case .audio, .video:
+                if let value = object as? String {
+                    self.cache.setObject(value.NS, forKey: key.NS)
+                }
+            }
+        }
+        
+        func removeObject(forKey key: String) {
+            self.cache.removeObject(forKey: key.NS)
+        }
+        
+        func isQueued(_ key: String) -> Bool {
+            return self.queue.object(forKey: key.NS) as? String != nil
+        }
+        
+        func setQueued(_ key: String) {
+            if !self.isQueued(key) {
+                self.queue.setObject(key.NS, forKey: key.NS)
+            }
+        }
+        
+        func dequeue(_ key: String) {
+            self.queue.removeObject(forKey: key.NS)
         }
     }
     
     static let shared = CacheManager()
     
-    private let imageCache = NSCache<NSString, AnyObject>()
+    /// Cache for images
+    private var imageCache = NSCache<NSString, AnyObject>()
     
-    private let videoCache = NSCache<NSString, AnyObject>()
+    /// Cache for videos
+    private var videoCache = NSCache<NSString, AnyObject>()
     
-    private let audioCache = NSCache<NSString, AnyObject>()
+    /// Cache for audio
+    private var audioCache = NSCache<NSString, AnyObject>()
     
-    private let gifCache = NSCache<NSString, AnyObject>()
+    /// Cache for GIFs
+    private var gifCache = NSCache<NSString, AnyObject>()
+    
+    /// Queue for loading images
+    private var imageQueue = NSCache<NSString, AnyObject>()
+    
+    /// Queue for loading videos
+    private var videoQueue = NSCache<NSString, AnyObject>()
+    
+    /// Queue for loading audio
+    private var audioQueue = NSCache<NSString, AnyObject>()
+    
+    /// Queue for loading GIFs
+    private var gifQueue = NSCache<NSString, AnyObject>()
     
     /// Whether media like videos and audio should be preloaded before manual play or autoplay begins
     var shouldPreloadPlayableMedia = false
+    
+    /// Determines whether media should be cached to the directory
+    var cacheMediaWhenDownloaded = false
     
     /// Download the video
     func preloadVideo(url: String, isFromDirectory: Bool = false) {
@@ -86,5 +155,201 @@ class CacheManager {
             // FIXME: Load audio from internet
             // Inside -> Cache audio
         }
+    }
+    
+    func loadImage(urlString: String, completion: ImageCompletionBlock? = nil) {
+        DispatchQueue.main.async {
+            guard let url = URL(string: urlString) else {
+                completion?(nil, nil)
+                return
+            }
+            
+            self.loadImage(url: url, completion: completion)
+        }
+    }
+    
+    func loadImage(url: URL, completion: ImageCompletionBlock? = nil) {
+        DispatchQueue.main.async {
+            let urlString = url.absoluteString
+            if let image = Cache.image.getObject(for: urlString) as? UIImage {
+                Cache.image.dequeue(urlString)
+                completion?(image, nil)
+            } else if Cache.image.isQueued(urlString) {
+                completion?(nil, nil)
+            } else {
+                Cache.image.setQueued(urlString)
+                
+                let task = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
+                    if let data = data, let image = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            if self.cacheMediaWhenDownloaded {
+                                Cache.image.set(object: image, forKey: urlString)
+                            }
+                            
+                            completion?(image, nil)
+                        }
+                    }
+                    
+                    Cache.image.dequeue(urlString)
+                })
+                
+                task.resume()
+            }
+        }
+    }
+    
+    func loadVideo(urlString: String, completion: MediaDataCompletionBlock? = nil) {
+        DispatchQueue.main.async {
+            guard let url = URL(string: urlString) else {
+                completion?(nil, nil)
+                return
+            }
+            
+            self.loadVideo(url: url, completion: completion)
+        }
+    }
+    
+    func loadVideo(url: URL, completion: MediaDataCompletionBlock? = nil) {
+        DispatchQueue.main.async {
+            self.loadMedia(url: url, cache: .video, completion: completion)
+        }
+    }
+    
+    func loadAudio(urlString: String, completion: MediaDataCompletionBlock? = nil) {
+        DispatchQueue.main.async {
+            guard let url = URL(string: urlString) else {
+                completion?(nil, nil)
+                return
+            }
+            
+            self.loadAudio(url: url, completion: completion)
+        }
+    }
+    
+    func loadAudio(url: URL, completion: MediaDataCompletionBlock? = nil) {
+        DispatchQueue.main.async {
+            self.loadMedia(url: url, cache: .audio, completion: completion)
+        }
+    }
+    
+    func loadMedia(url: URL, cache: Cache, completion: MediaDataCompletionBlock? = nil) {
+        DispatchQueue.main.async {
+            let urlString = url.absoluteString
+            if let media = cache.getObject(for: urlString) as? String {
+                cache.dequeue(urlString)
+                completion?(media, nil)
+            } else if cache.isQueued(urlString) {
+                completion?(nil, nil)
+            } else {
+                cache.setQueued(urlString)
+                
+                CacheManager.detectIf(url: url, isType: cache) { isValid in
+                    guard isValid else {
+                        completion?(nil, nil)
+                        return
+                    }
+                    
+                    do {
+                        let data = try Data(contentsOf: url)
+                        
+                        DispatchQueue.main.async {
+                            guard let fileURL = CacheManager.fileURL(for: cache, url: url) else {
+                                cache.dequeue(urlString)
+                                completion?(nil, nil)
+                                return
+                            }
+                            
+                            do {
+                                try data.write(to: fileURL, options: .atomic)
+                                
+                                cache.set(object: fileURL.absoluteString, forKey: urlString)
+                                cache.dequeue(urlString)
+                                completion?(fileURL.absoluteString, nil)
+                            } catch {
+                                cache.dequeue(urlString)
+                                completion?(nil, nil)
+                            }
+                        }
+                    } catch {
+                        cache.dequeue(urlString)
+                        completion?(nil, nil)
+                    }
+                }
+            }
+        }
+    }
+    
+    private static func detectIf(url: URL, isType cache: Cache, completion: @escaping ((_ isValid: Bool) -> Void)) {
+        NSURLConnection.sendAsynchronousRequest(URLRequest(url: url), queue: .main) { (response, data, error) in
+            guard error == nil,
+                let data = data,
+                data.count > 0,
+                let httpResponse = response as? HTTPURLResponse,
+                let contentType = httpResponse.allHeaderFields["content-type"] as? String else {
+                completion(false)
+                return
+            }
+            
+            switch cache {
+            case .image where contentType.contains("image/"):
+                completion(true)
+            case .video where contentType.contains("video/"):
+                completion(true)
+            case .audio where contentType.contains("audio/"):
+                completion(true)
+            case .gif where contentType.contains("image/gif"):
+                completion(true)
+            default:
+                completion(false)
+            }
+        }
+    }
+    
+    private static func fileURL(for cache: Cache, url: URL) -> URL? {
+        do {
+            let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+            let ending = cache == .video ? "Video" : "Audio"
+            let directoryPath = "\(paths.first ?? "")/ABMedia/\(ending)"
+            
+            if !FileManager.default.fileExists(atPath: directoryPath) {
+                try FileManager.default.createDirectory(atPath: directoryPath, withIntermediateDirectories: false, attributes: nil)
+            }
+            
+            // Create folder
+            let uniqueFileName = url.lastPathComponent
+            let filePath = "\(directoryPath)/\(uniqueFileName)"
+            
+            if FileManager.default.fileExists(atPath: filePath) {
+                try FileManager.default.removeItem(atPath: filePath)
+            }
+            
+            return URL(fileURLWithPath: filePath)
+        } catch {
+            return nil
+        }
+    }
+    
+    func reset(cache: Cache) {
+        switch cache {
+        case .image:
+            imageCache = NSCache<NSString, AnyObject>()
+            imageQueue = NSCache<NSString, AnyObject>()
+        case .video:
+            videoCache = NSCache<NSString, AnyObject>()
+            videoQueue = NSCache<NSString, AnyObject>()
+        case .audio:
+            audioCache = NSCache<NSString, AnyObject>()
+            audioQueue = NSCache<NSString, AnyObject>()
+        case .gif:
+            gifCache = NSCache<NSString, AnyObject>()
+            gifQueue = NSCache<NSString, AnyObject>()
+        }
+    }
+    
+    func reset() {
+        reset(cache: .image)
+        reset(cache: .video)
+        reset(cache: .audio)
+        reset(cache: .gif)
     }
 }

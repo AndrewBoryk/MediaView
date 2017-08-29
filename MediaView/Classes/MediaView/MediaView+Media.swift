@@ -9,12 +9,6 @@ import Foundation
 
 extension MediaView {
     
-    /// Image completed loading onto ABMediaView
-    typealias ImageCompletionBlock = (_ image: UIImage?, _ error: Error?) -> Void
-    
-    /// Video completed loading onto ABMediaView
-    typealias VideoDataCompletionBlock = (_ video: String?, _ error: Error?) -> Void
-    
     public override var image: UIImage? {
         didSet {
             if let image = image {

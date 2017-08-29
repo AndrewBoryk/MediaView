@@ -527,7 +527,7 @@ class MediaView: UIImageView {
     }
     
     /// Loads the playable media (video or audio), saves to disk, and decides whether to play the media
-    func loadPlayableMedia(shouldPlay: Bool = false, completion: VideoDataCompletionBlock? = nil) {
+    func loadPlayableMedia(shouldPlay: Bool = false, completion: MediaDataCompletionBlock? = nil) {
         guard media.videoURL != nil || media.audioURL != nil else {
             completion?(nil, nil)
             return
