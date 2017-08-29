@@ -140,7 +140,13 @@ class CacheManager {
     var shouldPreloadPlayableMedia = false
     
     /// Determines whether media should be cached to the directory
-    var cacheMediaWhenDownloaded = false
+    var cacheMediaWhenDownloaded = false {
+        didSet {
+            if !cacheMediaWhenDownloaded {
+                CacheManager.shared.reset(cache: .image)
+            }
+        }
+    }
     
     /// Automate caching for media (default: false)
     var shouldCacheStreamedMedia = false
