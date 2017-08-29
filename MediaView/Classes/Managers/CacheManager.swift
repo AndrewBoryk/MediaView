@@ -284,6 +284,48 @@ class CacheManager {
         }
     }
     
+    func loadGIF(data: Data, completion: ImageCompletionBlock? = nil) {
+        DispatchQueue.main.async {
+            let gif = UIImage.animatedImageWithAnimatedGIFData(data)
+            completion?(gif, nil)
+        }
+    }
+    
+    func loadGIF(urlString: String, completion: ImageCompletionBlock? = nil) {
+        DispatchQueue.main.async {
+            guard let url = URL(string: urlString) else {
+                completion?(nil, nil)
+                return
+            }
+            
+            self.loadGIF(url: url, completion: completion)
+        }
+    }
+    
+    func loadGIF(url: URL, completion: ImageCompletionBlock? = nil) {
+        DispatchQueue.main.async {
+            let urlString = url.absoluteString
+            let cache = Cache.gif
+            if let gif = cache.getObject(for: urlString) as? UIImage {
+                cache.dequeue(urlString)
+                completion?(gif, nil)
+            } else if cache.isQueued(urlString) {
+                completion?(nil, nil)
+            } else {
+                cache.setQueued(urlString)
+                
+                let gif = UIImage.animatedImageWithAnimatedGIFUrl(url)
+                
+                if let gif = gif {
+                    cache.set(object: gif, forKey: url.absoluteString)
+                }
+                
+                cache.dequeue(url.absoluteString)
+                completion?(gif, nil)
+            }
+        }
+    }
+    
     static func cache(url: String, cache: Cache, asset: AVAsset) {
         switch cache {
         case .video:

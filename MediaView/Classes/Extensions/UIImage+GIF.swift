@@ -10,7 +10,7 @@ import CoreGraphics
 
 extension UIImage {
     
-    static func delayCentisecondsForImageAtIndex(source: CGImageSource, i: size_t) -> Int {
+    private static func delayCentisecondsForImageAtIndex(source: CGImageSource, i: size_t) -> Int {
         var delayCentiseconds = 1
         guard let properties = CGImageSourceCopyPropertiesAtIndex(source, i, nil) else {
             return delayCentiseconds
@@ -31,7 +31,7 @@ extension UIImage {
         return delayCentiseconds
     }
     
-    static func createImagesAndDelays(source: CGImageSource, count: size_t) -> (imagesOut: [CGImage], delayCentisecondsOut: [Int]) {
+    private static func createImagesAndDelays(source: CGImageSource, count: size_t) -> (imagesOut: [CGImage], delayCentisecondsOut: [Int]) {
         var imagesOut = [CGImage]()
         var delayCentisecondsOut = [Int]()
         
@@ -45,7 +45,7 @@ extension UIImage {
         return (imagesOut: imagesOut, delayCentisecondsOut: delayCentisecondsOut)
     }
     
-    static func sum(count: size_t, values: [Int]) -> Int {
+    private static func sum(count: size_t, values: [Int]) -> Int {
         var theSum = 0
         
         for i in 0..<count {
@@ -55,7 +55,7 @@ extension UIImage {
         return theSum
     }
     
-    static func pairGCD(a: Int, b: Int) -> Int {
+    private static func pairGCD(a: Int, b: Int) -> Int {
         var valueA = a
         var valueB = b
         guard valueA < valueB else {
@@ -73,7 +73,7 @@ extension UIImage {
         }
     }
     
-    static func vectorGCD(count: size_t, values: [Int]) -> Int {
+    private static func vectorGCD(count: size_t, values: [Int]) -> Int {
         var gcd = values[0]
         
         if values.count > 1 {
@@ -85,7 +85,7 @@ extension UIImage {
         return gcd
     }
     
-    static func frameArray(count: size_t, images: [CGImage], delayCentiseconds: [Int]) -> [UIImage] {
+    private static func frameArray(count: size_t, images: [CGImage], delayCentiseconds: [Int]) -> [UIImage] {
         let gcd = vectorGCD(count: count, values: delayCentiseconds)
         var frames = [UIImage]()
         for i in 0..<count {
@@ -100,7 +100,7 @@ extension UIImage {
         return frames
     }
     
-    static func animatedImageWithAnimatedGIFImageSource(source: CGImageSource) -> UIImage? {
+    private static func animatedImageWithAnimatedGIFImageSource(source: CGImageSource) -> UIImage? {
         let count = CGImageSourceGetCount(source)
         let result = createImagesAndDelays(source: source, count: count)
         let images = result.imagesOut
@@ -112,7 +112,7 @@ extension UIImage {
         return animation
     }
     
-    static func animatedImageWithAnimatedGIFReleasingImageSource(source: CGImageSource?) -> UIImage? {
+    private static func animatedImageWithAnimatedGIFReleasingImageSource(source: CGImageSource?) -> UIImage? {
         guard let source = source else {
             return nil
         }
@@ -121,16 +121,16 @@ extension UIImage {
         return image
     }
     
-    static func animatedImageWithAnimatedGIFData(_ data: NSData) -> UIImage? {
-        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
+    static func animatedImageWithAnimatedGIFData(_ data: Data) -> UIImage? {
+        guard let source = CGImageSourceCreateWithData((data as NSData) as CFData, nil) else {
             return nil
         }
         
         return animatedImageWithAnimatedGIFImageSource(source: source)
     }
     
-    static func animatedImageWithAnimatedGIFUrl(_ url: NSURL) -> UIImage? {
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else {
+    static func animatedImageWithAnimatedGIFUrl(_ url: URL) -> UIImage? {
+        guard let source = CGImageSourceCreateWithURL((url as NSURL) as CFURL, nil) else {
             return nil
         }
         

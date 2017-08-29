@@ -36,6 +36,7 @@ extension MediaView {
             completion?(cache)
         } else {
             CacheManager.shared.loadImage(urlString: url, completion: { (image, error) in
+                self.media.imageCache = image
                 self.image = image
             })
         }
@@ -83,12 +84,12 @@ extension MediaView {
     
     public func setVideo(url: String, thumbnailGIFData: Data) {
         setVideo(url: url)
-        setThumbnailGIF(data: thumbnailGIFData)
+        setGIF(data: thumbnailGIFData)
     }
     
     public func setVideo(url: String, thumbnailGIFUrl: String) {
         setVideo(url: url)
-        setThumbnailGIF(url: thumbnailGIFUrl)
+        setGIF(url: thumbnailGIFUrl)
     }
     
     public func setAudio(url: String) {
@@ -112,29 +113,69 @@ extension MediaView {
     }
     
     public func setAudio(url: String, thumbnailGIFData: Data) {
-        setThumbnailGIF(data: thumbnailGIFData)
+        setGIF(data: thumbnailGIFData)
         setAudio(url: url)
     }
     
     public func setAudio(url: String, thumbnailGIFUrl: String) {
-        setThumbnailGIF(url: thumbnailGIFUrl)
+        setGIF(url: thumbnailGIFUrl)
         setAudio(url: url)
     }
     
     private func setPreviewGIF(data: Data) {
-        
+        setGIF(data: data, isPreview: true)
     }
     
     private func setPreviewGIF(url: String) {
-        
+        setGIF(url: url, isPreview: true)
     }
     
-    private func setThumbnailGIF(data: Data) {
+    private func setGIF(data: Data, isPreview: Bool = false) {
+        media.gifData = data
         
+        if !imageViewNotReused {
+            image = nil
+        }
+        
+        if let cachedGIF = media.gifCache {
+            if !(isPreview && isLongPressing && !isFullScreen) {
+                image = cachedGIF
+            }
+        } else {
+            CacheManager.shared.loadGIF(data: data, completion: { (gif, error) in
+                if let gif = gif {
+                    self.media.gifCache = gif
+                    
+                    if !(isPreview && self.isLongPressing && !self.isFullScreen) {
+                        self.image = gif
+                    }
+                }
+            })
+        }
     }
     
-    private func setThumbnailGIF(url: String) {
+    private func setGIF(url: String, isPreview: Bool = false) {
+        media.gifURL = url
         
+        if !imageViewNotReused {
+            image = nil
+        }
+        
+        if let cachedGIF = media.gifCache {
+            if !(isPreview && isLongPressing && !isFullScreen) {
+                image = cachedGIF
+            }
+        } else if let gifURL = URL(string: url) {
+            CacheManager.shared.loadGIF(url: gifURL, completion: { (gif, error) in
+                if let gif = gif {
+                    self.media.gifCache = gif
+                    
+                    if !(isPreview && self.isLongPressing && !self.isFullScreen) {
+                        self.image = gif
+                    }
+                }
+            })
+        }
     }
     
 }
