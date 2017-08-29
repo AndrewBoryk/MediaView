@@ -119,7 +119,7 @@ extension MediaView: UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelega
     }
     
     // MARK: - NSCopying
-    func copy(with zone: NSZone? = nil) -> Any {
+    public func copy(with zone: NSZone? = nil) -> Any {
         let copy = MediaView(mediaView: self)
         return copy
     }

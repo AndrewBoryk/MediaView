@@ -13,4 +13,3 @@
 
 FOUNDATION_EXPORT double MediaViewVersionNumber;
 FOUNDATION_EXPORT const unsigned char MediaViewVersionString[];
-

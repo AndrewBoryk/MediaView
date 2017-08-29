@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension MediaView {
+public extension MediaView {
     
     public override var image: UIImage? {
         didSet {

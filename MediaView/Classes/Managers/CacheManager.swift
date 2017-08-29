@@ -15,17 +15,17 @@ typealias ImageCompletionBlock = (_ image: UIImage?, _ error: Error?) -> Void
 /// Media completed loading onto ABMediaView
 typealias MediaDataCompletionBlock = (_ video: String?, _ error: Error?) -> Void
 
-class CacheManager {
+public class CacheManager {
     
     /// Different types of directory items
-    enum DirectoryItem {
+    public enum DirectoryItem {
         case video
         case audio
         case all
         case temp
     }
     
-    enum Cache {
+    public enum Cache {
         case image
         case video
         case audio
@@ -474,7 +474,7 @@ class CacheManager {
         return nil
     }
     
-    static func clear(directory: DirectoryItem) {
+    public static func clear(directory: DirectoryItem) {
         var component = "Documents/ABMedia/"
         
         switch directory {
@@ -502,7 +502,7 @@ class CacheManager {
         }
     }
     
-    func reset(cache: Cache) {
+    public func reset(cache: Cache) {
         switch cache {
         case .image:
             imageCache = NSCache<NSString, AnyObject>()
@@ -519,7 +519,7 @@ class CacheManager {
         }
     }
     
-    func reset() {
+    public func reset() {
         reset(cache: .image)
         reset(cache: .video)
         reset(cache: .audio)

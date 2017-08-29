@@ -8,10 +8,10 @@
 
 import Foundation
 
-class MediaQueue {
+public class MediaQueue {
     
     /// Shared Manager, which keeps track of mediaViews
-    static let shared = MediaQueue()
+    public static let shared = MediaQueue()
     
     /// Media view that is currently presented by the manager
     private(set) public var current: MediaView?

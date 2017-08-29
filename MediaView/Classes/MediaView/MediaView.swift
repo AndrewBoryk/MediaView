@@ -8,9 +8,9 @@
 import Foundation
 import AVFoundation
 
-class MediaView: UIImageView {    
+public class MediaView: UIImageView {
     
-    enum SwipeMode {
+    public enum SwipeMode {
         case none
         case dismiss
         case minimize
@@ -26,7 +26,7 @@ class MediaView: UIImageView {
     }
     
     /// Delegate for the mediaView
-    weak var delegate: MediaViewDelegate?
+    public weak var delegate: MediaViewDelegate?
     
     /// Determines if video is minimized
     public var isMinimized: Bool {
@@ -99,13 +99,13 @@ class MediaView: UIImageView {
     
     // MARK: - Customizable Properties
     /// If all media is sourced from the same location, then the ABCacheManager will search the Directory for files with the same name when getting cached objects, since they all have the same remote location
-    var isAllMediaFromSameLocation = false
+    public var isAllMediaFromSameLocation = false
     
     /// Download video and audio before playing (default: false)
-    var shouldPreloadPlayableMedia = false
+    public var shouldPreloadPlayableMedia = false
     
     /// Automate caching for media (default: false)
-    var shouldCacheStreamedMedia: Bool {
+    public var shouldCacheStreamedMedia: Bool {
         get { return CacheManager.shared.shouldCacheStreamedMedia }
         set { CacheManager.shared.shouldCacheStreamedMedia = newValue }
     }
@@ -116,7 +116,7 @@ class MediaView: UIImageView {
     }
     
     /// Theme color which will show on the play button and progress track for videos (default: UIColor.cyan)
-    var themeColor = UIColor.cyan {
+    public var themeColor = UIColor.cyan {
         didSet {
             track.themeColor = themeColor
             playIndicatorView.updateImage()
@@ -124,51 +124,51 @@ class MediaView: UIImageView {
     }
     
     /// Determines whether the video playerLayer should be set to aspect fit mode (default: false)
-    var videoAspectFit = false {
+    public var videoAspectFit = false {
         didSet {
             playerLayer?.videoGravity = videoGravity
         }
     }
     
     /// Determines whether the progress track should be shown for video (default: false)
-    var shouldShowTrack = false {
+    public var shouldShowTrack = false {
         didSet {
             track.isHidden = !shouldShowTrack
         }
     }
     
     /// Determines if the video should be looped when it reaches completion (default: false)
-    var allowLooping = false
+    public var allowLooping = false
     
     /// Determines whether or not the mediaView is being used in a reusable view (default: false)
-    var imageViewNotReused = false
+    public var imageViewNotReused = false
     
     /// Determines what action will be taken when user swipes on fullscreen mediaView (default: .none)
-    var swipeMode: SwipeMode = .none {
+    public var swipeMode: SwipeMode = .none {
         didSet {
             swipeRecognizer.isEnabled = UIScreen.isPortrait && swipeMode.movesWhenSwipe
         }
     }
     
     /// Determines whether the video occupies the full screen when displayed (default: false)
-    var shouldDisplayFullscreen = false
+    public var shouldDisplayFullscreen = false
     
     /// Toggle functionality for remaining time to show on right track label rather than showing total time (default: false)
-    var shouldDisplayRemainingTime = false {
+    public var shouldDisplayRemainingTime = false {
         didSet {
             track.showTimeRemaining = shouldDisplayRemainingTime
         }
     }
     
     /// Toggle functionality for hiding the close button from the fullscreen view. If minimizing is disabled, this functionality is not allowed. (default: false)
-    var shouldHideCloseButton = false {
+    public var shouldHideCloseButton = false {
         didSet {
             handleCloseButtonDisplay()
         }
     }
     
     /// Toggle functionality to not have a play button visible (default: false)
-    var shouldHidePlayButton = false {
+    public var shouldHidePlayButton = false {
         didSet {
             guard hasPlayableMedia, let player = player, !(shouldHidePlayButton && playIndicatorView.alpha != 0) else {
                 playIndicatorView.alpha = 0
@@ -184,61 +184,61 @@ class MediaView: UIImageView {
     }
     
     /// Toggle functionality to have the mediaView autoplay the video associated with it after presentation (default: true)
-    var shouldAutoPlayAfterPresentation = true
+    public var shouldAutoPlayAfterPresentation = true
     
     /// Custom image can be set for the play button (video)
-    var customPlayButton: UIImage? {
+    public var customPlayButton: UIImage? {
         didSet {
             playIndicatorView.updateImage()
         }
     }
     
     /// Custom image can be set for the play button (music)
-    var customMusicButton: UIImage? {
+    public var customMusicButton: UIImage? {
         didSet {
             playIndicatorView.updateImage()
         }
     }
     
     /// Custom image can be set for when media fails to play
-    var customFailButton: UIImage? {
+    public var customFailButton: UIImage? {
         didSet {
             playIndicatorView.updateImage()
         }
     }
     
     /// Setting this value to true will allow you to have the fullscreen popup originate from the frame of the original view, without having to set the originRect yourself (default: false)
-    var shouldPresentFromOriginRect = false
+    public var shouldPresentFromOriginRect = false
     
     /// Rect that specifies where the mediaView's frame will originate from when presenting, and needs to be converted into its position in the mainWindow
-    var originRect: CGRect?
+    public var originRect: CGRect?
     
     /// Rect that specifies where the mediaView's frame will originate from when presenting, and is already converted into its position in the mainWindow
-    var originRectConverted: CGRect?
+    public var originRectConverted: CGRect?
     
     /// Change font for track labels (default: System font of size 14)
-    var trackFont: UIFont = .systemFont(ofSize: 14) {
+    public var trackFont: UIFont = .systemFont(ofSize: 14) {
         didSet {
             track.trackFont = trackFont
         }
     }
     
     /// By default, there is a buffer of 12px on the bottom of the view, and more space can be added by adjusting this bottom buffer. This is useful in order to have the mediaView show above UITabBars, UIToolbars, and other views that need reserved space on the bottom of the screen.
-    var bottomBuffer: CGFloat = 0.0 {
+    public var bottomBuffer: CGFloat = 0.0 {
         didSet {
             bottomBuffer.clamp(lower: 0, upper: 120)
         }
     }
     
     /// Ratio that the minimized view will be shruken to, can be set to a custom value or one of the available ABMediaViewRatioPresets. (Height/Width)
-    var minimizedAspectRatio: CGFloat = .landscapeRatio {
+    public var minimizedAspectRatio: CGFloat = .landscapeRatio {
         didSet {
             minimizedAspectRatio.clamp(lower: .landscapeRatio, upper: .portraitRatio)
         }
     }
     
     /// Ratio of the screen's width that the mediaView's minimized view will stretch across.
-    var minimizedWidthRatio: CGFloat = 0.5 {
+    public var minimizedWidthRatio: CGFloat = 0.5 {
         didSet {
             let maxWidthRatio = (UIScreen.superviewWidth - 24.0) / UIScreen.superviewWidth
             minimizedWidthRatio.clamp(lower: 0.25, upper: maxWidthRatio)
@@ -246,7 +246,7 @@ class MediaView: UIImageView {
     }
     
     /// Ability to offset the subviews at the top of the screen to avoid hiding other views (ie. UIStatusBar)
-    var topBuffer: CGFloat = 0.0 {
+    public var topBuffer: CGFloat = 0.0 {
         didSet {
             topBuffer.clamp(lower: 0, upper: 64)
             
@@ -258,17 +258,17 @@ class MediaView: UIImageView {
     }
     
     /// Determines whether the view has a video
-    var hasVideo: Bool {
+    public var hasVideo: Bool {
         return media.hasVideo
     }
     
     /// Determines whether the view has a audio
-    var hasAudio: Bool {
+    public var hasAudio: Bool {
         return media.hasAudio
     }
     
     /// Determines whether the view has media (video or audio)
-    var hasPlayableMedia: Bool {
+    public var hasPlayableMedia: Bool {
         return media.hasPlayableMedia
     }
     
@@ -278,13 +278,13 @@ class MediaView: UIImageView {
     }
     
     /// Determines whether the user can press and hold the image thumbnail for GIF
-    var pressShowsGIF = false
+    public var pressShowsGIF = false
     
     /// Determines whether user is long pressing thumbnail
     internal var isLongPressing = false
     
     /// File being played is from directory
-    var isFileFromDirectory = false
+    public var isFileFromDirectory = false
     
     /// The width of the view when minimized
     private var minViewWidth: CGFloat {
@@ -306,7 +306,7 @@ class MediaView: UIImageView {
         return UIScreen.superviewWidth - minViewWidth - 12
     }
     
-    var minimizedFrame: CGRect {
+    internal var minimizedFrame: CGRect {
         return CGRect(x: maxViewOffsetX, y: maxViewOffsetY, width: minViewWidth, height: minViewHeight)
     }
     
@@ -405,12 +405,12 @@ class MediaView: UIImageView {
         }
     }
     
-    override func draw(_ rect: CGRect) {
+    override public func draw(_ rect: CGRect) {
         super.draw(rect)
         layoutSubviews()
     }
     
-    override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
         updatePlayerFrame()
         
@@ -1061,12 +1061,12 @@ class MediaView: UIImageView {
         self.swipeRecognizer.isEnabled = UIScreen.isPortrait
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInitializer()
     }
     
-    override class var layerClass: AnyClass {
+    override public class var layerClass: AnyClass {
         return AVPlayerLayer.self
     }
     
@@ -1102,16 +1102,16 @@ class MediaView: UIImageView {
     }
     
     // MARK: - Static
-    static func clear(directory: CacheManager.DirectoryItem) {
+    public static func clear(directory: CacheManager.DirectoryItem) {
         CacheManager.clear(directory: directory)
     }
     
-    static var audioTypeWhenPlay: VolumeManager.AudioType {
+    public static var audioTypeWhenPlay: VolumeManager.AudioType {
         get { return VolumeManager.shared.audioTypeWhenPlay }
         set { VolumeManager.shared.audioTypeWhenPlay = newValue }
     }
     
-    static var audioTypeWhenStop: VolumeManager.AudioType {
+    public static var audioTypeWhenStop: VolumeManager.AudioType {
         get { return VolumeManager.shared.audioTypeWhenStop }
         set { VolumeManager.shared.audioTypeWhenStop = newValue }
     }

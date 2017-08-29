@@ -9,22 +9,22 @@
 import Foundation
 import AVFoundation
 
-class VolumeManager {
+public class VolumeManager {
     
-    enum AudioType: String {
+    public enum AudioType: String {
         case standard = "AVAudioSessionCategorySoloAmbient"
         case playWhenSilent = "AVAudioSessionCategoryPlayback"
         
     }
     
     /// Shared instance of VolumeManager
-    static let shared = VolumeManager()
+    public static let shared = VolumeManager()
     
     /// Specifies how audio session will be when media plays
-    var audioTypeWhenPlay: AudioType = .standard
+    public var audioTypeWhenPlay: AudioType = .standard
     
     /// Specifies how audio session will be when media stops
-    var audioTypeWhenStop: AudioType = .standard
+    public var audioTypeWhenStop: AudioType = .standard
     
     /// Shared instance of AVAudioSession
     private var session = AVAudioSession.sharedInstance()
@@ -38,12 +38,12 @@ class VolumeManager {
     // MARK: - Public
     
     /// Adjust audio to specified audioType when mediaView begins playing
-    func adjustAudioWhenPlaying() {
+    public func adjustAudioWhenPlaying() {
         currentAudioType = audioTypeWhenPlay
     }
     
     /// Adjust audio to specified audioType when mediaView stops playing
-    func adjustAudioWhenStopping() {
+    public func adjustAudioWhenStopping() {
         currentAudioType = audioTypeWhenStop
     }
 }
