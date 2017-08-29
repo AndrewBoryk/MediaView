@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-extension MediaView: UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelegate, PlayerDelegate, PlayIndicatorDelegate {
+extension MediaView: UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelegate, PlayerDelegate, PlayIndicatorDelegate, NSCopying {
     
     // MARK: - LabelDelegate
     func didTouchUpInside(label: Label) {
@@ -116,5 +116,11 @@ extension MediaView: UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelega
         if hasVideo {
             image = nil
         }
+    }
+    
+    // MARK: - NSCopying
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = MediaView(mediaView: self)
+        return copy
     }
 }

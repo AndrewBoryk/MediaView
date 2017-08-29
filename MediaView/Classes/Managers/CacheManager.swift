@@ -163,7 +163,7 @@ class CacheManager {
     /// Download the audio
     func preloadAudio(url: String, isFromDirectory: Bool = false) {
         if url.contains("ipod-library://") {
-            // FIXME: Load audio from music library
+            loadMusicFromLibrary(urlString: url)
         } else if isFromDirectory {
             loadAudio(url: URL(fileURLWithPath: url))
         } else {
@@ -280,6 +280,51 @@ class CacheManager {
         
         func completeRequest(for urlString: String, cachedPath: String?) {
             cache.dequeue(urlString)
+            completion?(cachedPath, nil)
+        }
+    }
+    
+    func loadMusicFromLibrary(urlString: String, completion: MediaDataCompletionBlock? = nil) {
+        DispatchQueue.main.async {
+            guard let url = URL(string: urlString) else {
+                completion?(nil, nil)
+                return
+            }
+            
+            let cache = Cache.audio
+            if let media = cache.getObject(for: urlString) as? String {
+                cache.dequeue(urlString)
+                completion?(media, nil)
+            } else if cache.isQueued(urlString) {
+                completion?(nil, nil)
+            } else {
+                cache.setQueued(urlString)
+                
+                let asset = AVURLAsset(url: url)
+                guard let exporter = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A),
+                    let filePath = CacheManager.fileURL(for: cache, url: url) else {
+                        return
+                }
+                
+                exporter.outputURL = filePath
+                exporter.outputFileType = .m4a
+                exporter.exportAsynchronously {
+                    switch exporter.status {
+                    case .failed, .cancelled, .unknown:
+                        break
+                    case .completed:
+                        if let exportedURL = exporter.outputURL {
+                            cache.set(object: exportedURL, forKey: urlString)
+                        }
+                    default:
+                        break
+                    }
+                }
+            }
+        }
+        
+        func completeRequest(for urlString: String, cachedPath: String?) {
+            Cache.audio.dequeue(urlString)
             completion?(cachedPath, nil)
         }
     }

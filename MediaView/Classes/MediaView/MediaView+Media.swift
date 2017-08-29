@@ -130,7 +130,7 @@ extension MediaView {
         setGIF(url: url, isPreview: true)
     }
     
-    private func setGIF(data: Data, isPreview: Bool = false) {
+    internal func setGIF(data: Data, isPreview: Bool = false) {
         media.gifData = data
         
         if !imageViewNotReused {
@@ -154,7 +154,7 @@ extension MediaView {
         }
     }
     
-    private func setGIF(url: String, isPreview: Bool = false) {
+    internal func setGIF(url: String, isPreview: Bool = false) {
         media.gifURL = url
         
         if !imageViewNotReused {

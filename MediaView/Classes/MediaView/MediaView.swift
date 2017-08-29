@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-class MediaView: UIImageView {
+class MediaView: UIImageView {    
     
     enum SwipeMode {
         case none
@@ -429,11 +429,6 @@ class MediaView: UIImageView {
     
     // MARK: - Private Methods
     
-    //    func copy(with zone: NSZone? = nil) -> Any {
-    //        let copy = MediaView(
-    //
-    //    }
-    
     private func commonInitializer() {
         isUserInteractionEnabled = true
         backgroundColor = UIColor(rgb: 0xEFEFF4)
@@ -507,7 +502,7 @@ class MediaView: UIImageView {
             })
         } else {
             if shouldDisplayFullscreen && !isFullScreen {
-                // FIXME: MediaQueue presentMediaView self.copy
+                MediaQueue.shared.present(mediaView: copy() as! MediaView)
             } else {
                 if let player = player {
                     if player.isPlaying {
@@ -994,9 +989,76 @@ class MediaView: UIImageView {
     }
     
     // MARK: - Initializers
-    private init(mediaView: MediaView) {
-        super.init(frame: .zero)
-        commonInitializer()
+    internal init(mediaView: MediaView) {
+        super.init(frame: UIWindow.main.frame)
+        
+        self.isFullScreen = true
+        self.image = mediaView.image
+        self.contentMode = mediaView.contentMode
+        self.backgroundColor = mediaView.backgroundColor
+        self.imageViewNotReused = mediaView.imageViewNotReused
+        self.videoAspectFit = mediaView.videoAspectFit
+        self.shouldDisplayRemainingTime = mediaView.shouldDisplayRemainingTime
+        self.media = mediaView.media
+        
+        if let imageURL = mediaView.media.imageURL {
+            self.setImage(url: imageURL)
+        }
+        
+        if let videoURL = mediaView.media.videoURL {
+            self.setVideo(url: videoURL)
+        }
+        
+        if let audioURL = mediaView.media.audioURL {
+            self.setAudio(url: audioURL)
+        }
+        
+        self.customPlayButton = mediaView.customPlayButton
+        self.customMusicButton = mediaView.customMusicButton
+        self.customFailButton = mediaView.customFailButton
+        self.originalSuperview = mediaView.superview
+        self.pressShowsGIF = false
+        
+        if let gifURL = mediaView.media.gifURL {
+            self.setGIF(url: gifURL)
+        } else if let gifData = mediaView.media.gifData {
+            self.setGIF(data: gifData)
+        }
+        
+        self.themeColor = mediaView.themeColor
+        self.shouldShowTrack = mediaView.shouldShowTrack
+        self.trackFont = mediaView.trackFont
+        self.allowLooping = mediaView.allowLooping
+        self.swipeMode = mediaView.swipeMode
+        self.shouldDismissAfterFinishedPlaying = mediaView.shouldDismissAfterFinishedPlaying
+        self.shouldDisplayFullscreen = mediaView.shouldDisplayFullscreen
+        
+        
+        self.shouldHidePlayButton = mediaView.shouldHidePlayButton
+        self.shouldHideCloseButton = mediaView.shouldHideCloseButton
+        self.shouldAutoPlayAfterPresentation = mediaView.shouldAutoPlayAfterPresentation
+        self.delegate = mediaView.delegate
+        
+        if !mediaView.titleLabel.isEmpty, let title = mediaView.titleLabel.text {
+            if !mediaView.detailsLabel.isEmpty, let details = mediaView.detailsLabel.text {
+                self.setTitle(title, details: details)
+            }
+            
+            self.setTitle(title)
+        }
+        
+        if mediaView.shouldPresentFromOriginRect {
+            self.originRect = mediaView.frame
+        } else {
+            self.originRect = mediaView.originRect
+            self.originRectConverted = mediaView.originRectConverted
+        }
+        
+        self.topBuffer = mediaView.topBuffer
+        self.bottomBuffer = mediaView.bottomBuffer
+        self.minimizedAspectRatio = mediaView.minimizedAspectRatio
+        self.minimizedWidthRatio = mediaView.minimizedWidthRatio
+        self.swipeRecognizer.isEnabled = UIScreen.isPortrait
     }
     
     required init?(coder aDecoder: NSCoder) {
