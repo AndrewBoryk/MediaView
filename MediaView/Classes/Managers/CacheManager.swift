@@ -61,6 +61,14 @@ class CacheManager {
             case .image, .gif:
                 return self.cache.object(forKey: key.NS) as? UIImage
             case .audio, .video:
+                if let filePath = URL(string: key)?.absoluteString {
+                    if self == .video, let location = CacheManager.file(forCache: .video, filePath: filePath) {
+                        return location
+                    } else if self == .audio, let location = CacheManager.file(forCache: .audio, filePath: filePath) {
+                        return location
+                    }
+                }
+                
                 guard let value = self.cache.object(forKey: key.NS) as? String else {
                     return nil
                 }
@@ -244,38 +252,29 @@ class CacheManager {
                 cache.setQueued(urlString)
                 
                 CacheManager.detectIf(url: url, isType: cache) { isValid in
-                    guard isValid else {
-                        completion?(nil, nil)
+                    guard isValid,
+                        let data = try? Data(contentsOf: url) else {
+                        completeRequest(for: urlString, cachedPath: nil)
                         return
                     }
                     
-                    do {
-                        let data = try Data(contentsOf: url)
-                        
-                        DispatchQueue.main.async {
-                            guard let fileURL = CacheManager.fileURL(for: cache, url: url) else {
-                                cache.dequeue(urlString)
-                                completion?(nil, nil)
-                                return
-                            }
-                            
-                            do {
-                                try data.write(to: fileURL, options: .atomic)
-                                
-                                cache.set(object: fileURL.absoluteString, forKey: urlString)
-                                cache.dequeue(urlString)
-                                completion?(fileURL.absoluteString, nil)
-                            } catch {
-                                cache.dequeue(urlString)
-                                completion?(nil, nil)
-                            }
+                    DispatchQueue.main.async {
+                        guard let fileURL = CacheManager.fileURL(for: cache, url: url),
+                            let _ = try? data.write(to: fileURL, options: .atomic) else {
+                            completeRequest(for: urlString, cachedPath: nil)
+                            return
                         }
-                    } catch {
-                        cache.dequeue(urlString)
-                        completion?(nil, nil)
+                        
+                        cache.set(object: fileURL.absoluteString, forKey: urlString)
+                        completeRequest(for: urlString, cachedPath: fileURL.absoluteString)
                     }
                 }
             }
+        }
+        
+        func completeRequest(for urlString: String, cachedPath: String?) {
+            cache.dequeue(urlString)
+            completion?(cachedPath, nil)
         }
     }
     
@@ -326,6 +325,57 @@ class CacheManager {
             return URL(fileURLWithPath: filePath)
         } catch {
             return nil
+        }
+    }
+    
+    static func file(forCache cache: DirectoryItem, filePath: String) -> String? {
+        var component = ""
+        
+        switch cache {
+        case .video:
+            component = "Audio/"
+        case .audio:
+            component = "Video/"
+        default:
+            break
+        }
+        
+        let url = URL(fileURLWithPath: NSHomeDirectory())
+        let path = url.appendingPathComponent(component)
+        let filePath: String = "Documents/ABMedia/\(path)\(filePath)"
+        
+        if FileManager.default.fileExists(atPath: filePath) {
+            return URL(fileURLWithPath: filePath).absoluteString
+        }
+        
+        return nil
+    }
+    
+    static func clear(directory: DirectoryItem) {
+        var component = "Documents/ABMedia/"
+        
+        switch directory {
+        case .video:
+            CacheManager.shared.reset(cache: .video)
+            component = "\(component)Video/"
+        case .audio:
+            CacheManager.shared.reset(cache: .audio)
+            component = "\(component)Audio/"
+        case .temp:
+            component = "tmp/"
+        case .all:
+            CacheManager.shared.reset(cache: .video)
+            CacheManager.shared.reset(cache: .audio)
+        }
+        
+        let url = URL(fileURLWithPath: NSHomeDirectory())
+        let path = url.appendingPathComponent(component)
+        
+        if let contents = try? FileManager.default.contentsOfDirectory(atPath: path.absoluteString) {
+            for fileComponent in contents {
+                let fullPath = path.appendingPathComponent(fileComponent).absoluteString
+                try? FileManager.default.removeItem(atPath: fullPath)
+            }
         }
     }
     
