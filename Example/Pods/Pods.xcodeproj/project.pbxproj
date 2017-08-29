@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0F0F27475A9803700B6D9CAF5D719949 /* Pods-MediaView_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 54974383F7B9152F172E807FF3B7B382 /* Pods-MediaView_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0F600C2D9CC4DD72ECD4FA22B153AC7D /* Pods-MediaView_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B79C8B5E54C275042DE9BA3A9155ED21 /* Pods-MediaView_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		431756E51F551A1700B1FD88 /* UIImage+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431756E41F551A1700B1FD88 /* UIImage+GIF.swift */; };
 		431DA1881F4FBBF800320D9D /* MediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DA1871F4FBBF800320D9D /* MediaView.swift */; };
 		431DA18D1F4FBCF700320D9D /* UIScreen+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DA18C1F4FBCF700320D9D /* UIScreen+Extensions.swift */; };
 		431DA18F1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DA18E1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift */; };
@@ -58,6 +59,7 @@
 		2E27EDABB18B594775F55765D994C637 /* Pods_MediaView_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MediaView_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F1C7EF83255D1A525D72497B60E2A0F /* MediaView.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = MediaView.modulemap; sourceTree = "<group>"; };
 		32AC0BFE9B3FB396EF991D62955B4B17 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		431756E41F551A1700B1FD88 /* UIImage+GIF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+GIF.swift"; sourceTree = "<group>"; };
 		431DA1871F4FBBF800320D9D /* MediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaView.swift; sourceTree = "<group>"; };
 		431DA18C1F4FBCF700320D9D /* UIScreen+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+Extensions.swift"; sourceTree = "<group>"; };
 		431DA18E1F4FC9EF00320D9D /* UIGestureRecognizer+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIGestureRecognizer+Extensions.swift"; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 			isa = PBXGroup;
 			children = (
 				43DA71291F0271570045D6EA /* UIImage+Extensions.swift */,
+				431756E41F551A1700B1FD88 /* UIImage+GIF.swift */,
 				43DA712B1F03E13C0045D6EA /* Notification+Extensions.swift */,
 				43DA712D1F03E1BE0045D6EA /* CGFloat+Extensions.swift */,
 				43350BE51F5121BF00F1032A /* TimeInterval+Extensions.swift */,
@@ -483,6 +486,7 @@
 				43C141291F53D51E003EB3E3 /* MediaView+Media.swift in Sources */,
 				43DA712A1F0271570045D6EA /* UIImage+Extensions.swift in Sources */,
 				43DA71241F0271280045D6EA /* VolumeManager.swift in Sources */,
+				431756E51F551A1700B1FD88 /* UIImage+GIF.swift in Sources */,
 				43350BE81F512BD700F1032A /* MediaViewDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
