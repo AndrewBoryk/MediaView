@@ -19,6 +19,7 @@ protocol PlayerDelegate: class {
     func didBuffer(to time: TimeInterval, item: AVPlayerItem)
     func bufferDidBecomeNotEmpty(for player: Player)
     func bufferDidBecomeEmpty(for player: Player)
+    func cacheMedia(for asset: AVAsset)
 }
 
 class Player: AVPlayer {
@@ -85,8 +86,8 @@ class Player: AVPlayer {
             let duration = TimeInterval(CMTimeGetSeconds(currentItem.duration))
             self.delegate?.didBuffer(to: bufferTime, item: currentItem)
             
-            if bufferTime == duration {
-                // FIXME: Cache streamed media
+            if bufferTime == duration, CacheManager.shared.shouldCacheStreamedMedia {
+                self.delegate?.cacheMedia(for: currentItem.asset)
             }
         })
         

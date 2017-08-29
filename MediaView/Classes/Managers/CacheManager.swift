@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 /// Image completed loading onto ABMediaView
 typealias ImageCompletionBlock = (_ image: UIImage?, _ error: Error?) -> Void
@@ -141,6 +142,9 @@ class CacheManager {
     /// Determines whether media should be cached to the directory
     var cacheMediaWhenDownloaded = false
     
+    /// Automate caching for media (default: false)
+    var shouldCacheStreamedMedia = false
+    
     /// Download the video
     func preloadVideo(url: String, isFromDirectory: Bool = false) {
         if isFromDirectory {
@@ -271,6 +275,36 @@ class CacheManager {
         func completeRequest(for urlString: String, cachedPath: String?) {
             cache.dequeue(urlString)
             completion?(cachedPath, nil)
+        }
+    }
+    
+    static func cache(url: String, cache: Cache, asset: AVAsset) {
+        switch cache {
+        case .video:
+            guard let exporter = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality),
+                let fileURL = URL(string: url),
+                let filePath = CacheManager.fileURL(for: cache, url: fileURL) else {
+                return
+            }
+            
+            exporter.outputURL = filePath
+            exporter.shouldOptimizeForNetworkUse = true
+            exporter.outputFileType = .mp4
+            
+            exporter.exportAsynchronously {
+                switch exporter.status {
+                case .failed, .cancelled, .unknown:
+                    break
+                case .completed:
+                    if let exportedURL = exporter.outputURL {
+                        cache.set(object: exportedURL, forKey: url)
+                    }
+                default:
+                    break
+                }
+            }
+        default:
+            return
         }
     }
     

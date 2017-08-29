@@ -105,7 +105,10 @@ class MediaView: UIImageView {
     var shouldPreloadPlayableMedia = false
     
     /// Automate caching for media (default: false)
-    var shouldCacheMedia = false
+    var shouldCacheStreamedMedia: Bool {
+        get { return CacheManager.shared.shouldCacheStreamedMedia }
+        set { CacheManager.shared.shouldCacheStreamedMedia = newValue }
+    }
     
     /// AVLayerVideoGravity for the playerLayer
     private var videoGravity: AVLayerVideoGravity {

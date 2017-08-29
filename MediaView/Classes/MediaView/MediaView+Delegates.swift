@@ -104,6 +104,14 @@ extension MediaView: UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelega
         resetImageIfVideo()
     }
     
+    func cacheMedia(for asset: AVAsset) {
+        if let videoURL = media.videoURL {
+            CacheManager.cache(url: videoURL, cache: .video, asset: asset)
+        } else if let audioURL = media.audioURL {
+            CacheManager.cache(url: audioURL, cache: .audio, asset: asset)
+        }
+    }
+    
     private func resetImageIfVideo() {
         if hasVideo {
             image = nil
