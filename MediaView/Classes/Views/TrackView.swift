@@ -140,6 +140,7 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     // MARK: - Gestures
     @objc private func handleTapRecognizer(_ gesture: UIGestureRecognizer) {
         touchRegistered(gesture: gesture)
+        scheduleTimer()
     }
     
     @objc private func handlePanRecognizer(_ gesture: UIGestureRecognizer) {
@@ -261,7 +262,7 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     private func scheduleTimer() {
         if #available(iOS 10, *) {
             hideTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false, block: { _ in
-                self.setTrackHidden(false)
+                self.setTrackHidden(true)
             })
         } else {
             hideTimer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(setTrackHidden(_:)), userInfo: nil, repeats: false)

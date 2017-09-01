@@ -13,9 +13,13 @@ extension UIView {
         for constraint in constraints {
             switch constraint {
             case .height, .width:
-                addConstraint(NSLayoutConstraint(item: view, attribute: constraint, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: constant))
+                let constraint = NSLayoutConstraint(item: view, attribute: constraint, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: constant)
+                constraint.isActive = true
+                addConstraint(constraint)
             default:
-                addConstraint(NSLayoutConstraint(item: self, attribute: constraint, relatedBy: .equal, toItem: view, attribute: constraint, multiplier: 1, constant: constant))
+                let constraint = NSLayoutConstraint(item: self, attribute: constraint, relatedBy: .equal, toItem: view, attribute: constraint, multiplier: 1, constant: constant)
+                constraint.isActive = true
+                addConstraint(constraint)
             }
         }
     }

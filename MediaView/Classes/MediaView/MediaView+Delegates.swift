@@ -41,13 +41,13 @@ extension MediaView: UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelega
         if shouldHidePlayButton {
             return nil
         } else if let player = player, player.didFailToPlay {
-            return customFailButton ?? UIImage.failIndicator(themeColor: themeColor, isFullScreen: isFullScreen, pressShowsGIF: pressShowsGIF)
+            return customFailButton ?? UIImage.failIndicator(themeColor: themeColor)
         } else if let playButton = customPlayButton, hasVideo {
             return playButton
         } else if let musicButton = customMusicButton, hasAudio {
             return musicButton
         } else {
-            return UIImage.playIndicator(themeColor: themeColor)
+            return .playIndicator(themeColor: themeColor, isFullScreen: isFullScreen, pressShowsGIF: pressShowsGIF)
         }
     }
     

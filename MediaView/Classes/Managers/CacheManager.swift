@@ -193,8 +193,11 @@ public class CacheManager {
             } else {
                 Cache.image.setQueued(urlString)
                 
-                let task = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
-                    if let data = data, let image = UIImage(data: data) {
+                URLSession.shared.dataTask(with: url) { (data, response, error) in
+                    if let error = error {
+                        print(error.localizedDescription)
+                        completion?(nil, nil)
+                    } else if let data = data, let image = UIImage(data: data) {
                         DispatchQueue.main.async {
                             if self.cacheMediaWhenDownloaded {
                                 Cache.image.set(object: image, forKey: urlString)
@@ -202,12 +205,12 @@ public class CacheManager {
                             
                             completion?(image, nil)
                         }
+                    } else {
+                        completion?(nil, nil)
                     }
                     
                     Cache.image.dequeue(urlString)
-                })
-                
-                task.resume()
+                }.resume()
             }
         }
     }

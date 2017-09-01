@@ -12,7 +12,6 @@
 		2535D281D933BDAC1D5FC3B44B48B154 /* MediaView+Delegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167ACA2509453A004E3C8EFC570AAAED /* MediaView+Delegates.swift */; };
 		2E434CBD327F196763D661845D899733 /* UIScreen+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC09C38D5907150078A59161B94548A3 /* UIScreen+Extensions.swift */; };
 		3F36DD0398ACDBEAB6F63C47CDC52331 /* MediaView-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B54811804E18AD6D9536BDEF471FDB58 /* MediaView-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		43B423CF1F553E0A00D69FC5 /* MediaView.swift in Headers */ = {isa = PBXBuildFile; fileRef = ADB18C3D5EB288137B374143DD82BC83 /* MediaView.swift */; };
 		47E0BD17B183411E76FD1879CFAA4050 /* UIImage+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = D71D2C091FDE2C9AD4D0DAC89D9A7DF1 /* UIImage+GIF.swift */; };
 		4B2D4C12164388F79C740FA65ED56062 /* MediaView-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E122CE1DF767434E4A867B90F075371 /* MediaView-dummy.m */; };
 		5B533CE0CE3BE42AF4DEA09F611BA1C2 /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A120B866F3D6022BC2C5D5314C08C86F /* CGRect+Extensions.swift */; };
@@ -62,15 +61,15 @@
 		167ACA2509453A004E3C8EFC570AAAED /* MediaView+Delegates.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "MediaView+Delegates.swift"; sourceTree = "<group>"; };
 		17273C813B136566D7284B402F374ADC /* Pods-MediaView_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MediaView_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		2B7F5B9EBC7F16E9D7DA23B4FBD489A3 /* UIImage+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
-		2E27EDABB18B594775F55765D994C637 /* Pods_MediaView_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MediaView_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F1C7EF83255D1A525D72497B60E2A0F /* MediaView.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = MediaView.modulemap; sourceTree = "<group>"; };
+		2E27EDABB18B594775F55765D994C637 /* Pods_MediaView_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_MediaView_Tests.framework; path = "Pods-MediaView_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2F1C7EF83255D1A525D72497B60E2A0F /* MediaView.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = MediaView.modulemap; sourceTree = "<group>"; };
 		32AC0BFE9B3FB396EF991D62955B4B17 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E58487E085E6296430B33184BE6393E /* MediaView+Media.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "MediaView+Media.swift"; sourceTree = "<group>"; };
 		4610E3B52F8CD8FF64B7405947F99092 /* MediaQueue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MediaQueue.swift; sourceTree = "<group>"; };
 		47DEA3B84B772218B190B3032F79DC90 /* UILabel+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UILabel+Extensions.swift"; sourceTree = "<group>"; };
 		4EC8E75BEF3C44ECA652932B17A27186 /* Pods-MediaView_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MediaView_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		54974383F7B9152F172E807FF3B7B382 /* Pods-MediaView_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MediaView_Example-umbrella.h"; sourceTree = "<group>"; };
-		54B0B84109896C639F66AE9E99AAFF68 /* Pods_MediaView_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MediaView_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		54B0B84109896C639F66AE9E99AAFF68 /* Pods_MediaView_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_MediaView_Example.framework; path = "Pods-MediaView_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		646CDCE4064FA8905B036D4B78395048 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		650CA8CC9F45AD81EDD93480C27BA531 /* Pods-MediaView_Tests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MediaView_Tests-resources.sh"; sourceTree = "<group>"; };
 		6604A7D69453B4569E4E4827FB9155A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -85,18 +84,18 @@
 		89FFE8D3193383CF0C59F61B904CC7CD /* VolumeManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VolumeManager.swift; sourceTree = "<group>"; };
 		8D057A9C6D6AA975E89DC4EAD40D4DDD /* UIGestureRecognizer+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIGestureRecognizer+Extensions.swift"; sourceTree = "<group>"; };
 		9210710BADED3D3B38213250F6AB49E0 /* Pods-MediaView_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MediaView_Example-acknowledgements.plist"; sourceTree = "<group>"; };
-		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9678114A7911A325A2C0F2409F93C803 /* Notification+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Notification+Extensions.swift"; sourceTree = "<group>"; };
 		983C9A2D72A0377C93D37310A264D2DD /* Pods-MediaView_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MediaView_Example.release.xcconfig"; sourceTree = "<group>"; };
 		9BFBAFD0A7C7CC375A09F0CB18C80C20 /* TimeInterval+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Extensions.swift"; sourceTree = "<group>"; };
 		9E7B66A9ABDBBD195C2E364B49BF49FE /* Pods-MediaView_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MediaView_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		A120B866F3D6022BC2C5D5314C08C86F /* CGRect+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
 		A35707C45CA228778A6B0FCF2297493E /* UIWindow+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIWindow+Extensions.swift"; sourceTree = "<group>"; };
-		A436935508A9D43A43A41F3D799871DE /* Pods-MediaView_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-MediaView_Tests.modulemap"; sourceTree = "<group>"; };
+		A436935508A9D43A43A41F3D799871DE /* Pods-MediaView_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = "Pods-MediaView_Tests.modulemap"; sourceTree = "<group>"; };
 		ADB18C3D5EB288137B374143DD82BC83 /* MediaView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MediaView.swift; sourceTree = "<group>"; };
-		AEF831860BBA5BABE8F471AC00C922D1 /* MediaView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MediaView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEF831860BBA5BABE8F471AC00C922D1 /* MediaView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = MediaView.framework; path = MediaView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0D0C888019CA05BF05B671628B74276 /* MediaView-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MediaView-prefix.pch"; sourceTree = "<group>"; };
-		B31198A08B828CA7EBC3076753B64CC9 /* Pods-MediaView_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-MediaView_Example.modulemap"; sourceTree = "<group>"; };
+		B31198A08B828CA7EBC3076753B64CC9 /* Pods-MediaView_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = "Pods-MediaView_Example.modulemap"; sourceTree = "<group>"; };
 		B54811804E18AD6D9536BDEF471FDB58 /* MediaView-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MediaView-umbrella.h"; sourceTree = "<group>"; };
 		B79C8B5E54C275042DE9BA3A9155ED21 /* Pods-MediaView_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MediaView_Tests-umbrella.h"; sourceTree = "<group>"; };
 		C8CCCDE867E227FB61AEF141242EFDCE /* Pods-MediaView_Tests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MediaView_Tests-frameworks.sh"; sourceTree = "<group>"; };
@@ -175,6 +174,7 @@
 				D58993D14B82C73AE16089E0D6A034B9 /* PlayIndicatorView.swift */,
 				87CA581263FF39D8F00D053E1518BBBF /* TrackView.swift */,
 			);
+			name = Views;
 			path = Views;
 			sourceTree = "<group>";
 		};
@@ -184,6 +184,7 @@
 				FEFF2289EC9417DE5B04D16D345E1D55 /* Label.swift */,
 				722E7F43D76182FB895C84D07140F94F /* Player.swift */,
 			);
+			name = Custom;
 			path = Custom;
 			sourceTree = "<group>";
 		};
@@ -242,12 +243,13 @@
 		BC24C2B7241CA5BFCD58190990C51901 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				249414AEE7D89F21C2EF1699830FC2CC /* Custom */,
+				F6EB3ACE4C4ABC697367B602486816AF /* Extensions */,
+				C147675455BB2252E09A598AF004DB6A /* Managers */,
 				DF1C75435A2E48A624C7FF447103292C /* MediaView */,
 				0FB9DA9088D10C9BE0A293B22EAA6BE4 /* Views */,
-				249414AEE7D89F21C2EF1699830FC2CC /* Custom */,
-				C147675455BB2252E09A598AF004DB6A /* Managers */,
-				F6EB3ACE4C4ABC697367B602486816AF /* Extensions */,
 			);
+			name = Classes;
 			path = Classes;
 			sourceTree = "<group>";
 		};
@@ -266,6 +268,7 @@
 				4610E3B52F8CD8FF64B7405947F99092 /* MediaQueue.swift */,
 				89FFE8D3193383CF0C59F61B904CC7CD /* VolumeManager.swift */,
 			);
+			name = Managers;
 			path = Managers;
 			sourceTree = "<group>";
 		};
@@ -286,6 +289,7 @@
 				3E58487E085E6296430B33184BE6393E /* MediaView+Media.swift */,
 				D8B6671A8E3FD90CB93FC2482792C5A8 /* MediaViewDelegate.swift */,
 			);
+			name = MediaView;
 			path = MediaView;
 			sourceTree = "<group>";
 		};
@@ -294,6 +298,7 @@
 			children = (
 				BC24C2B7241CA5BFCD58190990C51901 /* Classes */,
 			);
+			name = MediaView;
 			path = MediaView;
 			sourceTree = "<group>";
 		};
@@ -332,6 +337,7 @@
 				126D3A26E748B8EAEC8B88E69554FB60 /* UIView+Extensions.swift */,
 				A35707C45CA228778A6B0FCF2297493E /* UIWindow+Extensions.swift */,
 			);
+			name = Extensions;
 			path = Extensions;
 			sourceTree = "<group>";
 		};
@@ -359,7 +365,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F36DD0398ACDBEAB6F63C47CDC52331 /* MediaView-umbrella.h in Headers */,
-				43B423CF1F553E0A00D69FC5 /* MediaView.swift in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,7 +513,80 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		345CC476DF4A7516DBD2220CF5035FF3 /* Debug */ = {
+		3FF6F442348DD76548B712AC54DB799B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E7C4360C45F1EC5CCD43A3A0C7616E53 /* MediaView.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/MediaView/MediaView-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/MediaView/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "Target Support Files/MediaView/MediaView.modulemap";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = MediaView;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		5FFC08B74C520E404665757F25369D89 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = EAB0252CD5F6EE91255E68F759903A7D /* Pods-MediaView_Example.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "Target Support Files/Pods-MediaView_Example/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-MediaView_Example/Pods-MediaView_Example.modulemap";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = Pods_MediaView_Example;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		643C76AA582046977B7877822ED7A258 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -548,7 +626,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE_SPECIFIER = NO_SIGNING/;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -556,48 +634,9 @@
 			};
 			name = Debug;
 		};
-		3E72C21FD78AEE260F1A9688EF8132D5 /* Debug */ = {
+		6A5595ADBB77117E2D6840DADBDE9BCF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EAB0252CD5F6EE91255E68F759903A7D /* Pods-MediaView_Example.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "Target Support Files/Pods-MediaView_Example/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-MediaView_Example/Pods-MediaView_Example.modulemap";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = Pods_MediaView_Example;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		3FF6F442348DD76548B712AC54DB799B /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E7C4360C45F1EC5CCD43A3A0C7616E53 /* MediaView.xcconfig */;
+			baseConfigurationReference = 983C9A2D72A0377C93D37310A264D2DD /* Pods-MediaView_Example.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -611,101 +650,25 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/MediaView/MediaView-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/MediaView/Info.plist";
+				INFOPLIST_FILE = "Target Support Files/Pods-MediaView_Example/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = "Target Support Files/MediaView/MediaView.modulemap";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = MediaView;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		5A736D8A397FB68B25941391559CCF9D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 17273C813B136566D7284B402F374ADC /* Pods-MediaView_Tests.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "Target Support Files/Pods-MediaView_Tests/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-MediaView_Tests/Pods-MediaView_Tests.modulemap";
-				MTL_ENABLE_DEBUG_INFO = YES;
+				MODULEMAP_FILE = "Target Support Files/Pods-MediaView_Example/Pods-MediaView_Example.modulemap";
+				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = Pods_MediaView_Tests;
+				PRODUCT_NAME = Pods_MediaView_Example;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		717E77604BFBB04BEAF56608A1CB2EDE /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGNING_REQUIRED = NO;
-				COPY_PHASE_STRIP = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"POD_CONFIGURATION_RELEASE=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
-				PROVISIONING_PROFILE_SPECIFIER = NO_SIGNING/;
-				STRIP_INSTALLED_PRODUCT = NO;
-				SYMROOT = "${SRCROOT}/../build";
-				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -744,7 +707,7 @@
 			};
 			name = Debug;
 		};
-		C2A21696392C2E113E8D2A88B40135E1 /* Release */ = {
+		91C44EBD104D9D3B97970D55D2630077 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4EC8E75BEF3C44ECA652932B17A27186 /* Pods-MediaView_Tests.release.xcconfig */;
 			buildSettings = {
@@ -762,7 +725,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Target Support Files/Pods-MediaView_Tests/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-MediaView_Tests/Pods-MediaView_Tests.modulemap";
@@ -780,43 +743,85 @@
 			};
 			name = Release;
 		};
-		E41AA636DE9BADB97EC0FC0813CE59A1 /* Release */ = {
+		C03B8870130C98D1B02B59D003687524 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 983C9A2D72A0377C93D37310A264D2DD /* Pods-MediaView_Example.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				PROVISIONING_PROFILE_SPECIFIER = NO_SIGNING/;
+				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = "${SRCROOT}/../build";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EF0DD48261C372CC6BBD88D32F7839EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 17273C813B136566D7284B402F374ADC /* Pods-MediaView_Tests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "Target Support Files/Pods-MediaView_Example/Info.plist";
+				INFOPLIST_FILE = "Target Support Files/Pods-MediaView_Tests/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-MediaView_Example/Pods-MediaView_Example.modulemap";
-				MTL_ENABLE_DEBUG_INFO = NO;
+				MODULEMAP_FILE = "Target Support Files/Pods-MediaView_Tests/Pods-MediaView_Tests.modulemap";
+				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = Pods_MediaView_Example;
+				PRODUCT_NAME = Pods_MediaView_Tests;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Release;
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
@@ -824,8 +829,8 @@
 		0AFF4D1D63D4934F4C31CC8FBAF80113 /* Build configuration list for PBXNativeTarget "Pods-MediaView_Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5A736D8A397FB68B25941391559CCF9D /* Debug */,
-				C2A21696392C2E113E8D2A88B40135E1 /* Release */,
+				EF0DD48261C372CC6BBD88D32F7839EE /* Debug */,
+				91C44EBD104D9D3B97970D55D2630077 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -833,8 +838,8 @@
 		2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				345CC476DF4A7516DBD2220CF5035FF3 /* Debug */,
-				717E77604BFBB04BEAF56608A1CB2EDE /* Release */,
+				643C76AA582046977B7877822ED7A258 /* Debug */,
+				C03B8870130C98D1B02B59D003687524 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -842,8 +847,8 @@
 		3D329B1ECE0AFA888187250FBEBB1331 /* Build configuration list for PBXNativeTarget "Pods-MediaView_Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3E72C21FD78AEE260F1A9688EF8132D5 /* Debug */,
-				E41AA636DE9BADB97EC0FC0813CE59A1 /* Release */,
+				5FFC08B74C520E404665757F25369D89 /* Debug */,
+				6A5595ADBB77117E2D6840DADBDE9BCF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

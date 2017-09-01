@@ -314,7 +314,7 @@ public class MediaView: UIImageView {
     /// Height constraint of the top overlay
     private lazy var topOverlayHeight: NSLayoutConstraint = {
         let height = 50 + (UIScreen.isLandscape ? 0 : topBuffer)
-        let constraint = NSLayoutConstraint(item: track, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: height)
+        let constraint = NSLayoutConstraint(item: topOverlay, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: height)
         
         return constraint
     }()
@@ -475,6 +475,7 @@ public class MediaView: UIImageView {
             addSubview(track)
             
             addConstraints([.trailing, .leading, .bottom], toView: track)
+            addConstraints([.height], toView: track, constant: 50)
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged(_:)), name: .mediaViewWillRotateNotification, object: nil)
@@ -971,9 +972,9 @@ public class MediaView: UIImageView {
         
         if !subviews.contains(titleLabel) {
             addSubview(titleLabel)
-            addConstraints([.trailing, .leading], toView: titleLabel, constant: 50)
-            addConstraint(titleTopOffsetConstraint)
-            updateTitleLabelOffsets()
+//            addConstraints([.trailing, .leading], toView: titleLabel, constant: 50)
+//            addConstraint(titleTopOffsetConstraint)
+//            updateTitleLabelOffsets()
             titleLabel.addConstraints([.height], toView: titleLabel, constant: 18)
         }
         
@@ -981,11 +982,11 @@ public class MediaView: UIImageView {
             return
         }
         
-        addSubview(titleLabel)
-        addConstraints([.trailing, .leading], toView: detailsLabel, constant: 50)
-        addConstraint(detailsTopOffsetConstraint)
-        updateDetailsLabelOffsets()
-        detailsLabel.addConstraints([.height], toView: detailsLabel, constant: 18)
+//        addSubview(detailsLabel)
+//        addConstraints([.trailing, .leading], toView: detailsLabel, constant: 50)
+//        addConstraint(detailsTopOffsetConstraint)
+//        updateDetailsLabelOffsets()
+//        detailsLabel.addConstraints([.height], toView: detailsLabel, constant: 18)
     }
     
     // MARK: - Initializers

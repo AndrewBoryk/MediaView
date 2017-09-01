@@ -55,7 +55,7 @@ extension UIImage {
         return closeX
     }
     
-    static func playIndicator(themeColor: UIColor) -> UIImage? {
+    static func failIndicator(themeColor: UIColor) -> UIImage? {
         let size: CGFloat = 60
         UIGraphicsBeginImageContextWithOptions(CGSize(size), false, 0.0)
         
@@ -105,7 +105,7 @@ extension UIImage {
         return playCircle
     }
     
-    static func failIndicator(themeColor: UIColor, isFullScreen: Bool, pressShowsGIF: Bool) -> UIImage? {
+    static func playIndicator(themeColor: UIColor, isFullScreen: Bool, pressShowsGIF: Bool) -> UIImage? {
         let size: CGFloat = 60.0
         UIGraphicsBeginImageContextWithOptions(CGSize(60), false, 0.0)
         
