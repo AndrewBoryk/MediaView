@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13189.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="CJa-XN-ySZ">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13165.3"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="PME-ol-Myz">
+            <objects>
+                <viewController id="CJa-XN-ySZ" customClass="ViewController" customModule="MediaView_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Udg-AS-AbC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="GYR-Sq-Fkd" customClass="MediaView" customModule="MediaView">
+                                <rect key="frame" x="0.0" y="228" width="375" height="211"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="GYR-Sq-Fkd" secondAttribute="height" multiplier="16:9" id="ab8-cU-MlH"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="GYR-Sq-Fkd" firstAttribute="leading" secondItem="JRz-ow-F7Q" secondAttribute="leading" id="84V-kU-omF"/>
+                            <constraint firstItem="JRz-ow-F7Q" firstAttribute="trailing" secondItem="GYR-Sq-Fkd" secondAttribute="trailing" id="JgO-Im-YAg"/>
+                            <constraint firstItem="JRz-ow-F7Q" firstAttribute="centerY" secondItem="GYR-Sq-Fkd" secondAttribute="centerY" constant="10" id="pER-iW-E78"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="JRz-ow-F7Q"/>
+                    </view>
+                    <connections>
+                        <outlet property="mediaView" destination="GYR-Sq-Fkd" id="7ud-Yn-Rep"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oH9-GW-3nr" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="170" y="-69"/>
+        </scene>
+    </scenes>
+</document>

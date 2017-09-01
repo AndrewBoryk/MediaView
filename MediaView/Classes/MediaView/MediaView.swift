@@ -8,6 +8,7 @@
 import Foundation
 import AVFoundation
 
+/// UIImageView subclass capable of displaying images, videos, audio and gifs
 public class MediaView: UIImageView {
     
     public enum SwipeMode {
@@ -458,7 +459,6 @@ public class MediaView: UIImageView {
             updateTopOverlayHeight()
             topOverlay.addConstraint(topOverlayHeight)
             addConstraints([.trailing, .leading, .top], toView: topOverlay)
-            topOverlay.layoutIfNeeded()
         }
         
         if !subviews.contains(closeButton) {
@@ -475,8 +475,6 @@ public class MediaView: UIImageView {
             addSubview(track)
             
             addConstraints([.trailing, .leading, .bottom], toView: track)
-            addConstraint(NSLayoutConstraint(item: track, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 60))
-            track.layoutIfNeeded()
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged(_:)), name: .mediaViewWillRotateNotification, object: nil)
@@ -972,6 +970,7 @@ public class MediaView: UIImageView {
         }
         
         if !subviews.contains(titleLabel) {
+            addSubview(titleLabel)
             addConstraints([.trailing, .leading], toView: titleLabel, constant: 50)
             addConstraint(titleTopOffsetConstraint)
             updateTitleLabelOffsets()
@@ -982,6 +981,7 @@ public class MediaView: UIImageView {
             return
         }
         
+        addSubview(titleLabel)
         addConstraints([.trailing, .leading], toView: detailsLabel, constant: 50)
         addConstraint(detailsTopOffsetConstraint)
         updateDetailsLabelOffsets()
