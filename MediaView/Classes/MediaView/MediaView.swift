@@ -388,8 +388,8 @@ public class MediaView: UIImageView {
     
     // MARK: - Variable Properties
     
-    /// Variable tracking offset of view when the swipe starts
-    private var startingOffset: CGFloat = 0
+    /// Variable tracking translation of view when the swipe starts
+    private var swipeTranslation: CGPoint = .zero
     
     /// Number of seconds in the buffer
     private var bufferTime: CGFloat = 0.0
@@ -600,7 +600,7 @@ public class MediaView: UIImageView {
             
             track.hideTrackAndInvalidate()
             
-            startingOffset = frame.origin.y
+            swipeTranslation = .zero
         case .changed:
             updateFrame(withGesture: gesture)
         case .cancelled, .failed, .ended:
@@ -674,7 +674,8 @@ public class MediaView: UIImageView {
             frame.origin.x > maxViewOffsetX || velocity.y >= 0 {
             handleMinimizedDismissal(using: gesture)
         } else {
-            var temporaryOffset = startingOffset + translation.y
+            let difference = translation.y - swipeTranslation.y
+            var temporaryOffset = frame.origin.y + difference
             
             switch swipeMode {
             case .minimize:
@@ -696,6 +697,7 @@ public class MediaView: UIImageView {
         }
         
         layoutSubviews()
+        swipeTranslation = translation
     }
     
     private func setMinimizedOffset(_ offset: CGFloat) {
@@ -716,7 +718,8 @@ public class MediaView: UIImageView {
     
     private func handleMinimizedDismissal(using gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: self)
-        var temporaryOffset = maxViewOffsetX + translation.x
+        let difference = translation.x - swipeTranslation.x
+        var temporaryOffset = frame.origin.x + difference
         temporaryOffset.clamp(lower: maxViewOffsetX, upper: UIScreen.superviewWidth)
         
         let offsetRatio = (temporaryOffset - maxViewOffsetX) / (minViewWidth - 12)
