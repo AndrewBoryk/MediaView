@@ -62,13 +62,13 @@ public class MediaQueue {
         
         UIView.animate(withDuration: animationTime, delay: 0.0, options: .curveLinear, animations: {
             mediaView.alpha = 1
+            mediaView.layoutSubviews()
             mediaView.frame = UIWindow.main.frame
             
             if !mediaView.shouldAutoPlayAfterPresentation {
                 mediaView.handleTopOverlayDisplay()
             }
             
-            mediaView.layoutSubviews()
         }) { _ in
             mediaView.delegate?.didPresent(mediaView: mediaView)
             

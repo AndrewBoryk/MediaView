@@ -6,13 +6,13 @@
 //
 //
 
-extension Notification.Name {
+public extension Notification.Name {
     
     /// Notification for when the mediaView will rotate between landscape and portrait
-    static let mediaViewWillRotateNotification = Notification.Name(rawValue: "mediaViewWillRotateNotification")
+    public static let mediaViewWillRotateNotification = Notification.Name(rawValue: "mediaViewWillRotateNotification")
     
     /// Notification for when the mediaView will rotate between portrait and landscape
-    static let mediaViewDidRotateNotification = Notification.Name(rawValue: "mediaViewDidRotateNotification")
+    public static let mediaViewDidRotateNotification = Notification.Name(rawValue: "mediaViewDidRotateNotification")
 }
 
 public extension Notification {

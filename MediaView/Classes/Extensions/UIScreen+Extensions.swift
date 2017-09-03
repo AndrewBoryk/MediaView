@@ -5,15 +5,15 @@
 //  Created by Andrew Boryk on 8/24/17.
 //
 
-extension UIScreen {
+public extension UIScreen {
     
     /// Derived by whether the width of the screen is less than the height of the screen
-    static var isPortrait: Bool {
+    public static var isPortrait: Bool {
         return UIScreen.superviewWidth < UIScreen.superviewHeight
     }
     
     /// Derived by whether the height of the screen is less than the width of the screen
-    static var isLandscape: Bool {
+    public static var isLandscape: Bool {
         return UIScreen.superviewHeight < UIScreen.superviewWidth
     }
     
@@ -33,7 +33,7 @@ extension UIScreen {
     }
     
     /// Width of the mainWindow, adjusted for orientation
-    static var superviewWidth: CGFloat {
+    public static var superviewWidth: CGFloat {
         if UIDeviceOrientationIsLandscape(UIDevice.current.orientation) {
             return width > height ? width : height
         } else {
@@ -42,7 +42,7 @@ extension UIScreen {
     }
     
     /// Height of the mainWindow, adjusted for orientation
-    static var superviewHeight: CGFloat {
+    public static var superviewHeight: CGFloat {
         if UIDeviceOrientationIsLandscape(UIDevice.current.orientation) {
             return width > height ? height : width
         } else {

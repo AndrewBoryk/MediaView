@@ -420,61 +420,11 @@ public class MediaView: UIImageView {
         
         playIndicatorView.frame.size = CGSize(playSize)
         playIndicatorView.center = CGPoint(x: frame.width / 2, y: frame.height / 2)
-        closeButton.frame.origin = CGPoint(x: 0, y: 0 + (UIScreen.isPortrait ? 0 : topBuffer))
+        closeButton.frame.origin = CGPoint(x: 0, y: 0 + (UIScreen.isPortrait ? topBuffer : 0))
         closeButton.frame.size = CGSize(50)
     }
     
     // MARK: - Private Methods
-    
-    private func commonInitializer() {
-        isUserInteractionEnabled = true
-        backgroundColor = UIColor(rgb: 0xEFEFF4)
-        
-        layer.borderWidth = 1.0
-        layer.masksToBounds = false
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = .zero
-        layer.shadowOpacity = 0.0
-        layer.shadowRadius = 1.0
-        
-        addGestureRecognizer(swipeRecognizer)
-        addGestureRecognizer(tapRecognizer)
-        addGestureRecognizer(gifLongPressRecognizer)
-        
-        tapRecognizer.require(toFail: swipeRecognizer)
-        tapRecognizer.require(toFail: gifLongPressRecognizer)
-        
-        if !subviews.contains(topOverlay) {
-            addSubview(topOverlay)
-            
-            updateTopOverlayHeight()
-            topOverlay.addConstraint(topOverlayHeight)
-            addConstraints([.trailing, .leading, .top], toView: topOverlay)
-        }
-        
-        if !subviews.contains(closeButton) {
-            addSubview(closeButton)
-            bringSubview(toFront: closeButton)
-        }
-        
-        if !subviews.contains(playIndicatorView) {
-            addSubview(playIndicatorView)
-            bringSubview(toFront: playIndicatorView)
-        }
-        
-        if !subviews.contains(track) {
-            addSubview(track)
-            
-            addConstraints([.trailing, .leading, .bottom], toView: track)
-            addConstraints([.height], toView: track, constant: 50)
-        }
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged(_:)), name: .mediaViewWillRotateNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged(_:)), name: .mediaViewDidRotateNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(adjustSubviews), name: .UIApplicationWillEnterForeground, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(adjustSubviews), name: .UIApplicationDidBecomeActive, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(pauseVideoEnteringBackground), name: .UIApplicationDidEnterBackground, object: nil)
-    }
     
     /// Selector to play the video from the playRecognizer
     @objc func handleTapFromRecognizer() {
@@ -1017,6 +967,56 @@ public class MediaView: UIImageView {
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInitializer()
+    }
+    
+    private func commonInitializer() {
+        isUserInteractionEnabled = true
+        backgroundColor = UIColor(rgb: 0xEFEFF4)
+        
+        layer.borderWidth = 1.0
+        layer.masksToBounds = false
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = .zero
+        layer.shadowOpacity = 0.0
+        layer.shadowRadius = 1.0
+        
+        addGestureRecognizer(swipeRecognizer)
+        addGestureRecognizer(tapRecognizer)
+        addGestureRecognizer(gifLongPressRecognizer)
+        
+        tapRecognizer.require(toFail: swipeRecognizer)
+        tapRecognizer.require(toFail: gifLongPressRecognizer)
+        
+        if !subviews.contains(topOverlay) {
+            addSubview(topOverlay)
+            
+            updateTopOverlayHeight()
+            topOverlay.addConstraint(topOverlayHeight)
+            addConstraints([.trailing, .leading, .top], toView: topOverlay)
+        }
+        
+        if !subviews.contains(closeButton) {
+            addSubview(closeButton)
+            bringSubview(toFront: closeButton)
+        }
+        
+        if !subviews.contains(playIndicatorView) {
+            addSubview(playIndicatorView)
+            bringSubview(toFront: playIndicatorView)
+        }
+        
+        if !subviews.contains(track) {
+            addSubview(track)
+            
+            addConstraints([.trailing, .leading, .bottom], toView: track)
+            addConstraints([.height], toView: track, constant: 50)
+        }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged(_:)), name: .mediaViewWillRotateNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged(_:)), name: .mediaViewDidRotateNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(adjustSubviews), name: .UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(adjustSubviews), name: .UIApplicationDidBecomeActive, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(pauseVideoEnteringBackground), name: .UIApplicationDidEnterBackground, object: nil)
     }
     
     override public class var layerClass: AnyClass {
