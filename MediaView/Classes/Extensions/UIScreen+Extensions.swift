@@ -34,11 +34,19 @@ extension UIScreen {
     
     /// Width of the mainWindow, adjusted for orientation
     static var superviewWidth: CGFloat {
-        return width > height ? width : height
+        if UIDeviceOrientationIsLandscape(UIDevice.current.orientation) {
+            return width > height ? width : height
+        } else {
+            return width > height ? height : width
+        }
     }
     
     /// Height of the mainWindow, adjusted for orientation
     static var superviewHeight: CGFloat {
-        return width < height ? width : height
+        if UIDeviceOrientationIsLandscape(UIDevice.current.orientation) {
+            return width > height ? height : width
+        } else {
+            return width > height ? width : height
+        }
     }
 }

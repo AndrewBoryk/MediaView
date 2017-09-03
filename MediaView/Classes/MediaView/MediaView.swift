@@ -30,14 +30,17 @@ public class MediaView: UIImageView {
     public weak var delegate: MediaViewDelegate?
     
     /// Determines if video is minimized
-    public var isMinimized: Bool {
-        return offset == maxViewOffsetY && swipeMode == .minimize
-    }
+    public var isMinimized: Bool = false
     
     /// Keeps track of how much the video has been minimized
-    private(set) public var offsetPercentage: CGFloat = 0.0 {
-        didSet {
-            offsetPercentage.clamp(lower: 0, upper: 1)
+    public var offsetPercentage: CGFloat {
+        switch swipeMode {
+        case .dismiss:
+            return frame.origin.y / UIScreen.superviewHeight
+        case .minimize:
+            return frame.origin.y / maxViewOffsetY
+        case .none:
+            return 0
         }
     }
     
@@ -75,9 +78,6 @@ public class MediaView: UIImageView {
         
         tapRecognizer.require(toFail: track.scrubRecognizer)
         tapRecognizer.require(toFail: track.tapRecognizer)
-        
-        swipeRecognizer.require(toFail: track.scrubRecognizer)
-        swipeRecognizer.require(toFail: track.tapRecognizer)
         
         return track
     }()
@@ -299,7 +299,7 @@ public class MediaView: UIImageView {
     
     /// The maximum amount of y offset for the mediaView when minimizing
     private var maxViewOffsetY: CGFloat {
-        return UIScreen.superviewWidth - minViewHeight + bottomBuffer + 12
+        return UIScreen.superviewHeight - minViewHeight - bottomBuffer - 12
     }
     
     /// The maximum amount of x offset for the mediaView when minimizing
@@ -387,13 +387,9 @@ public class MediaView: UIImageView {
     }()
     
     // MARK: - Variable Properties
-    /// Position of the swipe vertically
-    private var swipePosition: CGPoint = .zero
     
-    /// Variable tracking offset of video
-    private var offset: CGFloat {
-        return frame.origin.y
-    }
+    /// Variable tracking offset of view when the swipe starts
+    private var startingOffset: CGFloat = 0
     
     /// Number of seconds in the buffer
     private var bufferTime: CGFloat = 0.0
@@ -441,17 +437,12 @@ public class MediaView: UIImageView {
         layer.shadowOpacity = 0.0
         layer.shadowRadius = 1.0
         
-        if let contains = gestureRecognizers?.contains(swipeRecognizer), !contains {
-            gestureRecognizers?.append(swipeRecognizer)
-        }
+        addGestureRecognizer(swipeRecognizer)
+        addGestureRecognizer(tapRecognizer)
+        addGestureRecognizer(gifLongPressRecognizer)
         
-        if let contains = gestureRecognizers?.contains(tapRecognizer), !contains {
-            addGestureRecognizer(tapRecognizer)
-        }
-        
-        if let contains = gestureRecognizers?.contains(gifLongPressRecognizer), !contains {
-            addGestureRecognizer(gifLongPressRecognizer)
-        }
+        tapRecognizer.require(toFail: swipeRecognizer)
+        tapRecognizer.require(toFail: gifLongPressRecognizer)
         
         if !subviews.contains(topOverlay) {
             addSubview(topOverlay)
@@ -489,19 +480,19 @@ public class MediaView: UIImageView {
     @objc func handleTapFromRecognizer() {
         if isMinimized {
             isUserInteractionEnabled = false
-            
-            delegate?.willEndMinimizing(for: self, atMinimizedState: false)
+            delegate?.willEndMinimizing(for: self, atMinimizedState: isMinimized)
             
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear, animations: {
                 self.setFullScreenView()
             }, completion: { _ in
                 self.track.isUserInteractionEnabled = self.isMinimized
                 self.isUserInteractionEnabled = true
-                self.delegate?.didEndMinimizing(for: self, atMinimizedState: false)
+                self.delegate?.didEndMinimizing(for: self, atMinimizedState: self.isMinimized)
             })
         } else {
             if shouldDisplayFullscreen && !isFullScreen {
-                MediaQueue.shared.present(mediaView: copy() as! MediaView)
+                print(ObjectIdentifier(self))
+                MediaQueue.shared.present(mediaView: MediaView(mediaView: self))
             } else {
                 if let player = player {
                     if player.isPlaying {
@@ -609,28 +600,9 @@ public class MediaView: UIImageView {
             
             track.hideTrackAndInvalidate()
             
-            swipePosition = gesture.location(in: self)
+            startingOffset = frame.origin.y
         case .changed:
-            switch swipeMode {
-            case .dismiss:
-                handleDismissal(using: gesture)
-            case .minimize:
-                if isMinimized {
-                    if frame.origin.x > maxViewOffsetX {
-                        handleMinimizedDismissal(using: gesture)
-                    } else {
-                        if gesture.velocity(in: self).isDownToTheRight {
-                            handleMinimizedDismissal(using: gesture)
-                        } else {
-                            handleMinimization(using: gesture)
-                        }
-                    }
-                } else {
-                    handleMinimization(using: gesture)
-                }
-            default:
-                break
-            }
+            updateFrame(withGesture: gesture)
         case .cancelled, .failed, .ended:
             switch swipeMode {
             case .dismiss:
@@ -661,7 +633,9 @@ public class MediaView: UIImageView {
                 if alpha < 0.6 {
                     MediaQueue.shared.dismissCurrent()
                 } else {
-                    let shouldMinimize = offsetPercentage >= 0.4
+                    let minimizedCondition = isMinimized && offsetPercentage >= 0.75
+                    let fullscreenCondition = !isMinimized && offsetPercentage >= 0.4
+                    let shouldMinimize = minimizedCondition || fullscreenCondition
                     delegate?.willEndMinimizing(for: self, atMinimizedState: shouldMinimize)
                     
                     UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear, animations: {
@@ -687,114 +661,80 @@ public class MediaView: UIImageView {
         }
     }
     
-    private func handleDismissal(using gesture: UIPanGestureRecognizer) {
+    private func updateFrame(withGesture gesture: UIPanGestureRecognizer) {
         guard isFullScreen else {
             return
         }
         
-        delegate?.willChangeDismissing(for: self)
+        let translation = gesture.translation(in: self)
+        let velocity = gesture.velocity(in: self)
         
-        let location = gesture.location(in: self)
-        let difference = location.y - swipePosition.y
-        let temporaryOffset = offset + difference
-        offsetPercentage = temporaryOffset / UIScreen.superviewHeight
-        
-        delegate?.mediaView(self, didChangeOffset: offsetPercentage)
-        
-        borderAlpha = 0
-        frame.size = CGSize(UIScreen.superviewWidth, UIScreen.superviewHeight)
-        frame.origin.x = 0
-        
-        let testOrigin = offsetPercentage * UIScreen.superviewHeight
-        
-        switch testOrigin {
-        case UIScreen.superviewHeight...:
-            frame.origin.y = UIScreen.superviewHeight
-        case ...0:
-            frame.origin.y = 0
-        default:
-            frame.origin.y = testOrigin
+        if isMinimized,
+            frame.origin.y == maxViewOffsetY,
+            frame.origin.x > maxViewOffsetX || velocity.y >= 0 {
+            handleMinimizedDismissal(using: gesture)
+        } else {
+            var temporaryOffset = startingOffset + translation.y
+            
+            switch swipeMode {
+            case .minimize:
+                temporaryOffset.clamp(lower: 0, upper: maxViewOffsetY)
+                setMinimizedOffset(temporaryOffset)
+                delegate?.mediaView(self, didChangeOffset: offsetPercentage)
+            case .dismiss:
+                delegate?.willChangeDismissing(for: self)
+                temporaryOffset.clamp(lower: 0, upper: UIScreen.superviewHeight)
+                borderAlpha = 0
+                frame.size = CGSize(UIScreen.superviewWidth, UIScreen.superviewHeight)
+                frame.origin.x = 0
+                frame.origin.y = temporaryOffset
+                delegate?.didChangeDismissing(for: self)
+                delegate?.mediaView(self, didChangeOffset: offsetPercentage)
+            default:
+                break
+            }
         }
         
         layoutSubviews()
-        delegate?.didChangeDismissing(for: self)
-        swipePosition = location
     }
     
-    private func handleMinimization(using gesture: UIPanGestureRecognizer) {
-        guard isFullScreen else {
-            return
-        }
-        
+    private func setMinimizedOffset(_ offset: CGFloat) {
         delegate?.willChangeMinimization(for: self)
+        frame.origin.y = offset
+        frame.size.width = UIScreen.superviewWidth - (offsetPercentage * (UIScreen.superviewWidth - minViewWidth))
+        frame.size.height = UIScreen.superviewHeight - (offsetPercentage * (UIScreen.superviewHeight - minViewHeight))
+        frame.origin.x = UIScreen.superviewWidth - frame.width - (offsetPercentage * 12)
+        borderAlpha = offsetPercentage
         
-        let location = gesture.location(in: self)
-        let difference = location.y - swipePosition.y
-        let temporaryOffset = offset + difference
-        offsetPercentage = temporaryOffset / maxViewOffsetY
-        
-        delegate?.mediaView(self, didChangeOffset: offsetPercentage)
-        
-        let testOrigin = offsetPercentage * maxViewOffsetY
-        
-        switch testOrigin {
-        case maxViewOffsetY...:
-            setMinimizedView()
-        case ...0:
-            setFullScreenView()
-        default:
-            frame.origin.y = testOrigin
-            frame.size.width = UIScreen.superviewWidth - (offsetPercentage * (UIScreen.superviewWidth - minViewWidth))
-            frame.size.height = UIScreen.superviewHeight - (offsetPercentage * (UIScreen.superviewHeight - minViewHeight))
-            frame.origin.x = UIScreen.superviewWidth - frame.width - (offsetPercentage * 12)
-            borderAlpha = offsetPercentage
-            
-            let offsetAlpha = 1 - offsetPercentage
-            setPlayIndicatorView(alpha: offsetAlpha)
-            
-            closeButton.alpha = shouldHideCloseButton && swipeMode == .minimize && UIScreen.isPortrait ? 0 : 1
-            let overlayAlpha = isPlayingVideo || titleLabel.isEmpty ? 0 : offsetAlpha
-            setTopOverlayAlpha(overlayAlpha)
-        }
-        
-        layoutSubviews()
+        let offsetAlpha = 1 - offsetPercentage
+        setPlayIndicatorView(alpha: offsetAlpha)
+        handleCloseButtonDisplay()
+        let overlayAlpha = isPlayingVideo || titleLabel.isEmpty ? 0 : offsetAlpha
+        setTopOverlayAlpha(overlayAlpha)
         delegate?.didChangeMinimization(for: self)
-        swipePosition = location
     }
     
     private func handleMinimizedDismissal(using gesture: UIPanGestureRecognizer) {
-        guard isFullScreen else {
-            return
-        }
+        let translation = gesture.translation(in: self)
+        var temporaryOffset = maxViewOffsetX + translation.x
+        temporaryOffset.clamp(lower: maxViewOffsetX, upper: UIScreen.superviewWidth)
         
-        let location = gesture.location(in: self)
-        let difference = location.x - swipePosition.x
-        let temporaryOffset = frame.origin.x + difference
         let offsetRatio = (temporaryOffset - maxViewOffsetX) / (minViewWidth - 12)
         
-        switch offsetRatio {
-        case 1...:
-            frame.origin = CGPoint(UIScreen.superviewWidth, maxViewOffsetY)
-            alpha = 0
-        case ..<0:
-            frame.origin = CGPoint(maxViewOffsetX, maxViewOffsetY)
-            alpha = 1
-        default:
-            frame.origin.x += difference
-            frame.origin.y = maxViewOffsetY
-            alpha = 1 - offsetRatio
-        }
-        
-        layoutSubviews()
-        swipePosition = location
+        frame.origin.x = temporaryOffset
+        frame.origin.y = maxViewOffsetY
+        alpha = 1 - offsetRatio
     }
+    
     
     private func setMinimizedView() {
         frame = minimizedFrame
-        playIndicatorView.alpha = 0
-        closeButton.alpha = 0
-        setTopOverlayAlpha(0)
+        setPlayIndicatorView(alpha: 0)
+        handleCloseButtonDisplay()
+        handleTopOverlayDisplay()
         borderAlpha = 1.0
+        
+        isMinimized = frame.origin.y == maxViewOffsetY && swipeMode == .minimize
     }
     
     private func setFullScreenView() {
@@ -805,6 +745,8 @@ public class MediaView: UIImageView {
         setPlayIndicatorView()
         handleCloseButtonDisplay()
         handleTopOverlayDisplay()
+        
+        isMinimized = frame.origin.y == maxViewOffsetY && swipeMode == .minimize
     }
     
     internal func setPlayIndicatorView(alpha: CGFloat = 1) {
@@ -908,15 +850,19 @@ public class MediaView: UIImageView {
             originRectConverted = (originalSuperview ?? self).convert(originRect, to: UIWindow.main)
         }
         
-        closeButton.alpha = 0
-        setTopOverlayAlpha(0)
+        handleTopOverlayDisplay()
+        handleCloseButtonDisplay()
         
         frame = originRectConverted ?? UIWindow.main.frame
         alpha = originRectConverted == nil ? 0 : 1
     }
     
     func handleCloseButtonDisplay() {
-        closeButton.alpha = (isFullScreen && !shouldHideCloseButton && swipeMode != .minimize && UIScreen.isLandscape) ? 1 : 0
+        if swipeMode.movesWhenSwipe && UIScreen.isPortrait {
+            closeButton.alpha = shouldHideCloseButton || !isFullScreen ? 0 : (1 - offsetPercentage)
+        } else {
+            closeButton.alpha = 1
+        }
     }
     
     func handleTopOverlayDisplay() {
@@ -972,9 +918,9 @@ public class MediaView: UIImageView {
         
         if !subviews.contains(titleLabel) {
             addSubview(titleLabel)
-//            addConstraints([.trailing, .leading], toView: titleLabel, constant: 50)
-//            addConstraint(titleTopOffsetConstraint)
-//            updateTitleLabelOffsets()
+            addConstraints([.trailing, .leading], toView: titleLabel, constant: 50)
+            addConstraint(titleTopOffsetConstraint)
+            updateTitleLabelOffsets()
             titleLabel.addConstraints([.height], toView: titleLabel, constant: 18)
         }
         
@@ -982,11 +928,11 @@ public class MediaView: UIImageView {
             return
         }
         
-//        addSubview(detailsLabel)
-//        addConstraints([.trailing, .leading], toView: detailsLabel, constant: 50)
-//        addConstraint(detailsTopOffsetConstraint)
-//        updateDetailsLabelOffsets()
-//        detailsLabel.addConstraints([.height], toView: detailsLabel, constant: 18)
+        addSubview(detailsLabel)
+        addConstraints([.trailing, .leading], toView: detailsLabel, constant: 50)
+        addConstraint(detailsTopOffsetConstraint)
+        updateDetailsLabelOffsets()
+        detailsLabel.addConstraints([.height], toView: detailsLabel, constant: 18)
     }
     
     // MARK: - Initializers
@@ -994,6 +940,8 @@ public class MediaView: UIImageView {
         super.init(frame: UIWindow.main.frame)
         
         self.isFullScreen = true
+        self.shouldDisplayFullscreen = false
+        
         self.image = mediaView.image
         self.contentMode = mediaView.contentMode
         self.backgroundColor = mediaView.backgroundColor
@@ -1032,7 +980,6 @@ public class MediaView: UIImageView {
         self.allowLooping = mediaView.allowLooping
         self.swipeMode = mediaView.swipeMode
         self.shouldDismissAfterFinishedPlaying = mediaView.shouldDismissAfterFinishedPlaying
-        self.shouldDisplayFullscreen = mediaView.shouldDisplayFullscreen
         
         
         self.shouldHidePlayButton = mediaView.shouldHidePlayButton
@@ -1060,6 +1007,8 @@ public class MediaView: UIImageView {
         self.minimizedAspectRatio = mediaView.minimizedAspectRatio
         self.minimizedWidthRatio = mediaView.minimizedWidthRatio
         self.swipeRecognizer.isEnabled = UIScreen.isPortrait
+        
+        commonInitializer()
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -1083,8 +1032,8 @@ public class MediaView: UIImageView {
         
         bufferTime = 0
         playIndicatorView.alpha = 0
-        closeButton.alpha = 0
-        setTopOverlayAlpha(0)
+        handleCloseButtonDisplay()
+        handleTopOverlayDisplay()
         
         playIndicatorView.endAnimation()
     }

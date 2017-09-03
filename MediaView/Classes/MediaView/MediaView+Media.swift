@@ -40,6 +40,8 @@ public extension MediaView {
                 self.image = image
             })
         }
+        
+        track.isHidden = !hasPlayableMedia
     }
     
     public func setVideo(url: String) {
@@ -50,6 +52,8 @@ public extension MediaView {
         if shouldPreloadPlayableMedia || CacheManager.shared.shouldPreloadPlayableMedia {
             CacheManager.shared.preloadVideo(url: url, isFromDirectory: isFileFromDirectory)
         }
+        
+        track.isHidden = !hasPlayableMedia
     }
     
     public func setVideo(url: String, thumbnail: UIImage) {
@@ -100,6 +104,8 @@ public extension MediaView {
         if shouldPreloadPlayableMedia || CacheManager.shared.shouldPreloadPlayableMedia {
             CacheManager.shared.preloadAudio(url: url, isFromDirectory: isFileFromDirectory)
         }
+        
+        track.isHidden = !hasPlayableMedia
     }
     
     public func setAudio(url: String, thumbnail: UIImage) {
@@ -152,6 +158,8 @@ public extension MediaView {
                 }
             })
         }
+        
+        track.isHidden = !hasPlayableMedia
     }
     
     internal func setGIF(url: String, isPreview: Bool = false) {
@@ -176,6 +184,7 @@ public extension MediaView {
                 }
             })
         }
+        
+        track.isHidden = !hasPlayableMedia
     }
-    
 }

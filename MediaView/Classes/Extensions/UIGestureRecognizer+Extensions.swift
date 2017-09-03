@@ -23,8 +23,8 @@ extension UIPanGestureRecognizer {
     convenience init(target: Any?, action: Selector?, delegate: UIGestureRecognizerDelegate? = nil) {
         self.init(target: target, action: action)
         self.delegate = delegate
-        self.delaysTouchesBegan = true
         self.cancelsTouchesInView = false
+        self.delaysTouchesBegan = false
         self.maximumNumberOfTouches = 1
         self.isEnabled = false
     }

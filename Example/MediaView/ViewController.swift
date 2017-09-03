@@ -40,8 +40,7 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        mediaView.setVideo(url: "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4", thumbnailUrl: "http://camendesign.com/code/video_for_everybody/poster.jpg")
-        mediaView.setTitle("Big Buck Bunny")
+        mediaView.setImage(url: "http://camendesign.com/code/video_for_everybody/poster.jpg")
     }
 }
 

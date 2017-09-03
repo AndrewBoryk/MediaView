@@ -40,6 +40,6 @@ extension CGPoint {
     }
     
     var isDownToTheRight: Bool {
-        return x > 0 && y >= 0 && fabsf(Float(y)) < Float(x)
+        return y >= 0 && fabsf(Float(y)) < Float(x)
     }
 }
