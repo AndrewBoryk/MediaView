@@ -846,7 +846,7 @@ public class MediaView: UIImageView {
         
         backgroundColor = .black
         
-        if let originRect = originRect, originRectConverted != nil {
+        if let originRect = originRect, originRectConverted == nil {
             originRectConverted = (originalSuperview ?? self).convert(originRect, to: UIWindow.main)
         }
         
