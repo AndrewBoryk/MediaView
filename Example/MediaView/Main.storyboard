@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="GYR-Sq-Fkd" customClass="MediaView" customModule="MediaView">
-                                <rect key="frame" x="0.0" y="228" width="375" height="211"/>
+                                <rect key="frame" x="0.0" y="238" width="375" height="211"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="GYR-Sq-Fkd" secondAttribute="height" multiplier="16:9" id="ab8-cU-MlH"/>
                                 </constraints>
@@ -30,7 +30,7 @@
                         <constraints>
                             <constraint firstItem="GYR-Sq-Fkd" firstAttribute="leading" secondItem="JRz-ow-F7Q" secondAttribute="leading" id="84V-kU-omF"/>
                             <constraint firstItem="JRz-ow-F7Q" firstAttribute="trailing" secondItem="GYR-Sq-Fkd" secondAttribute="trailing" id="JgO-Im-YAg"/>
-                            <constraint firstItem="JRz-ow-F7Q" firstAttribute="centerY" secondItem="GYR-Sq-Fkd" secondAttribute="centerY" constant="10" id="pER-iW-E78"/>
+                            <constraint firstItem="JRz-ow-F7Q" firstAttribute="centerY" secondItem="GYR-Sq-Fkd" secondAttribute="centerY" id="pER-iW-E78"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="JRz-ow-F7Q"/>
                     </view>
