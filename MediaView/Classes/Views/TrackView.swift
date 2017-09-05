@@ -78,7 +78,10 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     private var barHeight: CGFloat = 2.0
     private var canSeek = false
     private var hideTimer = Timer()
-    private lazy var trackRect = CGRect(x: 0, y: frame.height - barHeight, width: 0, height: barHeight)
+    
+    private var trackRect: CGRect {
+        return CGRect(x: 0, y: frame.height - barHeight, width: 0, height: barHeight)
+    }
     
     private lazy var barBackgroundView: UIView = {
         let barBackgroundView = UIView(frame: CGRect(x: 0, y: frame.height - barHeight, width: frame.width, height: barHeight))
@@ -251,8 +254,8 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     }
     
     private func seek(to point: CGFloat) {
-        if canSeek, point < bufferView.frame.width {
-            let ratio = point / bufferView.frame.width
+        if canSeek, point < barBackgroundView.frame.width {
+            let ratio = point / barBackgroundView.frame.width
             let seekTime = ratio.time * duration
             
             delegate?.seekTo(time: seekTime, track: self)

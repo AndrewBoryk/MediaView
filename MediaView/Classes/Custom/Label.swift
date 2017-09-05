@@ -50,6 +50,7 @@ class Label: UILabel {
         super.init(frame: CGRect(origin: .zero, size: CGSize(width: width, height: 16)))
         
         self.kind = kind
+        self.text = text
         self.font = font
         self.delegate = delegate
         self.isUserInteractionEnabled = true
@@ -65,7 +66,6 @@ class Label: UILabel {
     }
     
     private func commonInitializer() {
-        self.text = text
         self.alpha = 0
         
         self.textAlignment = .left

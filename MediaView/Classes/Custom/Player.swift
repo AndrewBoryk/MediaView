@@ -17,6 +17,7 @@ protocol PlayerDelegate: class {
     func didBecomeReadyToPlay(player: Player)
     func didProgress(to time: TimeInterval, item: AVPlayerItem)
     func didBuffer(to time: TimeInterval, item: AVPlayerItem)
+    func playbackLikelyToKeepUp(for player: Player)
     func bufferDidBecomeNotEmpty(for player: Player)
     func bufferDidBecomeEmpty(for player: Player)
     func cacheMedia(for asset: AVAsset)
@@ -30,7 +31,7 @@ class Player: AVPlayer {
     
     override func play() {
         VolumeManager.shared.adjustAudioWhenPlaying()
-        super.pause()
+        super.play()
         
         delegate?.didPlay(player: self)
     }
@@ -96,14 +97,14 @@ class Player: AVPlayer {
         })
         
         observers.append(currentItem.observe(\.isPlaybackLikelyToKeepUp, options: .new) { (sender, _) in
-            self.delegate?.bufferDidBecomeNotEmpty(for: self)
+            self.delegate?.playbackLikelyToKeepUp(for: self)
         })
         
         observers.append(currentItem.observe(\.isPlaybackBufferFull, options: .new) { (sender, _) in
             self.delegate?.bufferDidBecomeNotEmpty(for: self)
         })
         
-        addPeriodicTimeObserver(forInterval: CMTime(seconds: 10, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: DispatchQueue.main) { time in
+        addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: DispatchQueue.main) { time in
             self.delegate?.didProgress(to: TimeInterval(CMTimeGetSeconds(time)), item: currentItem)
         }
     }

@@ -65,23 +65,23 @@ class ViewController: UIViewController, MediaViewDelegate {
     }
     
     func didPlayMedia(for mediaView: MediaView) {
-        
+        // MediaView did play media (video or audio)
     }
     
     func didFailToPlayMedia(for mediaView: MediaView) {
-        
+        // MediaView did fail to play media
     }
     
     func didPauseMedia(for mediaView: MediaView) {
-        
+        // MediaView's playabale media was paused
     }
     
     func didFinishPlayableMedia(for mediaView: MediaView, withLoop didLoop: Bool) {
-        
+        // Playable media (video or audio) did finish playing til the end, and specifies whether the video will loop
     }
     
     func willPresent(mediaView: MediaView) {
-        
+        // Called before the MediaView has finished presenting
     }
     
     func didPresent(mediaView: MediaView) {
@@ -89,7 +89,7 @@ class ViewController: UIViewController, MediaViewDelegate {
     }
     
     func willDismiss(mediaView: MediaView) {
-        
+        // Called before the MediaView has finished dismissing
     }
     
     func didDismiss(mediaView: MediaView) {
@@ -97,15 +97,15 @@ class ViewController: UIViewController, MediaViewDelegate {
     }
     
     func willChangeMinimization(for mediaView: MediaView) {
-        
+        // MediaView's frame will change when minimizing
     }
     
     func didChangeMinimization(for mediaView: MediaView) {
-        
+        // MediaView's frame did change when minimizing
     }
     
     func willEndMinimizing(for mediaView: MediaView, atMinimizedState isMinimized: Bool) {
-        
+        // MediaView will end minimizing gesture
     }
     
     func didEndMinimizing(for mediaView: MediaView, atMinimizedState isMinimized: Bool) {
@@ -117,23 +117,19 @@ class ViewController: UIViewController, MediaViewDelegate {
     }
     
     func mediaView(_ mediaView: MediaView, didSetImage image: UIImage) {
-        
+        // MediaView did set .image value
     }
     
     func willChangeDismissing(for mediaView: MediaView) {
-        
+        // MediaView's frame will change when dismissing
     }
     
     func didChangeDismissing(for mediaView: MediaView) {
-        
+        // MediaView's frame did change when dismissing
     }
     
     func willEndDismissing(for mediaView: MediaView, withDismissal didDismiss: Bool) {
-        if didDismiss {
-            UIApplication.shared.statusBarStyle = .default
-        } else {
-            UIApplication.shared.statusBarStyle = .lightContent
-        }
+        // MediaView will end dismissing gesture
     }
     
     func didEndDismissing(for mediaView: MediaView, withDismissal didDismiss: Bool) {
@@ -145,27 +141,27 @@ class ViewController: UIViewController, MediaViewDelegate {
     }
     
     func mediaView(_ mediaView: MediaView, didDownloadImage image: UIImage) {
-        
+        // Image was downloaded from the web
     }
     
     func mediaView(_ mediaView: MediaView, didDownloadVideo video: URL) {
-        
+        // Video was downloaded from the web
     }
     
     func mediaView(_ mediaView: MediaView, didDownloadAudio audio: URL) {
-        
+        // Audio was downloaded from the web
     }
     
     func mediaView(_ mediaView: MediaView, didDownloadGif gif: UIImage) {
-        
+        // Gif was downloaded from the web
     }
     
     func handleTitleSelection(in mediaView: MediaView) {
-        
+        // Title was selected, you can perform an action like linking to a profile or external source
     }
     
     func handleDetailsSelection(in mediaView: MediaView) {
-        
+        // Detail label was selected, you can perform an action like linking to the full post or a group
     }
 }
 

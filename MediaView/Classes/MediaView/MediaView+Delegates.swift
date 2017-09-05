@@ -34,7 +34,7 @@ extension MediaView: UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelega
     
     // MARK: - PlayIndicatorDelegate
     func shouldShowPlayIndicator() -> Bool {
-        return hasPlayableMedia && !isLoadingVideo
+        return hasPlayableMedia && isLoadingVideo
     }
     
     func image(for playIndicatorView: PlayIndicatorView) -> UIImage? {
@@ -100,6 +100,10 @@ extension MediaView: UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelega
         // TODO: Find something useful to be done here
     }
     
+    func playbackLikelyToKeepUp(for player: Player) {
+        resetImageIfVideo()
+    }
+    
     func bufferDidBecomeNotEmpty(for player: Player) {
         resetImageIfVideo()
     }
@@ -113,7 +117,7 @@ extension MediaView: UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelega
     }
     
     private func resetImageIfVideo() {
-        if hasVideo {
+        if hasVideo, let playerLayer = layer as? AVPlayerLayer, playerLayer.isReadyForDisplay {
             image = nil
         }
     }

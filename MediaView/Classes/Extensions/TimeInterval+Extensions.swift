@@ -11,6 +11,10 @@ extension TimeInterval {
     
     /// Converts the time interval into a string
     public var timeString: String {
+        guard isFinite && !isNaN else {
+            return "0:00"
+        }
+        
         let minutes = Int(self / 60)
         let seconds = Int(self) % 60
         

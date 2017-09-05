@@ -74,7 +74,7 @@ public class MediaView: UIImageView {
         track.translatesAutoresizingMaskIntoConstraints = false
         track.themeColor = themeColor
         track.delegate = self
-        track.isHidden = !shouldShowTrack
+        track.isHidden = isTrackHidden
         
         tapRecognizer.require(toFail: track.scrubRecognizer)
         tapRecognizer.require(toFail: track.tapRecognizer)
@@ -134,8 +134,24 @@ public class MediaView: UIImageView {
     /// Determines whether the progress track should be shown for video (default: false)
     public var shouldShowTrack = false {
         didSet {
-            track.isHidden = !shouldShowTrack
+            toggleTrackDisplay()
         }
+    }
+    
+    private var isTrackHidden: Bool {
+        if !hasPlayableMedia {
+            return true
+        } else if !isFullScreen && shouldDisplayFullscreen {
+            return true
+        } else if !shouldShowTrack {
+            return true
+        }
+        
+        return false
+    }
+    
+    internal func toggleTrackDisplay() {
+        track.isHidden = isTrackHidden
     }
     
     /// Determines if the video should be looped when it reaches completion (default: false)
@@ -446,6 +462,7 @@ public class MediaView: UIImageView {
             } else {
                 if let player = player {
                     if player.isPlaying {
+                        playIndicatorView.endAnimation()
                         player.pause()
                     } else if !isLoadingVideo {
                         playIndicatorView.endAnimation()
@@ -491,6 +508,7 @@ public class MediaView: UIImageView {
         
         let item = AVPlayerItem(asset: mediaAsset)
         player = Player(playerItem: item)
+        player?.delegate = self
         playerLayer = AVPlayerLayer(player: player)
         
         guard let player = player, let playerLayer = playerLayer else  {
@@ -498,16 +516,17 @@ public class MediaView: UIImageView {
             return
         }
         
-        player.actionAtItemEnd = .none
         player.addObservers()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd(_:)), name: .AVPlayerItemDidPlayToEndTime, object: player)
+        NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd), name: .AVPlayerItemDidPlayToEndTime, object: player)
         NotificationCenter.default.addObserver(self, selector: #selector(playIndicatorView.beginAnimation), name: .AVPlayerItemPlaybackStalled, object: player)
         
         playerLayer.videoGravity = videoGravity
         playerLayer.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
         
-        (layer as? AVPlayerLayer)?.player = player
+        if let layer = layer as? AVPlayerLayer {
+            layer.player = player
+        }
         
         if shouldPlay {
             player.play()
@@ -517,6 +536,7 @@ public class MediaView: UIImageView {
     @objc private func playerItemDidReachEnd(_ notification: Notification) {
         if isFullScreen && shouldDismissAfterFinishedPlaying {
             delegate?.didFinishPlayableMedia(for: self, withLoop: false)
+            MediaQueue.shared.dismissCurrent()
         } else {
             delegate?.didFinishPlayableMedia(for: self, withLoop: allowLooping)
             
@@ -1009,8 +1029,10 @@ public class MediaView: UIImageView {
             addSubview(track)
             
             addConstraints([.trailing, .leading, .bottom], toView: track)
-            addConstraints([.height], toView: track, constant: 50)
+            addConstraints([.height], toView: track, constant: 60)
         }
+        
+        toggleTrackDisplay()
         
         NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged(_:)), name: .mediaViewWillRotateNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged(_:)), name: .mediaViewDidRotateNotification, object: nil)
