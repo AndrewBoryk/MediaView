@@ -517,8 +517,9 @@ public class MediaView: UIImageView {
         
         player.addObservers()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd), name: .AVPlayerItemDidPlayToEndTime, object: player)
-        NotificationCenter.default.addObserver(self, selector: #selector(playIndicatorView.beginAnimation), name: .AVPlayerItemPlaybackStalled, object: player)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd), name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(playIndicatorView.beginAnimation), name: .AVPlayerItemPlaybackStalled, object: nil)
         
         playerLayer.videoGravity = videoGravity
         playerLayer.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
@@ -540,11 +541,9 @@ public class MediaView: UIImageView {
             delegate?.didFinishPlayableMedia(for: self, withLoop: allowLooping)
             
             if let player = player, let item = player.currentItem {
-                if !allowLooping {
-                    player.pause()
-                }
-                
                 item.seek(to: kCMTimeZero)
+                
+                allowLooping ? player.play() : player.pause()
             }
         }
     }
