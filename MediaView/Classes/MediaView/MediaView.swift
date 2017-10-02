@@ -56,11 +56,15 @@ public class MediaView: UIImageView {
     
     /// Determines if the video is already loading
     public var isLoadingVideo: Bool {
-        guard let player = player else {
+        guard let player = player, let item = player.currentItem else {
             return false
         }
         
-        return player.currentItem?.status != AVPlayerItemStatus.readyToPlay && !player.isPlaying
+        guard !player.isPlaying else {
+            return false
+        }
+        
+        return !item.isPlaybackLikelyToKeepUp || item.status != .readyToPlay
     }
     
     /// Media which is displayed in the view
