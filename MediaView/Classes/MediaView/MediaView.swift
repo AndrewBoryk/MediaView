@@ -60,7 +60,7 @@ public class MediaView: UIImageView {
             return false
         }
         
-        return !player.isPlaying
+        return player.currentItem?.status != AVPlayerItemStatus.readyToPlay && !player.isPlaying
     }
     
     /// Media which is displayed in the view
