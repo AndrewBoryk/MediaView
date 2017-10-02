@@ -111,7 +111,7 @@ public class MediaQueue {
         }) { _ in
             current.resetMedia()
             
-            current.delegate?.didPresent(mediaView: current)
+            current.delegate?.didDismiss(mediaView: current)
             self.current = nil
             
             completion?()

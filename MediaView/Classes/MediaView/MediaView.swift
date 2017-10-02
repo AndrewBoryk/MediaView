@@ -980,6 +980,7 @@ public class MediaView: UIImageView {
         self.minimizedAspectRatio = mediaView.minimizedAspectRatio
         self.minimizedWidthRatio = mediaView.minimizedWidthRatio
         self.swipeRecognizer.isEnabled = UIScreen.isPortrait
+        self.playIndicatorView.alpha = 0
         
         commonInitializer()
     }
