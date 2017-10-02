@@ -17,8 +17,19 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     
     weak var delegate: TrackViewDelegate?
     
-    lazy var tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapRecognizer(_:)), delegate: self)
-    lazy var scrubRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanRecognizer(_:)), delegate: self)
+    lazy var tapRecognizer: UITapGestureRecognizer = {
+        let gesture = UITapGestureRecognizer(target: self,
+                                             action: #selector(handleTapRecognizer(_:)),
+                                             delegate: self)
+        return gesture
+    }()
+    
+    lazy var scrubRecognizer: UIPanGestureRecognizer = {
+        let gesture = UIPanGestureRecognizer(target: self,
+                                             action: #selector(handlePanRecognizer(_:)),
+                                             delegate: self)
+        return gesture
+    }()
     
     /// Color for the progress bar
     var themeColor: UIColor = .cyan {
@@ -79,12 +90,15 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     private var canSeek = false
     private var hideTimer = Timer()
     
+    private var currentTimeLabel = Label()
+    private var totalTimeLabel = Label(alignment: .right)
+    
     private var trackRect: CGRect {
-        return CGRect(x: 0, y: frame.height - barHeight, width: 0, height: barHeight)
+        return CGRect(x: 0, y: 0, width: 0, height: barHeight)
     }
     
     private lazy var barBackgroundView: UIView = {
-        let barBackgroundView = UIView(frame: CGRect(x: 0, y: frame.height - barHeight, width: frame.width, height: barHeight))
+        let barBackgroundView = UIView(frame: CGRect(x: 0, y: 0, width: frame.width, height: barHeight))
         barBackgroundView.backgroundColor = UIColor.white.withAlphaComponent(0.1)
         barBackgroundView.layer.masksToBounds = false
         barBackgroundView.layer.shadowColor = UIColor.black.cgColor
@@ -96,25 +110,17 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     }()
     
     private lazy var bufferView: UIView = {
-        let bufferView = UIView(frame: CGRect(x: 0, y: frame.height - barHeight, width: 0, height: barHeight))
+        let bufferView = UIView(frame: trackRect)
         bufferView.backgroundColor = UIColor.white.withAlphaComponent(0.1)
         
         return bufferView
     }()
     
     private lazy var progressView: UIView = {
-        let progressView = UIView(frame: CGRect(x: 0, y: frame.height - barHeight, width: 0, height: barHeight))
+        let progressView = UIView(frame: trackRect)
         progressView.backgroundColor = themeColor
         
         return progressView
-    }()
-    
-    private lazy var currentTimeLabel: Label = Label(y: self.frame.height - self.barHeight - 14)
-    
-    private lazy var totalTimeLabel: Label = {
-        let label = Label(y: self.frame.height - self.barHeight - 14)
-        label.textAlignment = .right
-        return label
     }()
     
     // MARK: - Initializers
@@ -131,11 +137,22 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     }
     
     private func commonInitialization() {
-        addSubview(barBackgroundView)
-        addSubview(bufferView)
-        addSubview(progressView)
-        addSubview(currentTimeLabel)
-        addSubview(totalTimeLabel)
+        let timeStackView = UIStackView(frame: CGRect(x: 0, y: 0, width: frame.width, height: 20),
+                                        axis: .horizontal,
+                                        distribution: .fillEqually,
+                                        subviews: [currentTimeLabel, totalTimeLabel])
+        
+        let stackView = UIStackView(frame: CGRect(x: 0, y: 30, width: frame.width, height: 30),
+                                    subviews: [timeStackView, barBackgroundView])
+        stackView.spacing = 4
+        
+        barBackgroundView.addConstraints([.height], toView: barBackgroundView, constant: barHeight)
+        
+        addSubview(stackView)
+        addConstraints([.leading, .trailing, .bottom, .top], toView: stackView)
+        
+        barBackgroundView.addSubview(bufferView)
+        barBackgroundView.addSubview(progressView)
         addGestureRecognizer(tapRecognizer)
         addGestureRecognizer(scrubRecognizer)
     }
@@ -151,11 +168,11 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
         case .began:
             touchRegistered(gesture: gesture)
         case .changed:
-            if barBackgroundView.frame.height >= 6.0 {
-                seek(to: gesture.location(in: self).y)
+            guard barBackgroundView.frame.height >= 6.0 else {
+                return
             }
             
-            hideTimer.invalidate()
+            seek(to: gesture.location(in: self).x)
         case .cancelled, .ended, .failed:
             hideTimer.invalidate()
             scheduleTimer()
@@ -166,7 +183,7 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     
     private func touchRegistered(gesture: UIGestureRecognizer) {
         if barBackgroundView.frame.height >= 6.0 {
-            seek(to: gesture.location(in: self).y)
+            seek(to: gesture.location(in: self).x)
         } else {
             setTrackHidden(false)
         }
@@ -211,10 +228,14 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     }
     
     private func updateBarBackground() {
+        guard let constraint = (barBackgroundView.constraints.first { $0.firstAttribute == .height }) else {
+            return
+        }
+        
+        layoutIfNeeded()
+        constraint.constant = self.barHeight
         UIView.animate(withDuration: 0.1, animations: {
-            self.barBackgroundView.frame = CGRect(x: 0, y: self.frame.height - self.barHeight, width: self.frame.width, height: self.barHeight)
-            self.currentTimeLabel.frame = CGRect(x: 8, y: self.frame.height - self.barHeight - 20.0, width: 120.0, height: 20.0)
-            self.totalTimeLabel.frame = CGRect(x: self.frame.width - 128, y: self.frame.height - self.barHeight - 20.0, width: 120.0, height: 20.0)
+            self.layoutIfNeeded()
         })
     }
     

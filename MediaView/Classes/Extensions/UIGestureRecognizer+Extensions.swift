@@ -26,6 +26,6 @@ extension UIPanGestureRecognizer {
         self.cancelsTouchesInView = false
         self.delaysTouchesBegan = false
         self.maximumNumberOfTouches = 1
-        self.isEnabled = false
+        self.isEnabled = true
     }
 }

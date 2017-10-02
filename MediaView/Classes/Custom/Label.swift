@@ -34,16 +34,15 @@ class Label: UILabel {
         return text.isEmpty
     }
     
-    init(y: CGFloat) {
-        super.init(frame: CGRect(x: 0, y: y, width: 120, height: 14))
+    init(alignment: NSTextAlignment = .left) {
+        super.init(frame: .zero)
         
         self.font = UIFont.systemFont(ofSize: 12)
         self.isUserInteractionEnabled = false
         self.text = "0:00"
+        self.textAlignment = alignment
         self.textColor = UIColor.white.withAlphaComponent(0.85)
-        
         self.commonInitializer()
-        
     }
     
     init(width: CGFloat, text: String = "", delegate: LabelDelegate?, kind: Kind = .track, isInteractionEnabled: Bool = true, font: UIFont = UIFont.systemFont(ofSize: 12)) {
@@ -65,13 +64,14 @@ class Label: UILabel {
         self.commonInitializer()
     }
     
+    override func drawText(in rect: CGRect) {
+        let insets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
+        super.drawText(in: UIEdgeInsetsInsetRect(rect, insets))
+    }
+    
     private func commonInitializer() {
         self.alpha = 0
-        
-        self.textAlignment = .left
-        self.translatesAutoresizingMaskIntoConstraints = false
         self.addShadow()
-        
         self.addGestureRecognizer(self.tapRecognizer)
     }
     

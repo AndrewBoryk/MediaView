@@ -91,6 +91,8 @@ public class MediaQueue {
             return
         }
         
+        current.player?.pause()
+        current.player = nil
         current.isUserInteractionEnabled = false
         
         UIView.animate(withDuration: animated ? 0.25 : 0, delay: 0.0, options: .curveLinear, animations: {
@@ -110,7 +112,7 @@ public class MediaQueue {
             current.resetMedia()
             
             current.delegate?.didPresent(mediaView: current)
-            MediaQueue.shared.current = nil
+            self.current = nil
             
             completion?()
         }

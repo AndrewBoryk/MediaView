@@ -77,7 +77,6 @@ public class MediaView: UIImageView {
         track.isHidden = isTrackHidden
         
         tapRecognizer.require(toFail: track.scrubRecognizer)
-        tapRecognizer.require(toFail: track.tapRecognizer)
         
         return track
     }()
@@ -451,7 +450,7 @@ public class MediaView: UIImageView {
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear, animations: {
                 self.setFullScreenView()
             }, completion: { _ in
-                self.track.isUserInteractionEnabled = self.isMinimized
+                self.track.isUserInteractionEnabled = !self.isMinimized
                 self.isUserInteractionEnabled = true
                 self.delegate?.didEndMinimizing(for: self, atMinimizedState: self.isMinimized)
             })
@@ -617,6 +616,7 @@ public class MediaView: UIImageView {
                         self.setViewAfterSwipe()
                         
                         self.delegate?.didEndMinimizing(for: self, atMinimizedState: shouldMinimize)
+                        self.track.isUserInteractionEnabled = !shouldMinimize
                         
                         if self.isLoadingVideo {
                             self.playIndicatorView.beginAnimation()
@@ -1089,5 +1089,11 @@ public class MediaView: UIImageView {
     public static var audioTypeWhenStop: VolumeManager.AudioType {
         get { return VolumeManager.shared.audioTypeWhenStop }
         set { VolumeManager.shared.audioTypeWhenStop = newValue }
+    }
+    
+    // MARK: - Deinit
+    deinit {
+        player?.pause()
+        player = nil
     }
 }

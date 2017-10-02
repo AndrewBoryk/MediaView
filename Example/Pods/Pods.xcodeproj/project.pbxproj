@@ -12,6 +12,7 @@
 		2535D281D933BDAC1D5FC3B44B48B154 /* MediaView+Delegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167ACA2509453A004E3C8EFC570AAAED /* MediaView+Delegates.swift */; };
 		2E434CBD327F196763D661845D899733 /* UIScreen+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC09C38D5907150078A59161B94548A3 /* UIScreen+Extensions.swift */; };
 		3F36DD0398ACDBEAB6F63C47CDC52331 /* MediaView-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B54811804E18AD6D9536BDEF471FDB58 /* MediaView-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4351336F1F82164600D710D7 /* UIStackView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4351336E1F82164600D710D7 /* UIStackView+Extensions.swift */; };
 		439C4BDD1F5BBD9900B9D5EC /* Notification+Extensions.swift in Headers */ = {isa = PBXBuildFile; fileRef = 9678114A7911A325A2C0F2409F93C803 /* Notification+Extensions.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		47E0BD17B183411E76FD1879CFAA4050 /* UIImage+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = D71D2C091FDE2C9AD4D0DAC89D9A7DF1 /* UIImage+GIF.swift */; };
 		4B2D4C12164388F79C740FA65ED56062 /* MediaView-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E122CE1DF767434E4A867B90F075371 /* MediaView-dummy.m */; };
@@ -66,6 +67,7 @@
 		2F1C7EF83255D1A525D72497B60E2A0F /* MediaView.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = MediaView.modulemap; sourceTree = "<group>"; };
 		32AC0BFE9B3FB396EF991D62955B4B17 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E58487E085E6296430B33184BE6393E /* MediaView+Media.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "MediaView+Media.swift"; sourceTree = "<group>"; };
+		4351336E1F82164600D710D7 /* UIStackView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Extensions.swift"; sourceTree = "<group>"; };
 		4610E3B52F8CD8FF64B7405947F99092 /* MediaQueue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MediaQueue.swift; sourceTree = "<group>"; };
 		47DEA3B84B772218B190B3032F79DC90 /* UILabel+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UILabel+Extensions.swift"; sourceTree = "<group>"; };
 		4EC8E75BEF3C44ECA652932B17A27186 /* Pods-MediaView_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MediaView_Tests.release.xcconfig"; sourceTree = "<group>"; };
@@ -331,6 +333,7 @@
 				EC09C38D5907150078A59161B94548A3 /* UIScreen+Extensions.swift */,
 				126D3A26E748B8EAEC8B88E69554FB60 /* UIView+Extensions.swift */,
 				A35707C45CA228778A6B0FCF2297493E /* UIWindow+Extensions.swift */,
+				4351336E1F82164600D710D7 /* UIStackView+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -459,6 +462,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4351336F1F82164600D710D7 /* UIStackView+Extensions.swift in Sources */,
 				738640883E68FEEAF4EE9FBA13988501 /* CacheManager.swift in Sources */,
 				B3367FDB02B96C2DF3006D614576223B /* CGFloat+Extensions.swift in Sources */,
 				5B533CE0CE3BE42AF4DEA09F611BA1C2 /* CGRect+Extensions.swift in Sources */,
@@ -527,7 +531,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/MediaView/MediaView-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/MediaView/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/MediaView/MediaView.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -686,7 +690,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/MediaView/MediaView-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/MediaView/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/MediaView/MediaView.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
