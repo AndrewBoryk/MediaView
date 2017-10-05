@@ -65,7 +65,7 @@ extension UIImage {
         
         context.saveGState()
         
-        let rect = CGRect(x: 0, y: 0, width: size, height: size)
+        let rect = CGRect(size: size)
         
         context.setFillColor(themeColor.withAlphaComponent(0.8).cgColor)
         context.fillEllipse(in: rect)
@@ -115,7 +115,7 @@ extension UIImage {
         
         context.saveGState()
         
-        let rect = CGRect(x: 0, y: 0, width: size, height: size)
+        let rect = CGRect(size: size)
         
         context.setFillColor(themeColor.withAlphaComponent(0.8).cgColor)
         context.fillEllipse(in: rect)
@@ -125,7 +125,7 @@ extension UIImage {
             context.setLineWidth(thickness)
             context.setStrokeColor(UIColor.white.cgColor)
             
-            let rectGIF = CGRect(x: 1, y: 1, width: size - thickness, height: size - thickness)
+            let rectGIF = CGRect(origin: 1, size: size - thickness)
             
             let ra: [CGFloat] = [4, 2]
             context.setLineDash(phase: 0.0, lengths: ra)

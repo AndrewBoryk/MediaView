@@ -405,24 +405,22 @@ public class CacheManager {
     }
     
     private static func detectIf(url: URL, isType cache: Cache, completion: @escaping ((_ isValid: Bool) -> Void)) {
-        NSURLConnection.sendAsynchronousRequest(URLRequest(url: url), queue: .main) { (response, data, error) in
+        let session = URLSession(configuration: .default, delegate: nil, delegateQueue: .main)
+        session.dataTask(with: url) { (data, response, error) in
             guard error == nil,
                 let data = data,
                 data.count > 0,
                 let httpResponse = response as? HTTPURLResponse,
                 let contentType = httpResponse.allHeaderFields["content-type"] as? String else {
-                completion(false)
-                return
+                    completion(false)
+                    return
             }
             
             switch cache {
-            case .image where contentType.contains("image/"):
-                completion(true)
-            case .video where contentType.contains("video/"):
-                completion(true)
-            case .audio where contentType.contains("audio/"):
-                completion(true)
-            case .gif where contentType.contains("image/gif"):
+            case .image where contentType.contains("image/"),
+                 .video where contentType.contains("video/"),
+                 .audio where contentType.contains("audio/"),
+                 .gif where contentType.contains("image/gif"):
                 completion(true)
             default:
                 completion(false)

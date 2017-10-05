@@ -32,10 +32,9 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     }()
     
     /// Color for the progress bar
-    var themeColor: UIColor = .cyan {
-        didSet {
-            progressView.backgroundColor = themeColor
-        }
+    var themeColor: UIColor {
+        get { return progressView.backgroundColor ?? .cyan }
+        set { progressView.backgroundColor = newValue }
     }
     
     /// Font used in the track's time labels
@@ -93,12 +92,16 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     private var currentTimeLabel = Label()
     private var totalTimeLabel = Label(alignment: .right)
     
-    private var trackRect: CGRect {
-        return CGRect(x: 0, y: 0, width: 0, height: barHeight)
+    private var trackRectEmpty: CGRect {
+        return CGRect(width: 0, height: barHeight)
+    }
+    
+    private var trackRectFull: CGRect {
+        return CGRect(width: frame.width, height: barHeight)
     }
     
     private lazy var barBackgroundView: UIView = {
-        let barBackgroundView = UIView(frame: CGRect(x: 0, y: 0, width: frame.width, height: barHeight))
+        let barBackgroundView = UIView(frame: trackRectFull)
         barBackgroundView.backgroundColor = UIColor.white.withAlphaComponent(0.1)
         barBackgroundView.layer.masksToBounds = false
         barBackgroundView.layer.shadowColor = UIColor.black.cgColor
@@ -110,15 +113,15 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     }()
     
     private lazy var bufferView: UIView = {
-        let bufferView = UIView(frame: trackRect)
+        let bufferView = UIView(frame: trackRectEmpty)
         bufferView.backgroundColor = UIColor.white.withAlphaComponent(0.1)
         
         return bufferView
     }()
     
     private lazy var progressView: UIView = {
-        let progressView = UIView(frame: trackRect)
-        progressView.backgroundColor = themeColor
+        let progressView = UIView(frame: trackRectEmpty)
+        progressView.backgroundColor = .cyan
         
         return progressView
     }()
@@ -137,14 +140,14 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     }
     
     private func commonInitialization() {
-        let timeStackView = UIStackView(frame: CGRect(x: 0, y: 0, width: frame.width, height: 20),
+        let timeStackView = UIStackView(frame: CGRect(width: frame.width, height: 20),
                                         axis: .horizontal,
                                         distribution: .fillEqually,
                                         subviews: [currentTimeLabel, totalTimeLabel])
         
         let stackView = UIStackView(frame: CGRect(x: 0, y: 30, width: frame.width, height: 30),
+                                    spacing: 4,
                                     subviews: [timeStackView, barBackgroundView])
-        stackView.spacing = 4
         
         barBackgroundView.addConstraints([.height], toView: barBackgroundView, constant: barHeight)
         
@@ -241,7 +244,7 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     
     private func updateBufferView() {
         var animationDuration = 0.0
-        var bufferFrame = trackRect
+        var bufferFrame = trackRectEmpty
         
         if buffer > 0 && (duration - 0.5) > 0 {
             let elapsedTime = buffer / (duration - 0.5)
@@ -257,7 +260,7 @@ class TrackView: UIView, UIGestureRecognizerDelegate {
     
     private func updateProgressView() {
         var animationDuration = 0.0
-        var progressFrame = trackRect
+        var progressFrame = trackRectEmpty
         
         if progress > 0 && (duration - 0.5) > 0 {
             let elapsedTime = progress / (duration - 0.5)

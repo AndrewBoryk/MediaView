@@ -23,4 +23,17 @@ extension UIColor {
             blue: rgb & 0xFF
         )
     }
+    
+    var coreImageColor: CIColor {
+        return CIColor(color: self)
+    }
+    
+    var components: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+        let coreImageColor = self.coreImageColor
+        return (coreImageColor.red, coreImageColor.green, coreImageColor.blue, coreImageColor.alpha)
+    }
+    
+    func logRGB() {
+        print("Red: \(components.red) Green: \(components.green) Blue: \(components.blue)")
+    }
 }

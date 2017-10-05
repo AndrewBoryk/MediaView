@@ -98,7 +98,7 @@ public class MediaQueue {
         UIView.animate(withDuration: animated ? 0.25 : 0, delay: 0.0, options: .curveLinear, animations: {
             switch current.swipeMode {
             case .dismiss:
-                current.frame = CGRect(x: 0, y: UIScreen.superviewHeight, width: UIScreen.superviewWidth, height: UIScreen.superviewHeight)
+                current.frame = .offscreenRect
             case .minimize where current.isMinimized:
                 var minimizedFrame = current.minimizedFrame
                 minimizedFrame.origin.x = UIScreen.superviewWidth

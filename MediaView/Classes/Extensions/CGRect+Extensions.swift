@@ -9,6 +9,16 @@ import Foundation
 
 extension CGRect {
     
+    static let offscreenRect = CGRect(x: 0, y: UIScreen.superviewHeight, width: UIScreen.superviewWidth, height: UIScreen.superviewHeight)
+    
+    init(width: CGFloat, height: CGFloat) {
+        self.init(x: 0, y: 0, width: width, height: height)
+    }
+    
+    init(size: CGFloat) {
+        self.init(origin: 0, size: size)
+    }
+    
     init(origin: CGFloat, size: CGFloat) {
         self.init(x: origin, y: origin, width: size, height: size)
     }

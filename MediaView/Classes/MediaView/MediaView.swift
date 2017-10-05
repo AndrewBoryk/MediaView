@@ -74,9 +74,8 @@ public class MediaView: UIImageView {
     
     /// Track which shows the progress of the video being played
     internal lazy var track: TrackView = {
-        let track = TrackView(frame: CGRect(x: 0, y: 0, width: frame.width, height: 60.0))
+        let track = TrackView(frame: CGRect(width: frame.width, height: 60.0))
         track.translatesAutoresizingMaskIntoConstraints = false
-        track.themeColor = themeColor
         track.delegate = self
         track.isHidden = isTrackHidden
         
@@ -87,7 +86,7 @@ public class MediaView: UIImageView {
     
     /// Gradient dark overlay on top of the mediaView which UI can be placed on top of
     private var topOverlay: UIImageView = {
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: UIScreen.superviewHeight, height: 80))
+        let imageView = UIImageView(frame: CGRect(width: UIScreen.superviewHeight, height: 80))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage.topOverlay(frame: imageView.bounds)
         imageView.alpha = 0
@@ -120,9 +119,10 @@ public class MediaView: UIImageView {
     }
     
     /// Theme color which will show on the play button and progress track for videos (default: UIColor.cyan)
-    public var themeColor = UIColor.cyan {
-        didSet {
-            track.themeColor = themeColor
+    public var themeColor: UIColor {
+        get { return track.themeColor }
+        set {
+            track.themeColor = newValue
             playIndicatorView.updateImage()
         }
     }
@@ -360,7 +360,7 @@ public class MediaView: UIImageView {
     
     /// Closes the mediaView when in fullscreen mode
     private var closeButton: UIButton = {
-        let button = UIButton(frame: CGRect(origin: 0, size: 50))
+        let button = UIButton(frame: CGRect(size: 50))
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage.close, for: .normal)
         button.addTarget(self, action: #selector(closeAction), for: .touchUpInside)
@@ -526,7 +526,7 @@ public class MediaView: UIImageView {
         NotificationCenter.default.addObserver(self, selector: #selector(playIndicatorView.beginAnimation), name: .AVPlayerItemPlaybackStalled, object: nil)
         
         playerLayer.videoGravity = videoGravity
-        playerLayer.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
+        playerLayer.frame = CGRect(width: frame.width, height: frame.height)
         
         if let layer = layer as? AVPlayerLayer {
             layer.player = player
@@ -554,7 +554,7 @@ public class MediaView: UIImageView {
     
     /// Update the frame of the playerLayer
     private func updatePlayerFrame() {
-        playerLayer?.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height);
+        playerLayer?.frame = CGRect(width: frame.width, height: frame.height);
     }
     
     @objc private func handleSwipe(_ gesture: UIPanGestureRecognizer) {
@@ -803,7 +803,7 @@ public class MediaView: UIImageView {
             swipeRecognizer.isEnabled = UIScreen.isPortrait && swipeMode.movesWhenSwipe
             layer.cornerRadius = 0.0
             borderAlpha = 0.0
-            frame = CGRect(x: 0, y: 0, width: UIScreen.superviewWidth, height: UIScreen.superviewHeight)
+            frame = CGRect(width: UIScreen.superviewWidth, height: UIScreen.superviewHeight)
         }
         
         layoutSubviews()
@@ -950,13 +950,13 @@ public class MediaView: UIImageView {
             self.setGIF(data: gifData)
         }
         
+        mediaView.themeColor.logRGB()
         self.themeColor = mediaView.themeColor
         self.shouldShowTrack = mediaView.shouldShowTrack
         self.trackFont = mediaView.trackFont
         self.allowLooping = mediaView.allowLooping
         self.swipeMode = mediaView.swipeMode
         self.shouldDismissAfterFinishedPlaying = mediaView.shouldDismissAfterFinishedPlaying
-        
         
         self.shouldHidePlayButton = mediaView.shouldHidePlayButton
         self.shouldHideCloseButton = mediaView.shouldHideCloseButton
@@ -998,6 +998,7 @@ public class MediaView: UIImageView {
         backgroundColor = UIColor(rgb: 0xEFEFF4)
         
         layer.borderWidth = 1.0
+        layer.borderColor = UIColor.clear.cgColor
         layer.masksToBounds = false
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOffset = .zero
