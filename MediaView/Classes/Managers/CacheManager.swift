@@ -405,13 +405,12 @@ public class CacheManager {
     }
     
     private static func detectIf(url: URL, isType cache: Cache, completion: @escaping ((_ isValid: Bool) -> Void)) {
-        let session = URLSession(configuration: .default, delegate: nil, delegateQueue: .main)
-        session.dataTask(with: url) { (data, response, error) in
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard error == nil,
                 let data = data,
                 data.count > 0,
                 let httpResponse = response as? HTTPURLResponse,
-                let contentType = httpResponse.allHeaderFields["content-type"] as? String else {
+                let contentType = httpResponse.allHeaderFields["Content-Type"] as? String else {
                     completion(false)
                     return
             }
@@ -426,6 +425,8 @@ public class CacheManager {
                 completion(false)
             }
         }
+        
+        task.resume()
     }
     
     private static func fileURL(for cache: Cache, url: URL) -> URL? {
@@ -435,7 +436,7 @@ public class CacheManager {
             let directoryPath = "\(paths.first ?? "")/ABMedia/\(ending)"
             
             if !FileManager.default.fileExists(atPath: directoryPath) {
-                try FileManager.default.createDirectory(atPath: directoryPath, withIntermediateDirectories: false, attributes: nil)
+                try FileManager.default.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
             }
             
             // Create folder

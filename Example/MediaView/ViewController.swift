@@ -16,9 +16,11 @@ class ViewController: UIViewController, MediaViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        mediaView.shouldCacheStreamedMedia = true
         mediaView.swipeMode = .dismiss
         mediaView.shouldDisplayFullscreen = true
         mediaView.shouldPresentFromOriginRect = true
+        mediaView.shouldPreloadPlayableMedia = true
         mediaView.shouldAutoPlayAfterPresentation = true
         MediaView.audioTypeWhenPlay = .playWhenSilent
         MediaView.audioTypeWhenStop = .standard
@@ -44,8 +46,8 @@ class ViewController: UIViewController, MediaViewDelegate {
         
 //        mediaView.setGIF(url: "http://static1.squarespace.com/static/552a5cc4e4b059a56a050501/565f6b57e4b0d9b44ab87107/566024f5e4b0354e5b79dd24/1449141991793/NYCGifathon12.gif")
 //        mediaView.setVideo(url: "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4", thumbnailUrl: "http://camendesign.com/code/video_for_everybody/poster.jpg")
-        mediaView.setVideo(url: "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4", thumbnailUrl: "http://camendesign.com/code/video_for_everybody/poster.jpg", previewGIFUrl: "https://i.makeagif.com/media/10-02-2015/TZiwZH.gif")
-//        mediaView.setAudio(url: "https://a.tumblr.com/tumblr_ojs6z4VJp31u5escjo1.mp3", thumbnailUrl: "http://www.popologynow.com/wp-content/uploads/2015/01/M_FallOutBoy_082214-3.jpg")
+//        mediaView.setVideo(url: "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4", thumbnailUrl: "http://camendesign.com/code/video_for_everybody/poster.jpg", previewGIFUrl: "https://i.makeagif.com/media/10-02-2015/TZiwZH.gif")
+        mediaView.setAudio(url: "https://a.tumblr.com/tumblr_ojs6z4VJp31u5escjo1.mp3", thumbnailUrl: "http://www.popologynow.com/wp-content/uploads/2015/01/M_FallOutBoy_082214-3.jpg")
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

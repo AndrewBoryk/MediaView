@@ -471,7 +471,6 @@ public class MediaView: UIImageView {
             })
         } else {
             if shouldDisplayFullscreen && !isFullScreen {
-                print(ObjectIdentifier(self))
                 MediaQueue.shared.present(mediaView: MediaView(mediaView: self))
             } else {
                 if let player = player {
@@ -503,10 +502,20 @@ public class MediaView: UIImageView {
         }
         
         var asset: AVURLAsset?
-        if let videoUrl = media.videoURL, let url = isFileFromDirectory ? URL(fileURLWithPath: videoUrl) : URL(string: videoUrl) {
-            asset = AVURLAsset(url: url)
-        } else if let audioUrl = media.audioURL, let url = isFileFromDirectory ? URL(fileURLWithPath: audioUrl) : URL(string: audioUrl) {
-            asset = AVURLAsset(url: url)
+        if let videoUrl = media.videoURL {
+            if let cachedVideo = CacheManager.Cache.video.getObject(for: videoUrl) as? String,
+                let url = URL(string: cachedVideo) {
+                asset = AVURLAsset(url: url)
+            } else if let url = isFileFromDirectory ? URL(fileURLWithPath: videoUrl) : URL(string: videoUrl) {
+                asset = AVURLAsset(url: url)
+            }
+        } else if let audioUrl = media.audioURL {
+            if let cachedAudio = CacheManager.Cache.audio.getObject(for: audioUrl) as? String,
+                let url = URL(string: cachedAudio) {
+                asset = AVURLAsset(url: url)
+            } else if let url = isFileFromDirectory ? URL(fileURLWithPath: audioUrl) : URL(string: audioUrl) {
+                asset = AVURLAsset(url: url)
+            }
         }
         
         guard let mediaAsset = asset else {
