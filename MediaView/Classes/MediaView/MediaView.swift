@@ -685,7 +685,7 @@ public class MediaView: UIImageView {
         setPlayIndicatorView(alpha: offsetAlpha)
         handleCloseButtonDisplay()
         let overlayAlpha = isPlayingVideo || titleLabel.isEmpty ? 0 : offsetAlpha
-        setTopOverlayAlpha(overlayAlpha)
+        topOverlayAlpha = overlayAlpha
         delegate?.didChangeMinimization(for: self)
     }
     
@@ -845,16 +845,18 @@ public class MediaView: UIImageView {
         UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveLinear, animations: {
             let missingTopOverlayContent = self.titleLabel.isEmpty || self.isPlayingVideo
             let isVisible = !missingTopOverlayContent && self.isFullScreen
-            let alphaLevel: CGFloat = isVisible ? 1 : 0
-            
-            self.setTopOverlayAlpha(alphaLevel)
+        
+            self.topOverlayAlpha = isVisible ? 1 : 0
         })
     }
     
-    private func setTopOverlayAlpha(_ alphaLevel: CGFloat) {
-        topOverlay.alpha = alphaLevel
-        titleLabel.alpha = alphaLevel
-        detailsLabel.alpha = alphaLevel
+    private var topOverlayAlpha: CGFloat {
+        get { return topOverlay.alpha }
+        set {
+            topOverlay.alpha = newValue
+            titleLabel.alpha = newValue
+            detailsLabel.alpha = newValue
+        }
     }
     
     private func updateTopOverlayHeight() {
@@ -950,7 +952,6 @@ public class MediaView: UIImageView {
             self.setGIF(data: gifData)
         }
         
-        mediaView.themeColor.logRGB()
         self.themeColor = mediaView.themeColor
         self.shouldShowTrack = mediaView.shouldShowTrack
         self.trackFont = mediaView.trackFont

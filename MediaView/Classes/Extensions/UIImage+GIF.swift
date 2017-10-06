@@ -18,7 +18,10 @@ extension UIImage {
         
         let gifProperties = unsafeBitCast(CFDictionaryGetValue(properties, unsafeBitCast(kCGImagePropertyGIFDictionary, to: UnsafeRawPointer.self)), to: CFDictionary.self)
         let number = unsafeBitCast(CFDictionaryGetValue(gifProperties, unsafeBitCast(kCGImagePropertyGIFUnclampedDelayTime, to: UnsafeRawPointer.self)), to: CFString.self)
-        var numberValue = CFStringGetDoubleValue(number)
+        
+        guard var numberValue = Double("\(number)") else {
+            return delayCentiseconds
+        }
         
         if numberValue == 0 {
             numberValue = CFStringGetDoubleValue(unsafeBitCast(CFDictionaryGetValue(gifProperties, unsafeBitCast(kCGImagePropertyGIFDelayTime, to: UnsafeRawPointer.self)), to: CFString.self))
@@ -58,7 +61,7 @@ extension UIImage {
     private static func pairGCD(a: Int, b: Int) -> Int {
         var valueA = a
         var valueB = b
-        guard valueA < valueB else {
+        guard valueA <= valueB else {
             return pairGCD(a: valueB, b: valueA)
         }
         
@@ -93,7 +96,7 @@ extension UIImage {
             var j = (delayCentiseconds[i] / gcd)
             while j > 0 {
                 frames.append(frame)
-                j -= 0
+                j -= 1
             }
         }
         
@@ -110,15 +113,6 @@ extension UIImage {
         let animation = UIImage.animatedImage(with: frames, duration: TimeInterval(totalDurationCentiseconds) / 100)
         
         return animation
-    }
-    
-    private static func animatedImageWithAnimatedGIFReleasingImageSource(source: CGImageSource?) -> UIImage? {
-        guard let source = source else {
-            return nil
-        }
-        
-        let image = animatedImageWithAnimatedGIFImageSource(source: source)
-        return image
     }
     
     static func animatedImageWithAnimatedGIFData(_ data: Data) -> UIImage? {

@@ -136,7 +136,7 @@ public extension MediaView {
         setGIF(url: url, isPreview: true)
     }
     
-    internal func setGIF(data: Data, isPreview: Bool = false) {
+    public func setGIF(data: Data, isPreview: Bool = false) {
         media.gifData = data
         
         if !imageViewNotReused {
@@ -162,7 +162,7 @@ public extension MediaView {
         toggleTrackDisplay()
     }
     
-    internal func setGIF(url: String, isPreview: Bool = false) {
+    public func setGIF(url: String, isPreview: Bool = false) {
         media.gifURL = url
         
         if !imageViewNotReused {

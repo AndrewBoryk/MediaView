@@ -41,7 +41,8 @@ class ViewController: UIViewController, MediaViewDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        mediaView.setVideo(url: "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4", thumbnailUrl: "http://camendesign.com/code/video_for_everybody/poster.jpg")
+        mediaView.setGIF(url: "http://static1.squarespace.com/static/552a5cc4e4b059a56a050501/565f6b57e4b0d9b44ab87107/566024f5e4b0354e5b79dd24/1449141991793/NYCGifathon12.gif")
+//        mediaView.setVideo(url: "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4", thumbnailUrl: "http://camendesign.com/code/video_for_everybody/poster.jpg")
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
