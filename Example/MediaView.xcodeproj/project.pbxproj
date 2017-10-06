@@ -540,10 +540,7 @@
 			baseConfigurationReference = C6FCB86BDC6DE54FE03432C9 /* Pods-MediaView_Tests.debug.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = F6ALBB84EY;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -561,10 +558,7 @@
 			baseConfigurationReference = 77B38BB1305E74A274696CEE /* Pods-MediaView_Tests.release.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = F6ALBB84EY;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
