@@ -301,7 +301,18 @@ public class MediaView: UIImageView {
     public var pressShowsGIF = false
     
     /// Determines whether user is long pressing thumbnail
-    internal var isLongPressing = false
+    internal var isLongPressing: Bool {
+        guard pressShowsGIF && !isFullScreen else {
+            return false
+        }
+        
+        switch gifLongPressRecognizer.state {
+        case .began, .changed:
+            return true
+        default:
+            return false
+        }
+    }
     
     /// File being played is from directory
     public var isFileFromDirectory = false
@@ -744,8 +755,53 @@ public class MediaView: UIImageView {
         isUserInteractionEnabled = true
     }
     
-    @objc private func handleLongPress() {
-        
+    @objc private func handleLongPress(gesture: UILongPressGestureRecognizer) {
+        if pressShowsGIF && !isFullScreen {
+            switch gesture.state {
+            case .began:
+                if let cache = media.gifCache {
+                    image = cache
+                } else if let gifURL = media.gifURL {
+                    CacheManager.shared.loadGIF(urlString: gifURL) { (gif, error) in
+                        self.handleLongPressSetting(for: gif)
+                    }
+                } else if let gifData = media.gifData {
+                    CacheManager.shared.loadGIF(data: gifData) { (gif, error) in
+                        self.handleLongPressSetting(for: gif)
+                    }
+                }
+                
+                setPlayIndicatorView(alpha: 0)
+            case .ended, .failed, .cancelled:
+                if let cache = media.imageCache {
+                    image = cache
+                } else if let imageURL = media.imageURL {
+                    CacheManager.shared.loadImage(urlString: imageURL) { (image, error) in
+                        if let image = image {
+                            if !self.isLongPressing || self.isFullScreen {
+                                self.image = image
+                            }
+                            
+                            self.media.imageCache = image
+                        }
+                    }
+                }
+                
+                setPlayIndicatorView(alpha: 1)
+            default:
+                break
+            }
+        }
+    }
+    
+    private func handleLongPressSetting(for gif: UIImage?) {
+        if let gif = gif {
+            if self.isLongPressing {
+                self.image = gif
+            }
+            
+            self.media.gifCache = gif
+        }
     }
     
     @objc private func closeAction() {

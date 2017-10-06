@@ -144,7 +144,7 @@ public extension MediaView {
         }
         
         if let cachedGIF = media.gifCache {
-            if !(isPreview && isLongPressing && !isFullScreen) {
+            if isPreview && isLongPressing && !isFullScreen {
                 image = cachedGIF
             }
         } else {
@@ -152,7 +152,7 @@ public extension MediaView {
                 if let gif = gif {
                     self.media.gifCache = gif
                     
-                    if !(isPreview && self.isLongPressing && !self.isFullScreen) {
+                    if isPreview && self.isLongPressing && !self.isFullScreen {
                         self.image = gif
                     }
                 }
@@ -170,7 +170,7 @@ public extension MediaView {
         }
         
         if let cachedGIF = media.gifCache {
-            if !(isPreview && isLongPressing && !isFullScreen) {
+            if isPreview && isLongPressing && !isFullScreen {
                 image = cachedGIF
             }
         } else if let gifURL = URL(string: url) {
@@ -178,7 +178,7 @@ public extension MediaView {
                 if let gif = gif {
                     self.media.gifCache = gif
                     
-                    if !(isPreview && self.isLongPressing && !self.isFullScreen) {
+                    if isPreview && self.isLongPressing && !self.isFullScreen {
                         self.image = gif
                     }
                 }
