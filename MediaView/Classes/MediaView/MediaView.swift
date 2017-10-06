@@ -541,7 +541,6 @@ public class MediaView: UIImageView {
         
         player.addObservers()
         
-        
         NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd), name: .AVPlayerItemDidPlayToEndTime, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(playIndicatorView.beginAnimation), name: .AVPlayerItemPlaybackStalled, object: nil)
         

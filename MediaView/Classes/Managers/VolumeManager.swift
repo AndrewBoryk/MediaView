@@ -14,7 +14,6 @@ public class VolumeManager {
     public enum AudioType: String {
         case standard = "AVAudioSessionCategorySoloAmbient"
         case playWhenSilent = "AVAudioSessionCategoryPlayback"
-        
     }
     
     /// Shared instance of VolumeManager

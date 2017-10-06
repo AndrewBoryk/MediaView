@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -95,7 +95,7 @@
 		A120B866F3D6022BC2C5D5314C08C86F /* CGRect+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
 		A35707C45CA228778A6B0FCF2297493E /* UIWindow+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIWindow+Extensions.swift"; sourceTree = "<group>"; };
 		A436935508A9D43A43A41F3D799871DE /* Pods-MediaView_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-MediaView_Tests.modulemap"; sourceTree = "<group>"; };
-		ADB18C3D5EB288137B374143DD82BC83 /* MediaView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MediaView.swift; sourceTree = "<group>"; };
+		ADB18C3D5EB288137B374143DD82BC83 /* MediaView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MediaView.swift; sourceTree = "<group>"; usesTabs = 0; };
 		AEF831860BBA5BABE8F471AC00C922D1 /* MediaView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MediaView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0D0C888019CA05BF05B671628B74276 /* MediaView-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MediaView-prefix.pch"; sourceTree = "<group>"; };
 		B31198A08B828CA7EBC3076753B64CC9 /* Pods-MediaView_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-MediaView_Example.modulemap"; sourceTree = "<group>"; };
@@ -431,7 +431,7 @@
 				LastUpgradeCheck = 0900;
 			};
 			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
