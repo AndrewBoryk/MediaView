@@ -593,6 +593,7 @@ public class MediaView: UIImageView {
                     UIView.animate(withDuration: 0.25, animations: {
                         self.frame = UIScreen.rect
                         self.layoutSubviews()
+                        self.player?.volume = 1
                     }, completion: { _ in
                         self.setViewAfterSwipe()
                         
@@ -612,7 +613,7 @@ public class MediaView: UIImageView {
                     
                     UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear, animations: {
                         shouldMinimize ? self.setMinimizedView() : self.setFullScreenView()
-                        
+                        self.player?.volume = 1
                         self.alpha = 1
                         self.layoutSubviews()
                     }, completion: { _ in
@@ -662,6 +663,7 @@ public class MediaView: UIImageView {
                 frame.size = CGSize(UIScreen.superviewWidth, UIScreen.superviewHeight)
                 frame.origin.x = 0
                 frame.origin.y = temporaryOffset
+                player?.volume = Float(1 - offsetPercentage)
                 delegate?.didChangeDismissing(for: self)
                 delegate?.mediaView(self, didChangeOffset: offsetPercentage)
             default:
@@ -700,6 +702,7 @@ public class MediaView: UIImageView {
         frame.origin.x = temporaryOffset
         frame.origin.y = maxViewOffsetY
         alpha = 1 - offsetRatio
+        player?.volume = Float(1 - offsetRatio)
     }
     
     
