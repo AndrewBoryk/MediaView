@@ -118,16 +118,6 @@ public extension MediaView {
         setAudio(url: url)
     }
     
-    public func setAudio(url: String, thumbnailGIFData: Data) {
-        setGIF(data: thumbnailGIFData)
-        setAudio(url: url)
-    }
-    
-    public func setAudio(url: String, thumbnailGIFUrl: String) {
-        setGIF(url: thumbnailGIFUrl)
-        setAudio(url: url)
-    }
-    
     private func setPreviewGIF(data: Data) {
         setGIF(data: data, isPreview: true)
     }
@@ -136,7 +126,15 @@ public extension MediaView {
         setGIF(url: url, isPreview: true)
     }
     
-    public func setGIF(data: Data, isPreview: Bool = false) {
+    public func setGIF(data: Data) {
+        setGIF(data: data, isPreview: false)
+    }
+    
+    public func setGIF(url: String) {
+        setGIF(url: url, isPreview: false)
+    }
+    
+    internal func setGIF(data: Data, isPreview: Bool = false) {
         media.gifData = data
         
         if !imageViewNotReused {
@@ -162,7 +160,7 @@ public extension MediaView {
         toggleTrackDisplay()
     }
     
-    public func setGIF(url: String, isPreview: Bool = false) {
+    internal func setGIF(url: String, isPreview: Bool = false) {
         media.gifURL = url
         
         if !imageViewNotReused {

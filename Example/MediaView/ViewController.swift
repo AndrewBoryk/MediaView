@@ -16,6 +16,8 @@ class ViewController: UIViewController, MediaViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let mediaView = MediaView(frame: view.frame)
+        
         mediaView.shouldCacheStreamedMedia = true
         mediaView.swipeMode = .dismiss
         mediaView.shouldDisplayFullscreen = true

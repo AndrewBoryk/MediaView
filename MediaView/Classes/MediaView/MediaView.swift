@@ -101,11 +101,14 @@ public class MediaView: UIImageView {
     private lazy var detailsLabel = Label(width: topOverlay.frame.width, delegate: self, kind: .description)
     
     // MARK: - Customizable Properties
-    /// If all media is sourced from the same location, then the ABCacheManager will search the Directory for files with the same name when getting cached objects, since they all have the same remote location
+    /// If all media is sourced from the same location, then the CacheManager will search the Directory for files with the same name when getting cached objects, since they all have the same remote location
     public var isAllMediaFromSameLocation = false
     
     /// Download video and audio before playing (default: false)
-    public var shouldPreloadPlayableMedia = false
+    public var shouldPreloadPlayableMedia: Bool {
+        get { return CacheManager.shared.shouldPreloadPlayableMedia }
+        set { CacheManager.shared.shouldPreloadPlayableMedia = newValue }
+    }
     
     /// Automate caching for media (default: false)
     public var shouldCacheStreamedMedia: Bool {
@@ -1058,6 +1061,11 @@ public class MediaView: UIImageView {
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        commonInitializer()
+    }
+    
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
         commonInitializer()
     }
     

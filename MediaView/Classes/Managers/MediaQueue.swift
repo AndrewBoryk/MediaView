@@ -22,6 +22,10 @@ public class MediaQueue {
     /// Add mediaView to the queue
     public func queue(mediaView: MediaView) {
         queue.append(mediaView)
+        
+        if queue.count == 1 {
+            presentNext()
+        }
     }
     
     /// Present the next mediaView in the queue and dismiss the current one
@@ -85,6 +89,7 @@ public class MediaQueue {
         }
     }
     
+    /// Dismiss the currently presented mediaView
     public func dismissCurrent(animated: Bool = true, completion: (() -> Void)? = nil) {
         guard let current = current, current.isFullScreen else {
             completion?()
