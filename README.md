@@ -317,6 +317,16 @@ let font: UIFont = ...
 mediaView.trackFont = font
 ```
 
+In addition, title and details can be set to show on the top of the MediaView when presented fullscreen.
+
+```swift
+// Set just the title to show
+mediaView.setTitle("Fight Club")
+
+// Set a title and details label to show
+mediaView.setTitle("What's My Age Again", details: "By: Blink-182")
+```
+
 
 MediaView has a theme color which changes the color of the track as well as the color of the play button and failed indicator.
 
@@ -490,100 +500,118 @@ CacheManager.clear(directory: .temp)
 
 ***
 ### Delegate
-There is a delegate with optional methods to determine when the ABMediaView has played or paused the video in its AVPlayer, as well as how much the view has minimized.
+There is a delegate with optional methods to determine when the MediaView has played or paused the video in its AVPlayer, as well as how much the view has minimized.
 
 ```swift
 /// A listener to know what percentage that the view has minimized, at a value from 0 to 1
-- (void) mediaView: (ABMediaView *) mediaView didChangeOffset: (float) offsetPercentage;
+func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: CGFloat)
 
 /// When the mediaView begins playing a video
-- (void) mediaViewDidPlayVideo: (ABMediaView *) mediaView;
+func didPlayMedia(for mediaView: MediaView)
+
+/// When the mediaView fails to play a video
+func didFailToPlayMedia(for mediaView: MediaView)
 
 /// When the mediaView pauses a video
-- (void) mediaViewDidPauseVideo: (ABMediaView *) mediaView;
+func didPauseMedia(for mediaView: MediaView)
 ```
 
 
-In addition, there are also delegate methods to help determine whether a ABMediaView is about to be shown, has been shown, about to be dismissed, and has been dismissed.
+In addition, there are also delegate methods to help determine whether a MediaView is about to be shown, has been shown, about to be dismissed, and has been dismissed.
 
 ```swift
 /// Called when the mediaView has begun the presentation process
-- (void) mediaViewWillPresent: (ABMediaView *) mediaView;
+func willPresent(mediaView: MediaView)
 
 /// Called when the mediaView has been presented
-- (void) mediaViewDidPresent: (ABMediaView *) mediaView;
+func didPresent(mediaView: MediaView)
 
 /// Called when the mediaView has begun the dismissal process
-- (void) mediaViewWillDismiss: (ABMediaView *) mediaView;
+func willDismiss(mediaView: MediaView)
 
 /// Called when the mediaView has completed the dismissal process. Useful if not looking to utilize the dismissal completion block
-- (void) mediaViewDidDismiss: (ABMediaView *) mediaView;
+func didDismiss(mediaView: MediaView)
 ```
 
 
-If looking to determine whether a mediaView has finished playing its video, you can utilize the 'mediaViewDidFinishVideo:withLoop:' method. This also specifies whether the mediaView is set to loop after it has finished playing.
+If looking to determine whether a mediaView has finished playing its video, you can utilize the 'didFinishPlayableMedia:withLoop:' method. This also specifies whether the mediaView is set to loop after it has finished playing.
 
 ```swift
-/// When the mediaView finishes playing a video, and whether it will loop
-- (void)mediaViewDidFinishVideo:(ABMediaView *)mediaView withLoop:(BOOL)willLoop;
+/// When the mediaView finishes playing a video, and whether it looped
+func didFinishPlayableMedia(for mediaView: MediaView, withLoop didLoop: Bool)
 ```
 
 
-The following delegate methods are useful when looking to determine if the ABMediaView has begun, is in the process, or has completed minimizing. A popular use case for this would be adjust the UIStatusBarStyle depending on whether the ABMediaView is visible behind it.
-
-```swift
-/// Called when the mediaView is in the process of minimizing, and is about to make a change in frame
-- (void) mediaViewWillChangeMinimization:(ABMediaView *)mediaView;
-
-/// Called when the mediaView is in the process of minimizing, and has made a change in frame
-- (void) mediaViewDidChangeMinimization:(ABMediaView *)mediaView;
-
-/// Called before the mediaView ends minimizing, and informs whether the minimized view will snap to minimized or fullscreen mode
-- (void) mediaViewWillEndMinimizing:(ABMediaView *)mediaView atMinimizedState:(BOOL)isMinimized;
-
-/// Called when the mediaView ends minimizing, and informs whether the minimized view has snapped to minimized or fullscreen mode
-- (void) mediaViewDidEndMinimizing:(ABMediaView *)mediaView atMinimizedState:(BOOL)isMinimized;
-```
-
-
-On the other hand, if one has the 'isDismissable' value set on their ABMediaView, delegate methods are provided to listen for when the mediaView will and has begun/ended the dismissing process.
+The following delegate methods are useful when looking to determine if the MediaView has begun, is in the process, or has completed minimizing. A popular use case for this would be adjust the UIStatusBarStyle depending on whether the MediaView is visible behind it.
 
 ```swift
 /// Called when the mediaView is in the process of minimizing, and is about to make a change in frame
-- (void) mediaViewWillChangeDismissing:(ABMediaView *)mediaView;
+func willChangeMinimization(for mediaView: MediaView)
 
 /// Called when the mediaView is in the process of minimizing, and has made a change in frame
-- (void) mediaViewDidChangeDismissing:(ABMediaView *)mediaView;
+func didChangeMinimization(for mediaView: MediaView)
 
 /// Called before the mediaView ends minimizing, and informs whether the minimized view will snap to minimized or fullscreen mode
-- (void) mediaViewWillEndDismissing:(ABMediaView *)mediaView withDismissal:(BOOL)didDismiss;
+func willEndMinimizing(for mediaView: MediaView, atMinimizedState isMinimized: Bool)
 
 /// Called when the mediaView ends minimizing, and informs whether the minimized view has snapped to minimized or fullscreen mode
-- (void) mediaViewDidEndDismissing:(ABMediaView *)mediaView withDismissal:(BOOL)didDismiss;
+func didEndMinimizing(for mediaView: MediaView, atMinimizedState isMinimized: Bool)
 ```
 
 
-If one is looking to detect if the image contained in the ABMediaView has been set or changed, they can listen to the following delegate method.
+On the other hand, if one has the 'swipeMode' value on their MediaView set to '.dismiss', delegate methods are provided to listen for when the MediaView will and did begin/end the dismissing process.
 
 ```swift
-/// Called when the mediaView 'image' property has been set or changed
-- (void) mediaView:(ABMediaView *)mediaView didSetImage:(UIImage *) image;
+/// Called when the mediaView is in the process of minimizing, and is about to make a change in frame
+func willChangeDismissing(for mediaView: MediaView)
+
+/// Called when the mediaView is in the process of minimizing, and has made a change in frame
+func didChangeDismissing(for mediaView: MediaView)
+
+/// Called before the mediaView ends minimizing, and informs whether the minimized view will snap to minimized or fullscreen mode
+func willEndDismissing(for mediaView: MediaView, withDismissal didDismiss: Bool)
+
+/// Called when the mediaView ends minimizing, and informs whether the minimized view has snapped to minimized or fullscreen mode
+func didEndDismissing(for mediaView: MediaView, withDismissal didDismiss: Bool)
 ```
 
 
-If one is looking to cache the images, videos, or GIFs that are being downloaded via the ABMediaView, delegates have been made handle to get these objects.
+If one is looking to detect if the image contained in the MediaView has been set or changed, they can listen to the following delegate method.
+
+```swift
+/// Called when the 'image' value of the UIImageView has been set
+func mediaView(_ mediaView: MediaView, didSetImage image: UIImage)
+```
+
+
+If one is looking to cache the images, videos, or GIFs that are being downloaded via the MediaView, delegates have been made handle to get these objects.
 
 
 ```swift
 /// Called when the mediaView has completed downloading the image from the web
-- (void) mediaView:(ABMediaView *)mediaView didDownloadImage:(UIImage *) image;
+func mediaView(_ mediaView: MediaView, didDownloadImage image: UIImage)
 
 /// Called when the mediaView has completed downloading the video from the web
-- (void) mediaView:(ABMediaView *)mediaView didDownloadVideo: (NSString *)video;
+func mediaView(_ mediaView: MediaView, didDownloadVideo video: URL)
 
-/// Called when the mediaView has completed downloading the GIF from the web
-- (void) mediaView:(ABMediaView *)mediaView didDownloadGif:(UIImage *)gif;
+/// Called when the mediaView has completed downloading the audio from the web
+func mediaView(_ mediaView: MediaView, didDownloadAudio audio: URL)
+
+/// Called when the mediaView has completed downloading the gif from the web
+func mediaView(_ mediaView: MediaView, didDownloadGif gif: UIImage)
 ```
+
+
+Lastly, if you have set the title or details value on a MediaView, you can receive touches on these labels in the following delegate methods.
+
+```swift
+/// Called when the user taps the title label
+func handleTitleSelection(in mediaView: MediaView)
+
+/// Called when the user taps the details label
+func handleDetailsSelection(in mediaView: MediaView)
+```
+
 
 ## Complimentary Libraries
 
