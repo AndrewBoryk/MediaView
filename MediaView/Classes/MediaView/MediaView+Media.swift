@@ -9,6 +9,7 @@ import Foundation
 
 public extension MediaView {
     
+    // MARK: - Image
     public override var image: UIImage? {
         didSet {
             if let image = image {
@@ -44,6 +45,7 @@ public extension MediaView {
         toggleTrackDisplay()
     }
     
+    // MARK: - Video
     public func setVideo(url: String) {
         media.videoURL = url
         track.reset()
@@ -96,6 +98,7 @@ public extension MediaView {
         setGIF(url: thumbnailGIFUrl)
     }
     
+    // MARK: - Audio
     public func setAudio(url: String) {
         media.audioURL = url
         track.reset()
@@ -118,6 +121,17 @@ public extension MediaView {
         setAudio(url: url)
     }
     
+    public func setAudio(url: String, thumbnailGIFData: Data) {
+        setAudio(url: url)
+        setGIF(data: thumbnailGIFData)
+    }
+    
+    public func setAudio(url: String, thumbnailGIFUrl: String) {
+        setAudio(url: url)
+        setGIF(url: thumbnailGIFUrl)
+    }
+    
+    // MARK: - GIF
     private func setPreviewGIF(data: Data) {
         setGIF(data: data, isPreview: true)
     }

@@ -7,7 +7,7 @@
 
 ## Description
 
-ABMediaView can display images, videos, as well as now GIFs and Audio! It subclasses UIImageView, and has functionality to lazy-load images from the web. In addition, it can also display videos, downloaded via URL from disk or web. Videos contain a player with a timeline and scrubbing. GIFs can also be displayed in an ABMediaView, via lazy-loading from the web, or set via NSData. The GIF that is downloaded is saved as a UIImage object for easy storage. Audio can also be displayed in the player by simply providing a url from the web or on disk. A major added functionality is that this mediaView has a queue and can present mediaViews in fullscreen mode. There is functionality which allows the view to be minimized by swiping, where it sits in the bottom right corner as a thumbnail. Videos can continue playing and be heard from this position. The user can choose to swipe the view away to dismiss. There are various different functionality that can be toggled on and off to customize the view to one's choosing.
+MediaView can display images, videos, as well as now GIFs and Audio! It subclasses UIImageView, and has functionality to lazy-load images from the web. In addition, it can also display videos, downloaded via URL from disk or web. Videos contain a player with a timeline and scrubbing. GIFs can also be displayed in an MediaView, via lazy-loading from the web, or set via NSData. The GIF that is downloaded is saved as a UIImage object for easy storage. Audio can also be displayed in the player by simply providing a url from the web or on disk. A major added functionality is that this mediaView has a queue and can present mediaViews in fullscreen mode. There is functionality which allows the view to be minimized by swiping, where it sits in the bottom right corner as a thumbnail. Videos can continue playing and be heard from this position. Afterwards, the user can choose to swipe the view away to dismiss. Alternatively, one can set the mediaView to dismiss immediately when swiping down instead of minimizing. In addition, automated caching is available. There are various different functionality that can be toggled on and off to customize the view to one's choosing.
 
 ![alt tag](ABMediaViewScrubScreenshot.gif)
 
@@ -184,7 +184,6 @@ In terms of playback throughout the app, functionality has been added where you 
 ```swift
 // Toggle this functionality to enable/disable sound to play when an MediaView begins playing, and the user's app is on silent
 MediaView.audioTypeWhenPlay = .playWhenSilent
-[ABMediaView setPlaysAudioWhenPlayingMediaOnSilent:YES];
 
 // In addition, toggle this functionality to enable/disable sound to play when an MediaView ends playing, and the user's app is on silent
 MediaView.audioTypeWhenStop = .standard
@@ -195,243 +194,255 @@ MediaView.audioTypeWhenStop = .standard
 
 ```swift
 // Set video for mediaView by URL, and set GIF as thumbnail by URL
-[mediaView setVideoURL:@"www.video.com/urlHere" withThumbnailGifURL:@"http://yoursite/yourgif.gif"];
+mediaView.setVideo(url: "www.video.com/urlHere", thumbnailGIFUrl: "http://yoursite/yourgif.gif")
 
-// Set video for mediaView by URL, and set GIF as thumbnail using NSData
-[mediaView setVideoURL:@"www.video.com/urlHere" withThumbnailGifData:gifData];
+// Set video for mediaView by URL, and set GIF as thumbnail using Data
+mediaView.setVideo(url: "www.video.com/urlHere", thumbnailGIFData: gifData)
 
 // Set audio for mediaView by URL, and set GIF as thumbnail by URL
-[mediaView setAudioURL:@"www.audio.com/urlHere" withThumbnailGifURL:@"http://yoursite/yourgif.gif"];
+mediaView.setAudio(url: "www.video.com/urlHere", thumbnailGIFUrl: "http://yoursite/yourgif.gif")
 
-// Set audio for mediaView by URL, and set GIF as thumbnail using NSData
-[mediaView setAudioURL:@"www.audio.com/urlHere" withThumbnailGifData:gifData];
-
+// Set audio for mediaView by URL, and set GIF as thumbnail using Data
+mediaView.setAudio(url: "www.video.com/urlHere", thumbnailGIFData: gifData)
 ```
 
-Another bonus functionality has been added, where if a user presses and holds on an ABMediaView, a GIF preview is shown. This function is currently available for videos, and can be implemented using the following methods:
+Another bonus functionality has been added, where if a user presses and holds on an MediaView, a GIF preview is shown. This function is currently available for videos, and can be implemented using the following methods:
 
 ```swift
-/// Set the url where the video can be downloaded from, as well as the image for the thumbnail, and added functionality where when the user presses and holds on the thumbnail, it turns into a GIF. GIF is added via URL
-- (void) setVideoURL:(NSString *)videoURL withThumbnailImage:(UIImage *) thumbnail andPreviewGifURL:(NSString *) thumbnailGifURL;
+let thumbnailImage: UIImage = ...
+let gifData: Data = ...
 
-/// Set the url where the video can be downloaded from, as well as the image for the thumbnail, and added functionality where when the user presses and holds on the thumbnail, it turns into a GIF. GIF is added via NSData
-- (void) setVideoURL:(NSString *)videoURL withThumbnailImage:(UIImage *) thumbnail andPreviewGifData:(NSData *) thumbnailGifData;
+// Set video for the MediaView, then the thumbnail UIImage, and the url for the preview GIF
+mediaView.setVideo(url: "www.video.com/urlHere", thumbnail: thumbnailImage, previewGIFUrl: "http://yoursite/yourgif.gif")
 
-/// Set the url where the video can be downloaded from, as well as the url where the thumbnail image can be found, and added functionality where when the user presses and holds on the thumbnail, it turns into a GIF. GIF is added via URL
-- (void) setVideoURL:(NSString *)videoURL withThumbnailURL:(NSString *) thumbnailURL andPreviewGifURL:(NSString *) thumbnailGifURL;
+// Set video for the MediaView, then the thumbnail UIImage, and the Data for the preview GIF
+mediaView.setVideo(url: "www.video.com/urlHere", thumbnail: thumbnailImage, previewGIFData: gifData)
 
+// Set video for the MediaView, then the url for the thumbnail image, and the url for the preview GIF
+mediaView.setVideo(url: "www.video.com/urlHere", thumbnailUrl: "http://yoursite.com/yourimage.jpg", previewGIFUrl: "http://yoursite/yourgif.gif")
 
-/// Set the url where the video can be downloaded from, as well as the url where the thumbnail image can be found, and added functionality where when the user presses and holds on the thumbnail, it turns into a GIF. GIF is added via NSData
-- (void) setVideoURL:(NSString *)videoURL withThumbnailURL:(NSString *) thumbnailURL andPreviewGifData:(NSData *) thumbnailGifData;
+// Set video for the MediaView, then the url for the thumbnail image, and the Data for the preview GIF
+mediaView.setVideo(url: "www.video.com/urlHere", thumbnailUrl: "http://yoursite.com/yourimage.jpg", previewGIFData: gifData)
 ```
 
 ![alt tag](ABMediaViewVideoPreviewUsingGIFScreenshot.gif)
 
-**VERY IMPORTANT** If your application supports device rotation, place the following block of code in your application's rootviewcontroller, or in the view controller which is intializing the ABMediaView. This will allow the ABMediaView to know when the user's device is rotating, and will enable it to rotate accordingly.
+**VERY IMPORTANT** If your application supports device rotation, the MediaViews throughout your app need to receive the rotation notifications. Thus, you need to implement something along the lines of what can be found [here](https://stackoverflow.com/questions/25666269/how-to-detect-orientation-change). Here are a couple of example implementations that I found best:
 
+Method 1: Place the following block of code in your application's rootviewcontroller, or in the view controller which is intializing the MediaView. This will allow the MediaView to know when the user's device is rotating, and will enable it to rotate accordingly.
 ```swift
-// If 'viewWillTransitionToSize' is already implemented in your code, add the two ABMediaViewNotifications to your 'animateAlongsideTransition' block
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id)coordinator {
-[super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+// If 'viewWillTransitionToSize' is already implemented in your code, add the two MediaViewNotifications to your 'animate:alongsideTransition' block
+override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    super.viewWillTransition(to: size, with: coordinator)
 
-// Executes before and after rotation, that way any ABMediaViews can adjust their frames for the new size. Is especially helpful when users are watching landscape videos and rotate their devices between portrait and landscape.
-
-[coordinator animateAlongsideTransition:^(id  _Nonnull context) {
-
-// Notifies the ABMediaView that the device is about to rotate
-[[NSNotificationCenter defaultCenter] postNotificationName:ABMediaViewWillRotateNotification object:nil];
-
-} completion:^(id  _Nonnull context) {
-
-// Notifies the ABMediaView that the device just finished rotating
-[[NSNotificationCenter defaultCenter] postNotificationName:ABMediaViewDidRotateNotification object:nil];
-}];
+    coordinator.animate(alongsideTransition: { _ in
+        Notification.post(.mediaViewWillRotateNotification)
+    }) { _ in
+        Notification.post(.mediaViewDidRotateNotification)
+    }
 }
 ```
 
-In relation to screen rotation, if your application's UI requires Portrait orientation, but you want the ABMediaView to be viewable in Landscape mode, methodology for handling this case has been included in the Example project. This is popular functionality, so it is included to make developing easier for such a functionality. The method leverages the delegate methods for ABMediaView to determine when the app should restrict rotation.
+Method 2: Add a notification inside your AppDelegate's didFinishLaunchingWithOptions for capturing rotation. I'm not crazy about this implementation because it can't capture will rotate notifications, so it will delay mediaView rotation.
+```swift
+// Notification which should be added to AppDelegate
+NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
 
 
-Lastly, when one is complete with an ABMediaView and wishes to wipe it clean to make room for new content to be displayed, a few methods are available for easily handling this task.
+// Function called from notification
+func rotated() {
+    Notification.post(.mediaViewWillRotateNotification)
+    Notification.post(.mediaViewDidRotateNotification)
+}
+```
+
+In relation to screen rotation, if your application's UI requires Portrait orientation, but you want the MediaView to be viewable in Landscape mode, methodology for handling this case has been included in the Example project. This is popular functionality, so it is included to make developing easier for such a functionality. The method leverages the delegate methods for MediaView to determine when the app should restrict rotation.
+
+
+Lastly, when one is done with an MediaView and wishes to wipe it clean to make room for new content to be displayed (such as with reusable cells), a few methods are available for easily handling this task.
 
 ```swift
-/// Removes image, video, audio and GIF data from the mediaView
+// Removes image, video, audio and GIF data from the MediaView
 - (void) resetMediaInView;
 
-/// Resets all variables from mediaView, removing image, video, audio and GIF data
+// Calls resetMediaInView and also resets the configurations in the MediaView
 - (void) resetVariables;
 ```
 
 
 ***
 ### Customization
-ABMediaView also comes with an option for toggling the functionality which would allow the mediaView to be swiped away to the bottom right corner, and allows the user to interact with the underlying interface while the mediaView sits minimized. Video and audio continues to play if already playing, and the user can swipe right to dismiss the minimized view.
+MediaView also comes with an option for toggling the functionality which would allow the mediaView to be swiped away, to either dismiss or minimized to the bottom right corner. Minimization allows the user to interact with the underlying interface while the mediaView sits minimized. Video and audio continues to play if already playing, and the user can swipe right to dismiss the minimized view. These settings can be set by setting the 'swipeMode' value on the MediaView.
 
 ```swift
-[mediaView setIsMinimizable: YES];
+// User can swipe down to dismiss the MediaView
+mediaView.swipeMode = .dismiss
+
+// User can swipe down to minimize the MediaView
+mediaView.swipeMode = .minimize
+
+// MediaView should only be dismissed if the 'X' close button is pressed, and not swipable.
+mediaView.swipeMode = .none
 ```
 
-
-For content such as images and GIFs, the variable 'isDismissable' can be set, which allows the user to swipe down to dismiss the view instead of minimize it. When set, this variable supersedes 'isMinimizable', and is useful for content that doesn't require constant playback.
-
-```swift
-[mediaView setIsDismissable: YES];
-```
-
-
-ABMediaView also comes with a few playback options for video and audio. One option, 'allowLooping', toggles whether media should replay after reaching the end. Another option, 'autoPlayAfterPresentation', toggles whether media should play automatically after presenting. By default, ABMediaView is set to autmatically play media after presentation.
+MediaView also comes with a few playback options for video and audio. One option, 'allowLooping', toggles whether media should replay after reaching the end. Another option, 'autoPlayAfterPresentation', toggles whether media should play automatically after presenting. By default, MediaView has 'shouldAutoPlayAfterPresentation' set to true.
 
 ```swift
 // Toggle looping functionality
-[mediaView setAllowLooping:YES];
+mediaView.allowLooping = true
 
 // Toggle functionality to automatically play videos after presenting
-[mediaView setAutoPlayAfterPresentation:YES];
+mediaView.shouldAutoPlayAfterPresentation = true
 ```
 
 
-If you are looking for the functionality to have a fullscreen mediaView dismiss after its video finished playing, you can set the value 'shouldDismissAfterFinish' to true on the mediaView. This functionality will take precedence over 'allowLooping' for fullscreen mediaViews.
+If you are looking for the functionality to have a fullscreen mediaView dismiss after its video finished playing, you can set the value 'shouldDismissAfterFinish' to true on the mediaView. This functionality will take precedence over 'allowLooping' for fullscreen MediaViews.
 
 ```swift
-[mediaView setShouldDismissAfterFinish: YES];
+mediaView.shouldDismissAfterFinishedPlaying = true
 ```
 
 
-ABMediaView has several options for enabling and editing the progress track that shows when displaying videos and audio
+MediaView has several options for enabling and editing the progress track that shows when displaying videos and audio.
 
 ```swift
-// Enable progress track to show at the bottom of the view
-[mediaView setShowTrack:YES];
+// Enable progress track to show at the bottom of the MediaView
+mediaView.shouldShowTrack = true
 
 // Toggles the funtionality which would show remaining time instead of total time on the right label on the track
-[mediaView setShowRemainingTime:YES];
+mediaView.shouldDisplayRemainingTime = true
 
-/// Change the font for the labels on the track
-[mediaView setTrackFont:[UIFont fontWithName:@"STHeitiTC-Medium" size:12.0f]];
+// Change the font for the labels on the track
+let font: UIFont = ...
+mediaView.trackFont = font
 ```
 
 
-ABMediaView has a theme color which changes the color of the track as well as the color of the play button
+MediaView has a theme color which changes the color of the track as well as the color of the play button and failed indicator.
 
 ```swift
-// Changing the theme color changes the color of the play indicator as well as the progress track
-[mediaView setThemeColor:[UIColor redColor]];
+// Changing the theme color changes the color of the play and failed indicators as well as the progress track
+mediaView.themeColor = .red
 ```
 
 
-ABMediaView will display images, videos, and GIFs according to the contentMode set on the view. However, there is also functionality to have the contentMode be set to aspectFill while the videoGravity is set to aspectFit.
+MediaView will display images, videos, and GIFs according to the contentMode set on the view. However, there is also functionality to have the contentMode be set to aspectFill while the videoGravity is set to aspectFit.
 
 ```swift
 // Setting the contentMode to aspectFit will set the videoGravity to aspectFit as well
-mediaView.contentMode = UIViewContentModeScaleAspectFit;
+mediaView.contentMode = .scaleAspectFit
 
 // If you desire to have the image to fill the view, however you would like the videoGravity to be aspectFit, then you can implement this functionality
-mediaView.contentMode = UIViewContentModeScaleAspectFill;
-[mediaView changeVideoToAspectFit: YES];
+mediaView.contentMode = .scaleAspectFill
+mediaView.videoAspectFit = true
 ```
 
 
-If the ABMediaView is not a fullscreen view that was presented from the queue, the functionality can be enabled that would allow the ABMediaView to open up in fullscreen when selected.
+To have fullscreen functionality on a MediaView, the 'shouldDisplayFullscreen' value needs to be set to true on the respective MediaView. By default, this value is false.
 
-```swiftv
-[mediaView setShouldDisplayFullscreen:YES];
+```swift
+mediaView.shouldDisplayFullscreen = true
 ```
 
 
-If you would like to use a custom play button or failed indicator for an ABMediaView, you should set the 'customPlayButton' and 'customFailedButton' variables on the mediaView. (Applicable to video and audio)
+If you would like to use a custom play button or failed indicator for a MediaView, you should set the 'customPlayButton', 'customFailedButton', and 'customMusicButton' variables on the MediaView.
 
-```swiftv
-// Set a custom image for the play button visible on ABMediaView's with video or audio
-mediaView.customPlayButton = [UIImage imageNamed:@"CustomPlayButtonImage"];
+```swift
+// Set a custom image for the play button visible on MediaView's with video or audio
+mediaView.customPlayButton = UIImage(named: "play.png")
 
 // Set a custom image for when the mediaView fails to play media
-mediaView.custonFailedButton = [UIImage imageNamed:@"CustomFailedButtonImage"];
+mediaView.customFailButton = UIImage(named: "failed.png")
+
+// Set a custom image for the play button visible for MediaView's specifically with audio, supercedes the customPlayButton
+mediaView.customMusicButton = UIImage(named: "playMusic.png")
 ```
 
 
-There is functionality to toggle hiding the close button, that way it does not show up in a fullscreen pop-up mediaView. This functionality is only allowed if isMinimizable is enabled, or else there would be no other way to close the pop-up. In addition, the close button remains visible when the view is held in landscape orientation, due to minimizing being disabled during landscape.
+There is functionality to toggle hiding the close button, that way it does not show up in a fullscreen pop-up mediaView. This functionality is only allowed if 'swipeMode' is set to '.minimize' or 'dismiss', or else there would be no other way to close the pop-up. In addition, the close button remains visible when the view is held in landscape orientation, due to swiping being disabled during landscape.
 
 ```swift
-[mediaView setCloseButtonHidden:YES];
+mediaView.shouldHideCloseButton = true
 ```
 
 
-Similarly, there is functionality to have the play button hidden on media that can be played (video/audio). This functionality is useful if one is looking to use ABMediaView as a background video player.
+Similarly, there is functionality to have the play button hidden on media that can be played (video/audio). This functionality is useful if one is looking to use MediaView as a background video player.
 
 ```swift
-[mediaView setPlayButtonHidden:YES];
+mediaView.shouldHidePlayButton = true
 ```
 
 
-In the case that there is a UIStatusBar on your screen that you would not like to hide, or instances where you would like to reserve space on the top of your screen for other views, ABMediaView possesses the ability to offset the subviews at the top of the screen to avoid hiding these views. Setting the 'topOffset' property of an ABMediaView would move down the 'closeButton' and any other top-anchored views. Again, a major use case for this would be to set the 'topOffset' property to 20px in order to avoid covering the UIStatusBar.
+In the case that there is a UIStatusBar on your screen that you would not like to hide, or instances where you would like to reserve space on the top of your screen for other views, MediaView possesses the ability to offset the subviews at the top of the screen to avoid hiding these views. Setting the 'topOffset' property of a MediaView would move down the 'closeButton' and any other top-anchored views. Again, a major use case for this would be to set the 'topOffset' property to 20px in order to avoid covering the UIStatusBar.
 
 ```swift
-[mediaView setTopBuffer:20.0f];
+mediaView.topBuffer = 20
 ```
 
 
-By default, there is a buffer of 12px between the minimized ABMediaView and the screen's bottom. More space can be added by adjusting the 'bottomBuffer' value for the ABMediaView. This is useful in order to have the mediaView show above views such as UITabBars and UIToolbars, to avoid covering these views that need reserved space on the bottom of the screen.
+By default, there is a buffer of 12px between the minimized MediaView and the screen's bottom. More space can be added by adjusting the 'bottomBuffer' value for the MediaView. This is useful in order to have the mediaView show above views such as UITabBars and UIToolbars, to avoid covering these views that need reserved space on the bottom of the screen.
 
 ```swift
-[mediaView setBottomBuffer:0.0f];
+mediaView.bottomBuffer = 0
 ```
 
 
-To make these buffers easier to use, I have provided iOS standard presets for easy access to certain buffer values.
+To make these buffers easier to use, I have extended CGFloat to include the following values.
 
 ```swift
-// ABBufferStatusBar = 20px
-// ABBufferNavigationBar = 44px
-// ABBufferStatusAndNavigationBar = 64px
-// ABBufferTabBar = 49px
+// .statusBarBuffer = 20px OR 44px if iPhone X
+// .navigationBarBuffer = 44px
+// .statusAndNavigationBuffer = 64px OR 104px if iPhone X
+// .tabBarBuffer = 49px
 
-[mediaView setTopBuffer:ABBufferStatusBar];
-[mediaView setBottomBuffer:ABBufferTabBar];
+mediaView.topBuffer = .statusBarBuffer
+mediaView.bottomBuffer = .tabBarBuffer
 ```
 
 
-ABMediaView has functionality to set the frame from which the fullscreen pop-up will originate. This functionality is useful to combine with 'shouldDisplayFullscreen', as it will allow the pop-up to originate from the frame of the mediaView with 'shouldDisplayFullscreen' enabled.
+MediaView has functionality to set the frame from which the fullscreen pop-up will originate. This functionality is useful to combine with 'shouldDisplayFullscreen', as it will allow the pop-up to originate from the frame of the mediaView with 'shouldDisplayFullscreen' enabled.
 
 ```swift
-/// Rect that specifies where the mediaView's frame will originate from when presenting, and needs to be converted into its position in the mainWindow
-mediaView.originRect = self.mediaView.frame;
+// Rect that specifies where the mediaView's frame will originate from when presenting, and will be converted into its position in the mainWindow
+mediaView.originRect = view.frame
 
-/// Rect that specifies where the mediaView's frame will originate from when presenting, and is already converted into its position in the mainWindow
-mediaView.originRectConverted = self.mediaView.frame;
+// Rect that specifies where the mediaView's frame will originate from when presenting, and is already converted into its position in the mainWindow
+mediaView.originRectConverted = view.frame
 ```
 
 
-However, if one is using dynamic UI, and therefore can not determine the originRect of the ABMediaView, one can set the property 'presentFromOriginRect' to true. With this functionality enabled, the fullscreen ABMediaView will popup from frame of the  ABMediaView which presents it. If 'presentFromOriginRect' is enabled, then there is no need to set 'originRect' or 'originRectConverted', as this property supersedes both.
+However, if one is using dynamic UI, and therefore can not determine the originRect of the MediaView, one can set the property 'shouldPresentFromOriginRect' to true. With this functionality enabled, the fullscreen MediaView will popup from frame of the MediaView which presents it. If 'shouldPresentFromOriginRect' is enabled, then there is no need to set 'originRect' or 'originRectConverted', as this property supersedes both.
 
 ```swift
-self.mediaView.presentFromOriginRect = YES;
+mediaView.shouldPresentFromOriginRect = true
 ```
 
 
-One can specify whether or not the ABMediaView is going to be displayed in a reusable view, which will allow for better UI transition performance for ABMediaView's that are not going to be reused.
+One can specify whether or not the MediaView is going to be displayed in a reusable view, which will allow for better UI transition performance for MediaView's that are not going to be reused. By default it is assumed that the MediaView will be reused, so the value that can be set is 'imageViewNotReused' to true if not reused.
 
 ```swift
-mediaView.imageViewNotReused = YES;
+mediaView.imageViewNotReused = true
 ```
 
 
-When a ABMediaView's 'isMinimizable' value is enabled, the size ratio of the minimized view can be customized. The default value for this ratio is the preset ABMediaViewRatioPresetLandscape, which is a landscape 16:9 aspect ratio. There are also preset options for square (ABMediaViewRatioPresetSquare) and portrait 9:16 (ABMediaViewRatioPresetPortrait).
+When a MediaView's 'isMinimizable' value is enabled, the size ratio of the minimized view can be customized. The default value for this ratio is the preset ABMediaViewRatioPresetLandscape, which is a landscape 16:9 aspect ratio. There are also preset options for square (ABMediaViewRatioPresetSquare) and portrait 9:16 (ABMediaViewRatioPresetPortrait).
 
 ```swift
 
 // Aspect ratio of the minimized view
-mediaView.minimizedAspectRatio = ABMediaViewRatioPresetLandscape;
-mediaView.minimizedAspectRatio = ABMediaViewRatioPresetSquare;
-mediaView.minimizedAspectRatio = ABMediaViewRatioPresetPortrait;
-mediaView.minimizedAspectRatio = (6.0f/5.0f); // Height/Width
+mediaView.minimizedAspectRatio = .landscapeRatio
+mediaView.minimizedAspectRatio = .square
+mediaView.minimizedAspectRatio = .portrait
+mediaView.minimizedAspectRatio = .landscapeRatio
+mediaView.minimizedAspectRatio = (6.0 / 5.0) // Height/Width
 ```
 
 
-Accompanying the above option, the ratio of the screen's width that the minimized view will stretch across can also be specified. By default, the minimized view stretches across half the screen (0.5 ratio). This functionality is useful in adjusting the size of the minimized view for instances where the ABMediaView's 'minimizedAspectRatio' is greater than landscape.
+Accompanying the above option, the ratio of the screen's width that the minimized view will stretch across can also be specified. By default, the minimized view stretches across half the screen (0.5 ratio). This functionality is useful in adjusting the size of the minimized view for instances where the MediaView's 'minimizedAspectRatio' is greater than landscape.
 
 ```swift
 // Ratio of the screen's width that the minimized view will stretch across
-mediaView.minimizedWidthRatio = 0.5f;
+mediaView.minimizedWidthRatio = 0.5
 ```
 
 

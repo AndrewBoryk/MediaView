@@ -49,4 +49,9 @@ public extension UIScreen {
             return width > height ? width : height
         }
     }
+    
+    /// Determines if device is iPhone X
+    public static var isX: Bool {
+        return Int(UIApplication.shared.statusBarFrame.height) == 44
+    }
 }

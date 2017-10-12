@@ -24,13 +24,17 @@ public extension CGFloat {
     public static let squareRatio: CGFloat = 1.0
     
     /// Height of the status bar
-    public static let statusBarBuffer = Buffer.statusBar.rawValue
+    public static let statusBarBuffer: CGFloat = {
+        return UIScreen.isX ? Buffer.navigationBar.rawValue : Buffer.statusBar.rawValue
+    }()
     
     /// Height of the navigation bar
     public static let navigationBarBuffer = Buffer.navigationBar.rawValue
     
     /// Height of the status bar and the navigation bar combined
-    public static let statusAndNavigationBuffer = Buffer.statusBar.rawValue + Buffer.navigationBar.rawValue
+    public static let statusAndNavigationBufferX: CGFloat = {
+        return Buffer.navigationBar.rawValue + .statusBarBuffer
+    }()
     
     /// Height of the tab bar
     public static let tabBarBuffer = Buffer.tabBar.rawValue
