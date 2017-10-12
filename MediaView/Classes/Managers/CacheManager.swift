@@ -364,7 +364,7 @@ public class CacheManager {
                 
                 let gif = UIImage.animatedImageWithAnimatedGIFUrl(url)
                 
-                if let gif = gif {
+                if let gif = gif, self.cacheMediaWhenDownloaded {
                     cache.set(object: gif, forKey: url.absoluteString)
                 }
                 

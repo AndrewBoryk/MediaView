@@ -448,40 +448,44 @@ mediaView.minimizedWidthRatio = 0.5
 
 ***
 ### Caching
-If your project does not have a caching system, and you are looking for an automated caching system, ABMediaView now has that! With ABMediaView, images and GIFs are saved in memory using NSCache, while videos and audio files are saved to disk. There are several options available for managing the cache, but let's start with how to enable automated caching. It can be done by setting the 'shouldCacheMedia' variable on the ABMediaView sharedManager.
+If your project does not have a caching system, and you are looking for an automated caching system, MediaView has that! With MediaView, images and GIFs are saved in memory using NSCache, while videos and audio files are saved to disk. There are several options available for managing the cache, but let's start with how to enable automated caching. It can be done by setting the 'cacheMediaWhenDownloaded' value on the CacheManager shared instance. In addition, setting 'shouldCacheStreamedMedia' on a MediaView will cache videos as they are streamed. At this moment, video is cached when the buffer is fully loaded from the stream. Audio is currently a work in progress.
 
 ```swift
-[[ABMediaView sharedManager] setShouldCacheMedia:YES];
+// Saves media to cache
+CacheManager.cacheMediaWhenDownloaded = true
+
+// Caches videos when streaming
+mediaView.shouldCacheStreamedMedia = true
 ```
 
-If you are looking to have videos and audio preloaded, you can have ABMediaView set to always download video and audio when the videoURL or audioURL is set on a mediaView by specifying 'shouldPreloadVideoAndAudio' on ABMediaView's sharedManager. However, if you are looking to preload video or audio on an individual instance basis, it can be done using the 'preloadVideo' and 'preloadAudio'. If you aren't looking to have videos or audio preloaded, and just have 'shouldCacheMedia' set to true, then video and audio will be streamed. At this moment, video is cached when the buffer is fully loaded from the stream. Audio is currently a work in progress.
+If you are looking to have videos and audio preloaded to cache, you can have MediaView set to always download video and audio when the video or audio URL is set on a mediaView by specifying 'shouldPreloadPlayableMedia' on ABMediaView's sharedManager. However, if you are looking to preload video or audio on an individual instance basis, it can be done using the 'preloadVideo' and 'preloadAudio'. If you aren't looking to have videos or audio preloaded, and just have 'shouldCacheStreamedMedia' set to true, then video and audio will be streamed.
 
 ```swift
 // Ensure that all video and audio is preloaded before playing, instead of just streaming (works best if your app plays videos/audio that is short in length)
-[[ABMediaView sharedManager] setShouldPreloadVideoAndAudio:YES];
+mediaView.shouldPreloadPlayableMedia = true
 
 // Preload the video for this specific mediaView
-[mediaView preloadVideo];
+mediaView.preloadVideo()
 
 // Preload the audio for this specific mediaView
-[mediaView preloadAudio];
+mediaView.preloadAudio()
 ```
 
 
-If one is looking to clear the memory cache of images and GIFs, just set 'shouldCacheMedia' to false on the ABMediaView sharedManager. However, to clear caches on disk for the Documents directory and the tmp directory, ABMediaView comes with an easy function to clear these caches.
+If one is looking to clear the memory cache of images and GIFs, just set 'shouldCacheMedia' to false on the MediaView sharedManager. However, to clear caches on disk for the Documents directory and the tmp directory, CacheManager comes with an easy class function to clear these caches.
 
 ```swift
 // Clear all of the documents directory of cached items in the ABMedia folder
-[ABMediaView clearABMediaDirectory:AllDirectoryItems];
+CacheManager.clear(directory: .all)
 
 // Clear the video directory of cached items in the ABMedia folder
-[ABMediaView clearABMediaDirectory:VideoDirectoryItems];
+CacheManager.clear(directory: .video)
 
 // Clear the audio directory of cached items in the ABMedia folder
-[ABMediaView clearABMediaDirectory:AudioDirectoryItems];
+CacheManager.clear(directory: .audio)
 
 // Clear all of the temp directory of cached items
-[ABMediaView clearABMediaDirectory:TempDirectoryItems];
+CacheManager.clear(directory: .temp)
 ```
 
 ***
