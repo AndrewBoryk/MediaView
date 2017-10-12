@@ -5,11 +5,14 @@
 [![License](https://img.shields.io/cocoapods/l/MediaView.svg?style=flat)](http://cocoapods.org/pods/MediaView)
 [![Platform](https://img.shields.io/cocoapods/p/MediaView.svg?style=flat)](http://cocoapods.org/pods/MediaView)
 
+## Screenshot
+![alt tag](https://github.com/AndrewBoryk/MediaView/blob/master/Screenshots/ABMediaViewDemoScreenshot.gif)
+
 ## Description
 
 MediaView can display images, videos, as well as now GIFs and Audio! It subclasses UIImageView, and has functionality to lazy-load images from the web. In addition, it can also display videos, downloaded via URL from disk or web. Videos contain a player with a timeline and scrubbing. GIFs can also be displayed in an MediaView, via lazy-loading from the web, or set via NSData. The GIF that is downloaded is saved as a UIImage object for easy storage. Audio can also be displayed in the player by simply providing a url from the web or on disk. A major added functionality is that this mediaView has a queue and can present mediaViews in fullscreen mode. There is functionality which allows the view to be minimized by swiping, where it sits in the bottom right corner as a thumbnail. Videos can continue playing and be heard from this position. Afterwards, the user can choose to swipe the view away to dismiss. Alternatively, one can set the mediaView to dismiss immediately when swiping down instead of minimizing. In addition, automated caching is available. There are various different functionality that can be toggled on and off to customize the view to one's choosing.
 
-![alt tag](ABMediaViewScrubScreenshot.gif)
+![alt tag](https://github.com/AndrewBoryk/MediaView/blob/master/Screenshots/ABMediaViewScrubScreenshot.gif)
 
 ## Table of Contents
 * [Description](#description)
@@ -225,7 +228,7 @@ mediaView.setVideo(url: "www.video.com/urlHere", thumbnailUrl: "http://yoursite.
 mediaView.setVideo(url: "www.video.com/urlHere", thumbnailUrl: "http://yoursite.com/yourimage.jpg", previewGIFData: gifData)
 ```
 
-![alt tag](ABMediaViewVideoPreviewUsingGIFScreenshot.gif)
+![alt tag](https://github.com/AndrewBoryk/MediaView/blob/master/Screenshots/ABMediaViewVideoPreviewUsingGIFScreenshot.gif)
 
 **VERY IMPORTANT** If your application supports device rotation, the MediaViews throughout your app need to receive the rotation notifications. Thus, you need to implement something along the lines of what can be found [here](https://stackoverflow.com/questions/25666269/how-to-detect-orientation-change). Here are a couple of example implementations that I found best:
 
