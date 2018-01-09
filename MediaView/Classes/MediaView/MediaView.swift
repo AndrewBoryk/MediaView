@@ -1158,6 +1158,12 @@ public class MediaView: UIImageView {
     }
     
     // MARK: - Static
+    /// Determines whether GIFs and Images should be cached
+    public static var cacheMediaWhenDownloaded: Bool {
+        get { return CacheManager.shared.cacheMediaWhenDownloaded}
+        set { CacheManager.shared.cacheMediaWhenDownloaded = newValue }
+    }
+    
     public static func clear(directory: CacheManager.DirectoryItem) {
         CacheManager.clear(directory: directory)
     }
