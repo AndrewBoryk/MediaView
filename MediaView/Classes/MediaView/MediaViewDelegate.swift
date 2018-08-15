@@ -7,82 +7,83 @@
 
 import Foundation
 
+@objc
 public protocol MediaViewDelegate: class {
     
     /// A listener to know what percentage that the view has minimized, at a value from 0 to 1
-    func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: CGFloat)
+    @objc optional func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: CGFloat)
     
     /// When the mediaView begins playing a video
-    func didPlayMedia(for mediaView: MediaView)
+    @objc optional func didPlayMedia(for mediaView: MediaView)
     
     /// When the mediaView fails to play a video
-    func didFailToPlayMedia(for mediaView: MediaView)
+    @objc optional func didFailToPlayMedia(for mediaView: MediaView)
     
     /// When the mediaView pauses a video
-    func didPauseMedia(for mediaView: MediaView)
+    @objc optional func didPauseMedia(for mediaView: MediaView)
     
     /// When the mediaView finishes playing a video, and whether it looped
-    func didFinishPlayableMedia(for mediaView: MediaView, withLoop didLoop: Bool)
+    @objc optional func didFinishPlayableMedia(for mediaView: MediaView, withLoop didLoop: Bool)
     
     /// Called when the mediaView has begun the presentation process
-    func willPresent(mediaView: MediaView)
+    @objc optional func willPresent(mediaView: MediaView)
     
     /// Called when the mediaView has been presented
-    func didPresent(mediaView: MediaView)
+    @objc optional func didPresent(mediaView: MediaView)
     
     /// Called when the mediaView has begun the dismissal process
-    func willDismiss(mediaView: MediaView)
+    @objc optional func willDismiss(mediaView: MediaView)
     
     /// Called when the mediaView has completed the dismissal process. Useful if not looking to utilize the dismissal completion block
-    func didDismiss(mediaView: MediaView)
+    @objc optional func didDismiss(mediaView: MediaView)
     
     /// Called when the mediaView is in the process of minimizing, and is about to make a change in frame
-    func willChangeMinimization(for mediaView: MediaView)
+    @objc optional func willChangeMinimization(for mediaView: MediaView)
     
     /// Called when the mediaView is in the process of minimizing, and has made a change in frame
-    func didChangeMinimization(for mediaView: MediaView)
+    @objc optional func didChangeMinimization(for mediaView: MediaView)
     
     /// Called before the mediaView ends minimizing, and informs whether the minimized view will snap to minimized or fullscreen mode
-    func willEndMinimizing(for mediaView: MediaView, atMinimizedState isMinimized: Bool)
+    @objc optional func willEndMinimizing(for mediaView: MediaView, atMinimizedState isMinimized: Bool)
     
     /// Called when the mediaView ends minimizing, and informs whether the minimized view has snapped to minimized or fullscreen mode
-    func didEndMinimizing(for mediaView: MediaView, atMinimizedState isMinimized: Bool)
+    @objc optional func didEndMinimizing(for mediaView: MediaView, atMinimizedState isMinimized: Bool)
     
     /// Called when the 'image' value of the UIImageView has been set
-    func mediaView(_ mediaView: MediaView, didSetImage image: UIImage)
+    @objc optional func mediaView(_ mediaView: MediaView, didSetImage image: UIImage)
     
     /// Called when the mediaView is in the process of minimizing, and is about to make a change in frame
-    func willChangeDismissing(for mediaView: MediaView)
+    @objc optional func willChangeDismissing(for mediaView: MediaView)
     
     /// Called when the mediaView is in the process of minimizing, and has made a change in frame
-    func didChangeDismissing(for mediaView: MediaView)
+    @objc optional func didChangeDismissing(for mediaView: MediaView)
     
     /// Called before the mediaView ends minimizing, and informs whether the minimized view will snap to minimized or fullscreen mode
-    func willEndDismissing(for mediaView: MediaView, withDismissal didDismiss: Bool)
+    @objc optional func willEndDismissing(for mediaView: MediaView, withDismissal didDismiss: Bool)
     
     /// Called when the mediaView ends minimizing, and informs whether the minimized view has snapped to minimized or fullscreen mode
-    func didEndDismissing(for mediaView: MediaView, withDismissal didDismiss: Bool)
+    @objc optional func didEndDismissing(for mediaView: MediaView, withDismissal didDismiss: Bool)
     
     /// Called when the mediaView has completed downloading the image from the web
-    func mediaView(_ mediaView: MediaView, didDownloadImage image: UIImage)
+    @objc optional func mediaView(_ mediaView: MediaView, didDownloadImage image: UIImage)
     
     /// Called when the mediaView has completed downloading the video from the web
-    func mediaView(_ mediaView: MediaView, didDownloadVideo video: URL)
+    @objc optional func mediaView(_ mediaView: MediaView, didDownloadVideo video: URL)
     
     /// Called when the mediaView has completed downloading the audio from the web
-    func mediaView(_ mediaView: MediaView, didDownloadAudio audio: URL)
+    @objc optional func mediaView(_ mediaView: MediaView, didDownloadAudio audio: URL)
     
     /// Called when the mediaView has completed downloading the gif from the web
-    func mediaView(_ mediaView: MediaView, didDownloadGif gif: UIImage)
+    @objc optional func mediaView(_ mediaView: MediaView, didDownloadGif gif: UIImage)
     
     /// Called when the user taps the title label
-    func handleTitleSelection(in mediaView: MediaView)
+    @objc optional func handleTitleSelection(in mediaView: MediaView)
     
     /// Called when the user taps the details label
-    func handleDetailsSelection(in mediaView: MediaView)
+    @objc optional func handleDetailsSelection(in mediaView: MediaView)
 }
 
-extension MediaView: MediaViewDelegate {
+extension MediaViewDelegate {
     
     public func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: CGFloat) { }
     
