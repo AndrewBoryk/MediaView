@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'MediaView'
-  s.version          = '0.1.0'
+  s.version          = '0.2.0'
   s.summary          = 'UIImageView subclass which can display, lazy-load, and cache images, videos, GIFs and audio easily, with fullscreen and minimized mode'
 
 # This description is used to generate tags and improve search results.

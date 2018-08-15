@@ -6,13 +6,26 @@
 //
 //
 
+fileprivate let mediaViewWillRotateNotificationName = "mediaViewWillRotateNotification"
+fileprivate let mediaViewDidRotateNotificationName = "mediaViewDidRotateNotification"
+
+@objc
+public extension NSNotification {
+
+    /// Notification for when the mediaView will rotate between landscape and portrait
+    public static let mediaViewWillRotateNotification = mediaViewWillRotateNotificationName
+
+    /// Notification for when the mediaView will rotate between portrait and landscape
+    public static let mediaViewDidRotateNotification = mediaViewDidRotateNotificationName
+}
+
 public extension Notification.Name {
     
     /// Notification for when the mediaView will rotate between landscape and portrait
-    public static let mediaViewWillRotateNotification = Notification.Name(rawValue: "mediaViewWillRotateNotification")
+    public static let mediaViewWillRotateNotification = Notification.Name(rawValue: mediaViewWillRotateNotificationName)
     
     /// Notification for when the mediaView will rotate between portrait and landscape
-    public static let mediaViewDidRotateNotification = Notification.Name(rawValue: "mediaViewDidRotateNotification")
+    public static let mediaViewDidRotateNotification = Notification.Name(rawValue: mediaViewDidRotateNotificationName)
 }
 
 public extension Notification {

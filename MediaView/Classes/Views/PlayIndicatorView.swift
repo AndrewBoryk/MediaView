@@ -22,7 +22,8 @@ class PlayIndicatorView: UIImageView {
     private(set) internal var animateTimer = Timer()
     
     init(delegate: PlayIndicatorDelegate?) {
-        super.init(image: delegate?.image(for: self))
+        super.init(image: nil)
+        image = delegate?.image(for: self)
         self.delegate = delegate
         contentMode = .scaleAspectFit
         translatesAutoresizingMaskIntoConstraints = false

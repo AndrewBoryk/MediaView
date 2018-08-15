@@ -8,6 +8,7 @@
 import Foundation
 import AVFoundation
 
+@objc
 extension MediaView: UIGestureRecognizerDelegate, LabelDelegate, TrackViewDelegate, PlayerDelegate, PlayIndicatorDelegate {
     
     // MARK: - LabelDelegate
