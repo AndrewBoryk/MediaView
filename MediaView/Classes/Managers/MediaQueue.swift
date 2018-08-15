@@ -8,7 +8,8 @@
 
 import Foundation
 
-public class MediaQueue {
+@objcMembers
+public class MediaQueue: NSObject {
     
     /// Shared Manager, which keeps track of mediaViews
     public static let shared = MediaQueue()

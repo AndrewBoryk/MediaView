@@ -9,9 +9,11 @@ import Foundation
 import AVFoundation
 
 /// UIImageView subclass capable of displaying images, videos, audio and gifs
+@objcMembers
 public class MediaView: UIImageView {
-    
-    public enum SwipeMode {
+
+    @objc
+    public enum SwipeMode: NSInteger {
         case none
         case dismiss
         case minimize
@@ -1158,6 +1160,12 @@ public class MediaView: UIImageView {
     }
     
     // MARK: - Static
+    /// Determines whether GIFs and Images should be cached
+    public static var cacheMediaWhenDownloaded: Bool {
+        get { return CacheManager.shared.cacheMediaWhenDownloaded}
+        set { CacheManager.shared.cacheMediaWhenDownloaded = newValue }
+    }
+    
     public static func clear(directory: CacheManager.DirectoryItem) {
         CacheManager.clear(directory: directory)
     }
